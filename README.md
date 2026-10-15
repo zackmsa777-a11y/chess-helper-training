@@ -95,6 +95,10 @@ Przycisk **i** w nagłówku panelu pokazuje / chowa krótkie objaśnienie, jak p
 W stopce panelu (zawsze widocznej, także przy zwiniętym panelu) jest przycisk „Postaw kawę dla autora” (buycoffee.to). Obrazek jest dołączony lokalnie
 (`extension/img/buycoffee-pl.png` dla języka polskiego, `buycoffee-en.png` dla pozostałych), więc samo wyświetlenie panelu nie wysyła żadnych zapytań; sieć jest używana dopiero po kliknięciu linku.
 
+## Prywatność
+
+Rozszerzenie nie zbiera ani nie wysyła danych – patrz [PRIVACY.md](PRIVACY.md).
+
 ## Licencja
 
 Copyright (C) 2026 Krystian Jasnos <e-json.com>
