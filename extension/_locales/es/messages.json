@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "Chess Helper"
+  },
+  "extDescription": {
+    "message": "Detecta un tablero de ajedrez en la página (Lichess, Chess.com) y sugiere las mejores jugadas con un motor Stockfish que se ejecuta localmente."
+  },
+  "actionTitle": {
+    "message": "Mostrar / ocultar el panel de consejos"
+  }
+}

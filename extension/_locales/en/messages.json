@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "Chess Helper"
+  },
+  "extDescription": {
+    "message": "Detects a chess board on the page (Lichess, Chess.com) and suggests the best moves using a locally running Stockfish engine."
+  },
+  "actionTitle": {
+    "message": "Show / hide the hints panel"
+  }
+}

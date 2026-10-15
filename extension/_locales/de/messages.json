@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "Chess Helper"
+  },
+  "extDescription": {
+    "message": "Erkennt ein Schachbrett auf der Seite (Lichess, Chess.com) und schlägt mit einer lokal laufenden Stockfish-Engine die besten Züge vor."
+  },
+  "actionTitle": {
+    "message": "Tipp-Panel ein- / ausblenden"
+  }
+}

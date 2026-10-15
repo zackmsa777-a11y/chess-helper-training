@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "Chess Helper"
+  },
+  "extDescription": {
+    "message": "Wykrywa planszę szachową na stronie (Lichess, Chess.com) i podpowiada najlepsze ruchy silnikiem Stockfish działającym lokalnie."
+  },
+  "actionTitle": {
+    "message": "Pokaż / ukryj panel podpowiedzi"
+  }
+}

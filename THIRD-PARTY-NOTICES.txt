@@ -1,0 +1,67 @@
+THIRD-PARTY NOTICES
+===================
+
+This project (Chess Helper, Copyright (C) 2026 Krystian Jasnos <e-json.com>,
+GPL-3.0-or-later, see the LICENSE file) bundles or ships the
+third-party components listed below.
+
+Because the Stockfish engine is licensed under the GPL, the extension as a whole is
+distributed under the GPL-3.0-or-later. The complete corresponding source code of this
+extension must be made available to everyone who receives it.
+
+
+1. Stockfish.js 19 (lite, single-threaded WASM build)
+-----------------------------------------------------
+Files: engine/stockfish-19-lite-single.js, engine/stockfish-19-lite-single.wasm
+npm package: stockfish@19.0.1
+Copyright (c) 2026, Chess.com, LLC
+Source: https://github.com/nmrugg/stockfish.js
+License: GNU General Public License v3.0 (full text: the LICENSE file, engine/Copying.txt)
+
+Based on Stockfish, (c) T. Romstad, M. Costalba, J. Kiiski, G. Linscott and other
+contributors.
+Source: https://github.com/official-stockfish/Stockfish
+License: GNU General Public License v3.0
+
+Neural network by Chris Bao (sscg13): nn-61e7af4bb97d
+(https://tests.stockfishchess.org/nns?network_name=nn-61e7af4bb97d)
+
+"Stockfish" is the name of the engine and its authors' project; this extension is not
+affiliated with or endorsed by them, by Chess.com or by Lichess.
+
+
+2. chess.js 1.4.0
+-----------------
+Bundled into content.js (built from the project's own sources with esbuild).
+Source: https://github.com/jhlywa/chess.js
+License: BSD 2-Clause
+
+Copyright (c) 2025, Jeff Hlywa (jhlywa@gmail.com)
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+
+3. Build tooling (not distributed)
+----------------------------------
+esbuild (MIT License, https://github.com/evanw/esbuild) is used only to build
+content.js. It is a development dependency and is not shipped in the extension.

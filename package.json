@@ -1,0 +1,30 @@
+{
+  "name": "chess-helper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Rozszerzenie Chrome podpowiadające ruchy szachowe (Stockfish lokalnie w przeglądarce)",
+  "author": {
+    "name": "Krystian Jasnos",
+    "url": "https://e-json.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dzejson91/chess-helper-chrome-extension.git"
+  },
+  "homepage": "https://github.com/dzejson91/chess-helper-chrome-extension#readme",
+  "bugs": {
+    "url": "https://github.com/dzejson91/chess-helper-chrome-extension/issues"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/position.test.mjs"
+  },
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "chess.js": "^1.4.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
