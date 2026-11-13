@@ -8,10 +8,12 @@ import { DEFAULT_COLORS, normalizeColors } from './colors.js';
 import { detectLive } from './livegame.js';
 import { AccuracyTracker } from './accuracy.js';
 import { pvToSan, formatScore, whitePercent, summarizeLine } from './format.js';
+import { TrainingPanel } from './training-panel.js';
+import { trainingContext } from '../shared/training.js';
 
 const DEFAULTS = {
   enabled: true,
-  multipv: 1,
+  multipv: 3,
   depth: 10,
   turn: 'auto',
   arrows: true,
@@ -34,6 +36,7 @@ const side = (c) => ({ k: `side.${c}` });
 
 let settings;
 let panel;
+let training;
 let overlay;
 let current = null;
 let position = null; // { fen, turn, source, orientation, over? }
@@ -171,7 +174,8 @@ function scheduleRender() {
 function render() {
   const hideStats = liveNow && !settings.enabled; // w wykrytej grze na żywo nie pokazujemy ocen silnika
   panel.accuracy(settings.showAccuracy && !hideStats ? accuracy.summary() : null);
-  const sorted = [...lines.entries()].sort((a, b) => a[0] - b[0]).map(([, v]) => v);
+  const sorted = [...lines.entries()].sort((a, b) => a[0] - b[0]).map(([, v]) => v).slice(0,3);
+  training?.update(position,sorted,trainingContext(location.href) && !liveNow && settings.enabled && !silent);
   const view = sorted.map((l) => ({
     san: l.moves[0].san,
     scoreText: formatScore(l.info),
@@ -184,11 +188,12 @@ function render() {
   if ((settings.arrows || forceArrows) && position && sorted.length) {
     const arrows = [];
     sorted.forEach((l, i) => {
+      if (l.moves[0].uci !== (training?.selected || sorted[0].moves[0].uci)) return;
       let n = 0; // numer wśród narysowanych strzałek tego wariantu (bez pominiętych ruchów)
       // ply 0 = ruch gracza (najlepszy), 1 = odpowiedź przeciwnika, 2 = kolejny ruch gracza itd.
       l.moves.forEach((m, ply) => {
         const limit = ply % 2 ? settings.followOpp : settings.followMine;
-        if (ply === 0 || Math.ceil(ply / 2) <= limit) {
+        if (ply === 0) {
           arrows.push({ from: sqIndex(m.from), to: sqIndex(m.to), rank: i, ply, n: ++n });
         }
       });
@@ -219,7 +224,7 @@ function readNow() {
   } catch (_) {
     return;
   }
-  if (!raw) return;
+  if (!raw) { position=null;lastKey=null;stopAnalysis();render();return; }
   if (raw.dragging) return schedule(200);
 
   const res = resolvePosition(raw, tracker, { turnOverride: settings.turn });
@@ -405,6 +410,7 @@ async function main() {
   settings = { ...DEFAULTS, ...(await loadSettings()) };
   settings.sections = { ...DEFAULTS.sections, ...settings.sections };
   settings.colors = normalizeColors(settings.colors);
+  settings.multipv = Math.min(3,Math.max(1,settings.multipv | 0));
   if (settings.colors[0] === '#15a34a') settings.colors[0] = DEFAULT_COLORS[0]; // migracja: stary domyślny zielony był ciemniejszy
   settings.opacity = Math.min(100, Math.max(40, Math.round(+settings.opacity) || DEFAULTS.opacity));
   if (!LANGS[settings.lang]) settings.lang = detectLang();
@@ -413,6 +419,10 @@ async function main() {
 
   overlay = new Overlay();
   panel = new Panel(settings, onSettingsChange, onHint, onReset);
+  training = new TrainingPanel(panel.root,{onSelect:render,verifyCurrent:()=>{
+    readNow();
+    try {return !!current?.el.isConnected && !!position && !current.adapter.read(current.el)?.dragging;} catch {return false;}
+  }});
   panel.status('status.searching');
 
   chrome.runtime.onMessage.addListener((msg) => {

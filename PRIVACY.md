@@ -1,61 +1,43 @@
-# Privacy Policy / Polityka prywatności – Chess Helper
+# Privacy — Chess Helper Training development upgrade
 
-*Last updated / Ostatnia aktualizacja: 2026-10-15*
+Updated 2026-11-13. This policy describes this local training upgrade; it replaces the original upstream statement that no network requests are made.
 
-## English
+## Local analysis
 
-**Chess Helper does not collect, store on any server, share or sell any personal data.**
+Stockfish and chess.js run locally. Reading the board, checking legal moves, calculating evaluations, estimating thinking time and displaying simulated weights do not require sign-in or send positions to OpenAI. The base extension reads pieces, highlights, orientation and limited page information for its existing turn/live-game heuristics. That page information is not included in AI requests.
 
-### What the extension does with data
-- It reads the position of the chess board on **lichess.org** and **chess.com** pages (the pieces on the board and, on Lichess, a few elements such as the clocks, player names and the page address) only to work out whose move it is, to run the analysis and to detect live games.
-- The analysis is done by Stockfish (WebAssembly) **locally in your browser**. The position is never sent anywhere.
-- The extension makes **no network requests** of its own: no analytics, no telemetry, no tracking, no advertising, no remote code. All code, including the engine, is packaged in the extension.
+Original interface preferences remain in `chrome.storage.local` and the chess site's `localStorage`. Site scripts can read the latter; it contains only nonsecret interface preferences. Training rating/budget/weight choices are held in the current page session. Explicit position-sharing consent is kept in extension storage, never in the site's localStorage. The model choice is kept with the companion's account record.
 
-### What is stored
-- Your settings (number of lines, depth, colors, language, window opacity and position, collapsed sections, the date you last confirmed the fair-play notice) are stored **only in your browser**, in `chrome.storage.local` and in the `localStorage` of lichess.org / chess.com.
-- Because `localStorage` belongs to the visited site, scripts of that site could technically read it. It contains only these interface preferences, nothing else.
-- You can erase everything with the “Restore factory settings” button or by removing the extension.
+Interface language, explanation language and the selected model's reasoning preference are stored in extension-local storage. Switching interface language does not contact OpenAI. Only the explanation language and selected reasoning effort accompany an explicit explanation request.
 
-### Permissions
-- **Access to lichess.org and chess.com** – to read the board and draw the arrows and the panel.
-- **storage** – to save the settings described above.
-- **offscreen** – to run the engine in an offscreen document.
+## Optional account connection and explanations
 
-### “Buy the author a coffee” button
-The panel footer contains a button that links to the author's page on **buycoffee.to**. The button image is bundled with the extension, so displaying it sends no request. Only if you **click** the link does your browser open buycoffee.to, and from then on that service's own terms and privacy policy apply. The extension passes no data to it.
+Only after explicit sign-in consent does the companion open the official OpenAI authorization page. OpenAI handles sign-in and its permission review. The companion stores each validated identity/client registration and OAuth tokens in `%LOCALAPPDATA%\ChessHelperTraining\accounts.dpapi`, encrypted by Windows DPAPI CurrentUser, with an owner/SYSTEM directory ACL. The stable host ID is stored there too. No credentials are read from other applications. Tokens are never returned to extension pages or content scripts, stored in browser storage, written in plaintext, or logged.
 
-### Third parties
-The extension does not share data with third parties. Stockfish.js and chess.js are bundled libraries and run locally (see `THIRD-PARTY-NOTICES.txt`).
+When you explicitly click **Explain position**, and position sharing is enabled, the companion sends only:
 
-### Changes and contact
-If this policy changes, the new version will be published in this file. Questions: please open an issue at https://github.com/dzejson91/chess-helper-chrome-extension/issues
+- validated FEN and side to move;
+- at most three legal candidate moves, White-relative centipawn or mate scores, search depth and at most six legal PV plies per candidate;
+- your selected training rating, thinking budget, simulated-weights setting, explanation language and model reasoning effort.
 
----
+No usernames, account labels, email addresses, cookies, page URLs, unrelated page text, images, browsing history or arbitrary prompts accompany this input. The companion also sends a fixed chess-tutor instruction, structured output schema and the account-selected model identifier. Its OAuth token is sent only as authorization to official OpenAI endpoints. Model-catalog and token-renewal requests occur as part of explicit account or explanation actions.
 
-## Polski
+Inference uses the documented Responses endpoint with `store:false` and `stream:true`. This setting is not a claim of zero provider retention or a replacement for OpenAI's applicable terms and privacy practices. There is no API-key billing fallback, analytics, telemetry, advertising, remote executable code or automatic AI call on board refresh. Responses are held in memory and shown as text; changed positions/settings invalidate pending answers.
 
-**Chess Helper nie zbiera, nie zapisuje na żadnym serwerze, nie udostępnia ani nie sprzedaje żadnych danych osobowych.**
+## Permissions and controls
 
-### Co rozszerzenie robi z danymi
-- Odczytuje pozycję szachownicy na stronach **lichess.org** i **chess.com** (figury na planszy oraz, na Lichess, kilka elementów strony, takich jak zegary, nazwy graczy i adres strony) wyłącznie po to, by ustalić, czyj jest ruch, wykonać analizę i rozpoznać partie na żywo.
-- Analizę wykonuje Stockfish (WebAssembly) **lokalnie w Twojej przeglądarce**. Pozycja nigdy nie jest nigdzie wysyłana.
-- Rozszerzenie **samo nie wykonuje żadnych zapytań sieciowych**: bez analityki, telemetrii, śledzenia, reklam i zdalnego kodu. Cały kod, wraz z silnikiem, jest zapakowany w rozszerzenie.
+The extension retains access to Lichess/Chess.com for local board analysis, offscreen workers for Stockfish, and storage for preferences. The added host permission is the companion's fixed loopback address. The companion checks exact origin, client header and Host, limits request sizes/rates and exposes only fixed application routes.
 
-### Co jest zapisywane
-- Twoje ustawienia (liczba wariantów, głębokość, kolory, język, przezroczystość i położenie okna, zwinięte sekcje, data ostatniego potwierdzenia komunikatu fair play) są zapisywane **tylko w Twojej przeglądarce**: w `chrome.storage.local` oraz w `localStorage` stron lichess.org / chess.com.
-- Ponieważ `localStorage` należy do odwiedzanej strony, jej skrypty mogłyby go technicznie odczytać. Są tam wyłącznie wymienione preferencje interfejsu.
-- Wszystko możesz wyczyścić przyciskiem „Przywróć ustawienia fabryczne” albo usuwając rozszerzenie.
+The bundled ui-sdk bridge on extension settings can describe named controls and change local preferences. Account labels are hidden from that bridge. Sign-in, consent, account/model operations and position sharing are marked as requiring a person and refused by the bridge's action policy. No AI model runs inside that UI bridge, and no chess-page agent tools or autoplay are added.
 
-### Uprawnienia
-- **Dostęp do lichess.org i chess.com** – odczyt planszy oraz rysowanie strzałek i panelu.
-- **storage** – zapis opisanych wyżej ustawień.
-- **offscreen** – uruchomienie silnika w dokumencie offscreen.
+To stop sharing, clear the position-sharing checkbox. To end account access, use **Sign out of active account**; the companion attempts remote refresh-session revocation and clears local tokens. If revocation cannot be confirmed, use ChatGPT Settings to disconnect the app. Uninstalling the extension alone does not revoke provider authorization. Stop the companion before deleting its app-owned data folder. Registration/host mappings are retained after normal sign-out so future sign-in does not register a new client unnecessarily.
 
-### Przycisk „Postaw kawę dla autora”
-W stopce panelu jest przycisk z linkiem do strony autora w serwisie **buycoffee.to**. Obrazek przycisku jest dołączony do rozszerzenia, więc jego wyświetlenie nie wysyła żadnych zapytań. Dopiero po **kliknięciu** linku przeglądarka otwiera buycoffee.to i od tej chwili obowiązują regulamin i polityka prywatności tego serwisu. Rozszerzenie nie przekazuje mu żadnych danych.
+The original author's donation image remains bundled locally. Only clicking its link opens the external donation service, subject to that service's policies.
 
-### Podmioty trzecie
-Rozszerzenie nie udostępnia danych podmiotom trzecim. Stockfish.js i chess.js to dołączone biblioteki działające lokalnie (patrz `THIRD-PARTY-NOTICES.txt`).
+## Polski — najważniejsze informacje
 
-### Zmiany i kontakt
-W razie zmiany polityki nowa wersja zostanie opublikowana w tym pliku. Pytania: zgłoś issue na https://github.com/dzejson91/chess-helper-chrome-extension/issues
+Stockfish i analiza lokalna nadal działają bez konta. Opcjonalna funkcja „Explain position” wysyła dane szachowe do OpenAI dopiero po świadomej zgodzie i kliknięciu przycisku. Wysyłane są FEN, strona na ruchu, maksymalnie trzy legalne ruchy, oceny, głębokość, krótkie warianty oraz wybrane ustawienia treningu. Nie są wysyłane nazwy użytkowników, ciasteczka, adres strony ani pozostała treść strony.
+
+Tokeny pozostają wyłącznie w lokalnym programie towarzyszącym i jego pliku szyfrowanym przez Windows DPAPI. Nie trafiają do strony, rozszerzenia ani logów. Wylogowanie próbuje unieważnić sesję w OpenAI i usuwa lokalne tokeny. Ustawienia interfejsu pozostają lokalne. Szacunki trudności, czasu namysłu i wag wyboru ruchów nie są pomiarami zachowania ludzi.
+
+See `SECURITY.md` and `WINDOWS-SETUP.md` for implementation details and limitations. This development upgrade is not affiliated with OpenAI, Chess.com, Lichess or Stockfish.

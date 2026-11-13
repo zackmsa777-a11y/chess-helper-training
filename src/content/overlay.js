@@ -4,7 +4,7 @@ import { DEFAULT_COLORS } from './colors.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 
-function center(sqIdx, orientation) {
+export function center(sqIdx, orientation) {
   const file = sqIdx % 8;
   const rank = Math.floor(sqIdx / 8);
   const col = orientation === 'white' ? file : 7 - file;
@@ -77,6 +77,11 @@ export class Overlay {
 
   // arrows: [{ from, to, rank, ply, n }] – ply > 0 to cienkie strzałki kolejnych ruchów, n to numer w kółku (showOrder).
   draw(arrows, orientation, showOrder = false, colors = DEFAULT_COLORS) {
+    // One selected first move only: crossing, duplicate and overlapping PV arrows cannot accumulate.
+    arrows = arrows.filter(a => a.ply === 0).slice(0,1);
+    const signature = JSON.stringify([arrows,orientation,showOrder,colors]);
+    if (signature === this.signature) return;
+    this.signature = signature;
     this.colors = colors;
     this.svg.replaceChildren();
     const geo = [];
@@ -170,6 +175,8 @@ export class Overlay {
   }
 
   clear() {
+    if (!this.svg.childNodes.length) return;
+    this.signature = null;
     this.svg.replaceChildren();
   }
 

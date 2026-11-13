@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training settings · Chess Helper</title><link rel="stylesheet" href="ui.css"><link rel="stylesheet" href="settings.css"></head>
+<body>
+<a class="skip-link" href="#page-title" data-i18n="skip">Skip to settings</a>
+<header class="app-header">
+  <a class="brand" href="study.html"><span class="brand-mark" aria-hidden="true">♞</span><span>Chess Helper</span></a>
+  <nav class="app-nav" aria-label="Main navigation"><a href="study.html" data-i18n="study">Study board</a><a href="options.html" aria-current="page" data-i18n="settings">Settings</a></nav>
+  <ui-select id="ui-language" class="language-control" name="interfaceLanguage"><ui-select-label data-i18n="interfaceLanguage">Interface language</ui-select-label><ui-select-trigger><button type="button"><ui-select-value></ui-select-value></button></ui-select-trigger><ui-select-content></ui-select-content></ui-select>
+</header>
+<main class="settings-layout">
+  <div class="settings-main">
+    <div class="page-intro"><p class="eyebrow" data-i18n="eyebrow">YOUR TRAINING SPACE</p><h1 id="page-title" tabindex="-1" data-i18n="title">Make it yours.</h1><p class="intro-copy" data-i18n="intro">Choose how you learn. Local chess analysis is ready whenever you are; AI explanations are optional.</p></div>
+    <div id="status" class="status-message" role="status" aria-live="polite" tabindex="-1"></div>
+    <section class="settings-section">
+      <div class="section-heading"><span class="section-symbol" aria-hidden="true">Aa</span><div><h2 id="preferences-title" data-i18n="preferencesTitle">Your learning preferences</h2><p class="help" data-i18n="preferencesLead">A comfortable language. The right amount of thinking.</p></div></div>
+      <form id="preferences-form" aria-labelledby="preferences-title">
+        <ui-field><ui-field-label data-i18n="explanationLanguage">AI explanation language</ui-field-label><ui-select id="explanation-language" name="explanationLanguage"><ui-select-trigger><button type="button"><ui-select-value></ui-select-value></button></ui-select-trigger><ui-select-content></ui-select-content></ui-select><ui-field-description data-i18n="explanationHelp">The language of explanations, separate from the interface.</ui-field-description></ui-field>
+        <ui-field><ui-field-label data-i18n="thinking">AI thinking mode</ui-field-label><ui-select id="thinking" name="reasoningEffort"><ui-select-trigger><button type="button"><ui-select-value></ui-select-value></button></ui-select-trigger><ui-select-content></ui-select-content></ui-select><ui-field-description id="thinking-help" data-i18n="thinkingHelp">Connect an account and choose a model to see its supported thinking levels.</ui-field-description></ui-field>
+        <p class="help thinking-note" data-i18n="thinkingNote">More thinking can take longer and use more of your plan. This is an AI setting, separate from your chess thinking-time estimate.</p>
+        <ui-button id="save-preferences"><button type="submit" class="primary" data-i18n="savePreferences">Save preferences</button></ui-button>
+        <p id="preferences-status" class="help" role="status"></p>
+      </form>
+    </section>
+    <section class="settings-section" id="connection-section">
+      <div class="section-heading"><span class="step-number" aria-hidden="true">1</span><div><h2 data-i18n="connectTitle">Connect the local companion</h2><p class="help" data-i18n="connectLead">A small helper on your PC keeps your sign-in private.</p></div></div>
+      <p data-i18n="connectText">Open PowerShell in the project folder, run this command, and leave it open.</p>
+      <div class="command-box"><code id="command" dir="ltr"></code><ui-button id="copy-command"><button type="button" data-i18n="copy">Copy command</button></ui-button></div>
+      <p class="help"><span data-i18n="extensionId">Extension ID:</span> <bdi id="extension-id"></bdi></p>
+      <div class="actions section-actions"><ui-button id="refresh" data-agent-confirm="Uses the signed-in account to refresh the model catalog"><button type="button" data-i18n="refresh">Check connection & refresh models</button></ui-button></div>
+      <p class="help" data-i18n="connectionHelp">Nothing connects automatically. Use this button after starting the companion or completing sign-in.</p>
+    </section>
+    <section class="settings-section" id="account-section">
+      <div class="section-heading"><span class="step-number" aria-hidden="true">2</span><div><h2 data-i18n="accountTitle">Connect your ChatGPT plan</h2><p class="help" data-i18n="accountLead">Use an eligible account. No API key needed.</p></div></div>
+      <p data-i18n="planDescription">Availability and usage limits depend on your account. There is no paid API fallback.</p>
+      <ui-field data-agent-hidden><ui-field-label data-i18n="registration">Account registration</ui-field-label><ui-select id="accounts" name="account"><ui-select-trigger><button type="button"><ui-select-value></ui-select-value></button></ui-select-trigger><ui-select-content></ui-select-content></ui-select><ui-field-description data-i18n="registrationHelp">Choose an existing registration to sign in again. Each registration keeps its own account and workspace.</ui-field-description></ui-field>
+      <ui-field class="check-field" id="consent-field" data-agent-confirm="Authorizes ChatGPT sign-in and plan permission"><ui-checkbox id="consent" name="consent"><ui-checkbox-indicator aria-hidden="true">✓</ui-checkbox-indicator></ui-checkbox><ui-field-label data-i18n="consent">I authorize sign-in and a request to use my ChatGPT plan.</ui-field-label></ui-field>
+      <details class="advanced"><summary data-i18n="permissionOptions">Permission options</summary><ui-field class="check-field" data-agent-confirm="Requests plan permission again"><ui-checkbox id="enable-plan" name="enablePlan"><ui-checkbox-indicator aria-hidden="true">✓</ui-checkbox-indicator></ui-checkbox><ui-field-label data-i18n="reconsent">Ask for plan permission again after an earlier decline.</ui-field-label></ui-field></details>
+      <div class="actions"><ui-button id="signin" data-agent-confirm="Starts ChatGPT sign-in"><button type="button" data-oai-siwc-button data-i18n="signin">Continue with ChatGPT</button></ui-button><ui-button id="cancel" data-agent-confirm="Cancels the current sign-in"><button type="button" class="quiet" data-i18n="cancel">Cancel sign-in</button></ui-button></div>
+      <p class="help" data-i18n="tokenNote">Your tokens stay encrypted on this Windows PC. The extension and chess pages never receive them.</p>
+      <div class="account-footer"><a href="https://chatgpt.com/settings/usage" target="_blank" rel="noopener noreferrer" data-i18n="usage">Manage ChatGPT usage ↗</a><ui-button id="signout" data-agent-confirm="Signs out of the active ChatGPT account"><button type="button" class="quiet" data-i18n="signout">Sign out of active account</button></ui-button></div>
+    </section>
+    <section class="settings-section" id="model-section">
+      <div class="section-heading"><span class="step-number" aria-hidden="true">3</span><div><h2 data-i18n="modelTitle">Choose your explanation model</h2><p class="help" data-i18n="modelLead">Only choices available to your active account appear here.</p></div></div>
+      <ui-field><ui-field-label data-i18n="availableModel">Available model</ui-field-label><ui-select id="models" name="model"><ui-select-trigger><button type="button"><ui-select-value></ui-select-value></button></ui-select-trigger><ui-select-content></ui-select-content></ui-select><ui-field-description id="model-status" data-i18n="modelInitial">Check the connection after sign-in to load your models.</ui-field-description></ui-field>
+      <ui-button id="save-model" data-agent-confirm="Changes the model used for account explanations"><button type="button" data-i18n="saveModel">Use selected model</button></ui-button>
+      <div id="welcome" class="plan-notice" hidden><h3 data-i18n="welcomeTitle">You’re using your ChatGPT plan</h3><p data-i18n="welcomeText">Explanations use your plan allowance. Review your limits and any credit settings in ChatGPT.</p><ui-button id="got-it" data-agent-confirm="Acknowledges use of the ChatGPT plan"><button type="button" data-i18n="gotIt">Got it</button></ui-button></div>
+      <div class="sharing-setting"><ui-field class="check-field" data-agent-confirm="Allows sharing validated chess data with OpenAI on an explicit explanation request"><ui-checkbox id="share" name="share"><ui-checkbox-indicator aria-hidden="true">✓</ui-checkbox-indicator></ui-checkbox><ui-field-label data-i18n="share">Allow position sharing when I click Explain position</ui-field-label><ui-field-description data-i18n="shareHelp">You choose when to ask. Scanning the board never sends an AI request.</ui-field-description></ui-field></div>
+      <details class="advanced"><summary data-i18n="privacyTitle">What is shared?</summary><p data-i18n="privacyText">Only the validated chess position (FEN), side to move, up to three legal moves, engine scores, depth, short variations and your training preferences. No usernames, cookies, page addresses or unrelated content.</p></details>
+    </section>
+  </div>
+  <aside class="setup-summary"><p class="eyebrow" data-i18n="atGlance">AT A GLANCE</p><h2 data-i18n="readyTitle">Your board is ready.</h2><p data-i18n="readyText">Explore positions and compare engine moves now. Add AI whenever you want an explanation.</p><dl><div><dt data-i18n="localAnalysis">Local analysis</dt><dd class="ready" data-i18n="available">Available</dd></div><div><dt data-i18n="companion">Companion</dt><dd id="connection-state" data-i18n="notChecked">Not checked</dd></div><div><dt data-i18n="account">ChatGPT account</dt><dd id="account-state" data-i18n="notChecked">Not checked</dd></div><div><dt data-i18n="selectedModel">AI model</dt><dd id="model-state" data-i18n="notSelected">Not selected</dd></div></dl><a class="button primary" href="study.html" data-i18n="openBoard">Open study board →</a><p class="help" data-i18n="practiceOnly">For local study and built-in bots only. Never use against people.</p></aside>
+</main>
+<footer class="app-footer" data-i18n="footer">Local engine. Thoughtful practice. Estimates describe training suggestions, not measured human behavior.</footer>
+<script src="options.js" type="module"></script>
+</body></html>

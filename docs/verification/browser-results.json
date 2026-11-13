@@ -1,0 +1,32 @@
+{
+  "browser": "145.0.7632.6",
+  "mocked": [
+    "OAuth",
+    "inference",
+    "Chess.com HTML"
+  ],
+  "real": [
+    "extension runtime",
+    "Stockfish WASM",
+    "companion HTTP origin validation"
+  ],
+  "passed": 15,
+  "checks": [
+    "Unpacked MV3 extension loads in isolated Chromium",
+    "Real extension requests satisfy strict companion origin checks",
+    "Bundled Stockfish returns three legal candidates without sign-in or AI calls",
+    "Repeated scans preserve the same SVG node without blinking",
+    "Board flip updates selected arrow orientation",
+    "Board resize keeps overlay aligned",
+    "Explicit explain renders validated mocked AI output and never auto-repeats",
+    "Position change discards a delayed mocked AI response",
+    "Untrusted FEN import is rejected without HTML interpretation",
+    "Manual move and undo preserve legal turn state; no autoplay",
+    "Local study layout fits a 390-pixel viewport",
+    "Mock Chess.com DOM adapter and periodic scans retain stable highlights",
+    "Mock Chess.com orientation and resize stay aligned",
+    "Online human-game route cannot enable training explanations",
+    "No browser page errors across study, settings and mocked site"
+  ],
+  "errors": []
+}

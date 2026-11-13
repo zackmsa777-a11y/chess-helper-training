@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Study board · Chess Helper</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="study.css">
+</head>
+<body>
+  <a class="skip-link" href="#study-title" data-text="skip">Skip to study board</a>
+  <header class="study-header">
+    <a class="study-brand" href="study.html"><span aria-hidden="true">♞</span><span>Chess Helper<small data-text="brandSub">TRAINING, AT YOUR PACE</small></span></a>
+    <nav class="study-nav" aria-label="Main navigation">
+      <a href="study.html" aria-current="page" data-text="navStudy">Study board</a>
+      <a href="options.html" data-text="navSettings">Settings</a>
+    </nav>
+    <ui-select id="study-language" default-value="en" name="interfaceLanguage">
+      <ui-select-label class="visually-hidden" data-text="interfaceLanguage">Interface language</ui-select-label>
+      <ui-select-trigger><button type="button"><ui-select-value></ui-select-value></button></ui-select-trigger>
+      <ui-select-content><ui-select-item value="en">English</ui-select-item><ui-select-item value="ar" lang="ar">العربية</ui-select-item></ui-select-content>
+    </ui-select>
+  </header>
+  <main class="study-main">
+    <div class="study-intro">
+      <div><p class="eyebrow" data-text="eyebrow">YOUR QUIET PLACE TO PRACTICE</p><h1 id="study-title" tabindex="-1" data-text="title">Understand your next move.</h1><p data-text="intro">Try an idea. Compare three engine moves. Ask for an explanation when you’re ready.</p></div>
+      <span class="local-badge"><span aria-hidden="true">●</span> <span data-text="localBadge">Stockfish runs on this device</span></span>
+    </div>
+    <div class="study-container">
+      <div class="workspace">
+        <section class="board-column">
+          <div class="board-heading"><h2 data-text="boardTitle">Your study board</h2><span id="turn-label"></span></div>
+          <div id="board" role="group" aria-label="Chess board" dir="ltr"></div>
+          <p id="local-status" class="local-status" role="status" aria-live="polite"></p>
+          <div class="board-actions">
+            <ui-button id="flip-action"><button id="flip" type="button" data-text="flip">Flip board</button></ui-button>
+            <ui-button id="undo-action"><button id="undo" type="button" data-text="undo">Undo move</button></ui-button>
+            <ui-button id="reset-action"><button id="reset" type="button" data-text="reset">Start position</button></ui-button>
+          </div>
+          <p class="board-tip" data-text="boardTip">Choose a piece, then a highlighted square. Every move is yours.</p>
+          <details class="position-details">
+            <summary data-text="positionTools">Position tools</summary>
+            <div class="position-tools">
+              <ui-field name="promotion">
+                <ui-field-label data-text="promotion">Promote a pawn to</ui-field-label>
+                <ui-select id="promotion" default-value="q">
+                  <ui-select-trigger><button type="button"><ui-select-value></ui-select-value></button></ui-select-trigger>
+                  <ui-select-content>
+                    <ui-select-item value="q" data-text="queen">Queen</ui-select-item><ui-select-item value="r" data-text="rook">Rook</ui-select-item><ui-select-item value="b" data-text="bishop">Bishop</ui-select-item><ui-select-item value="n" data-text="knight">Knight</ui-select-item>
+                  </ui-select-content>
+                </ui-select>
+              </ui-field>
+              <ui-field name="fen">
+                <ui-field-label data-text="fenLabel">Load a position (FEN)</ui-field-label>
+                <ui-textarea><textarea id="fen" rows="3" dir="ltr" spellcheck="false" autocorrect="off" autocapitalize="none" maxlength="160"></textarea></ui-textarea>
+                <ui-field-description data-text="fenHelp">Paste a complete FEN to keep the turn and castling rights accurate.</ui-field-description>
+              </ui-field>
+              <ui-button id="load-action"><button id="load" type="button" data-text="load">Load position</button></ui-button>
+            </div>
+          </details>
+        </section>
+        <aside class="study-inspector">
+          <section class="engine-section"><p class="eyebrow" data-text="engineEyebrow">LOCAL ENGINE</p><h2 data-text="engineTitle">Three moves to consider</h2><p class="engine-help" data-text="scoreHelp">Positive scores favor White; negative scores favor Black. Mate scores are shown separately.</p><div id="engine-lines"></div></section>
+          <div id="trainer"></div>
+        </aside>
+      </div>
+    </div>
+    <footer class="study-footer"><p data-text="footer">For local study and practice against built-in bots. Never use assistance against people.</p><a href="options.html" data-text="setupLink">Set up optional AI explanations</a></footer>
+  </main>
+  <script src="study.js"></script>
+</body>
+</html>

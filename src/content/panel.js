@@ -116,7 +116,7 @@ const TEMPLATE = `
         <summary data-i18n="group.analysis"></summary>
         <div class="opts">
         <span data-i18n="lines"></span>
-        <select data-k="multipv"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+        <select data-k="multipv"><option>1</option><option>2</option><option>3</option></select>
         <span data-i18n="depth"></span>
         <select data-k="depth"><option>10</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>22</option></select>
         <span data-i18n="turn"></span>
@@ -129,10 +129,7 @@ const TEMPLATE = `
         <summary data-i18n="group.arrows"></summary>
         <div class="opts">
         <label for="arrows" data-i18n="arrows"></label><input id="arrows" type="checkbox" data-k="arrows">
-        <span data-i18n="followMine"></span>
-        <select data-k="followMine"><option value="0" data-i18n="off"></option><option>1</option><option>2</option><option>3</option><option>4</option></select>
-        <span data-i18n="followOpp"></span>
-        <select data-k="followOpp"><option value="0" data-i18n="off"></option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+        <span style="grid-column:1/-1">One selected candidate is highlighted. Full variations remain in the list.</span>
         <label for="order" data-i18n="showOrder"></label><input id="order" type="checkbox" data-k="showOrder">
         <span data-i18n="colors"></span>
         <div class="swatches">${DEFAULT_COLORS.map((_, i) => `<input type="color" data-c="${i}">`).join('')}<button class="reset-colors" data-i18n-title="colors.reset">↺</button></div>
@@ -395,6 +392,9 @@ export class Panel {
 
   // lines: [{ san, scoreText, items: [{ san, white }], fullText, count, depth, percent }] posortowane wg multipv
   results(lines) {
+    const signature = JSON.stringify([lines,this.settings.colors,getLang()]);
+    if (this.resultsSignature === signature) return;
+    this.resultsSignature = signature;
     this.lastLines = lines;
     if (!lines.length) {
       this.sanEl.textContent = '—';

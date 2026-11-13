@@ -1,0 +1,81 @@
+{
+  "browser": "145.0.7632.6",
+  "durationMs": 13663,
+  "passed": 21,
+  "checks": [
+    "Isolated extension copy and synthetic companion use an ephemeral port, never 43187",
+    "Settings load without account or AI requests and model saving starts disabled",
+    "Sign-in without consent is blocked with a readable recovery message",
+    "Agent snapshot names the settings controls and safe agent actions persist preferences",
+    "Agent actions cannot grant consent, share positions, sign in or access the account",
+    "Every settings checkbox responds to Space; position-sharing changes persist",
+    "Keyboard Tab reaches every available settings control with a readable name",
+    "Keyboard select closes with restored focus; Arabic and RTL persist and fit 390 pixels",
+    "Explicit refresh uses the real origin gate and exposes only advertised reasoning choices",
+    "Thinking preferences save per selected model and reset to default for unsupported models",
+    "Primary, hover, selected and focus states meet sampled text/focus contrast thresholds",
+    "Catalog failure produces readable error feedback and disables invalid model saving",
+    "Human sign-in and cancellation buttons reach mocked actions after explicit consent",
+    "Reload preserves language/thinking preferences without automatically revisiting the account",
+    "Arabic saved status translates immediately and the dropdown caret stays downward in RTL",
+    "Redesigned study board runs actual Stockfish with three candidates, one arrow and no AI calls",
+    "Study agent labels and flip work; explicit explanation forwards saved Arabic/high settings once",
+    "Study layout fits 390 pixels and its arrow overlay remains aligned on resize",
+    "Changing saved AI preferences discards a delayed explanation",
+    "Malformed mock AI HTML is rejected and local analysis stays usable",
+    "No page errors or external HTTP traffic; OAuth and inference remain entirely mocked"
+  ],
+  "errors": [],
+  "contrast": [
+    {
+      "selector": "#save-preferences button",
+      "state": "default",
+      "text": 8.850986971983351,
+      "border": 7.971771260736023,
+      "fill": 7.971771260736023,
+      "focus": null
+    },
+    {
+      "selector": "#save-preferences button",
+      "state": "hover",
+      "text": 11.595084486931194,
+      "border": 7.971771260736023,
+      "fill": 10.44328294362086,
+      "focus": null
+    },
+    {
+      "selector": "#explanation-language button",
+      "state": "focus",
+      "text": 14.674512364419485,
+      "border": 3.38887007998812,
+      "fill": 1.1008658928430042,
+      "focus": 6.071416550163423
+    },
+    {
+      "selector": "#thinking ui-select-item[data-selected][data-highlighted]",
+      "state": "selected and highlighted",
+      "text": 8.850986971983351,
+      "border": 1.0085616636782562,
+      "fill": 8.775851086490363,
+      "focus": 8.850986971983351
+    }
+  ],
+  "mocked": [
+    "OAuth",
+    "account model catalog",
+    "AI inference"
+  ],
+  "real": [
+    "ui-sdk web components",
+    "extension runtime",
+    "Stockfish WASM",
+    "loopback origin validation"
+  ],
+  "notTested": [
+    "real ChatGPT account",
+    "live Chess.com",
+    "screen reader software"
+  ],
+  "inferenceCount": 3,
+  "ephemeralPort": true
+}

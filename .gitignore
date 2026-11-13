@@ -3,3 +3,11 @@ node_modules/
 Thumbs.db
 *.log
 dist/
+work/
+test-results/
+*.dpapi
+*.dpapi.tmp
+.env
+.env.*
+credentials*.json
+accounts*.json

@@ -1,137 +1,96 @@
-# Chess Helper (rozszerzenie Chrome, Manifest V3)
+# Chess Helper Training
 
-> **English:** Chrome extension (Manifest V3) that reads the board on Lichess / Chess.com and shows the best moves, move accuracy and win chances,
-> using Stockfish 19 (lite, WASM) running locally in your browser – nothing is sent anywhere. UI: English, Polski, Español, Deutsch.
-> Intended for learning and analysis only. **Do not use it in games against other people** – it is against the rules of the chess sites.
-> Install: clone the repo, open `chrome://extensions`, enable Developer mode, “Load unpacked” → select the `extension/` folder.
-> GPL-3.0-or-later; third-party components: see `THIRD-PARTY-NOTICES.txt`. Not affiliated with Lichess, Chess.com or the Stockfish project.
+Learn why a chess move works. Analyze positions locally with Stockfish, compare up to three moves, and optionally ask for a short explanation using your ChatGPT plan.
 
-Wykrywa planszę szachową na stronie, odczytuje pozycję i podpowiada najlepsze ruchy.
-Analizę wykonuje **Stockfish 19 (lite, WASM)** uruchomiony lokalnie w przeglądarce –
-żadne dane nie są nigdzie wysyłane.
+**[العربية — دليل البدء](docs/AR.md)** · [Windows setup](WINDOWS-SETUP.md) · [Set up with an AI agent](docs/AI-AGENT-SETUP.md) · [Privacy](PRIVACY.md) · [Test results](TEST-RESULTS.md)
 
-## Instalacja
+Repository: [zackmsa777-a11y/chess-helper-training](https://github.com/zackmsa777-a11y/chess-helper-training).
 
-1. Otwórz `chrome://extensions`, włącz **Tryb dewelopera**.
-2. **Załaduj rozpakowane** → wskaż katalog `extension/`.
-3. Wejdź na Lichess lub Chess.com (partia z botem, analiza, zadania, własna partia).
-   W prawym górnym rogu pojawi się panel, a na planszy strzałki:
-   zielona = najlepszy ruch, niebieska / pomarańczowa = kolejne warianty.
+Use this tool for **local study, analysis and practice against built-in bots**. Do not use it against people. The page detector cannot reliably establish whether an opponent is a bot.
 
-Kliknięcie ikony rozszerzenia chowa / pokazuje panel. Panel można przeciągać za nagłówek.
+![Local chess study interface](docs/images/study-en.png)
 
-Przycisk **Wł. / Wył.** w nagłówku włącza i wyłącza ciągłą analizę. Przy wyłączonej analizie nie ma żadnych podpowiedzi, a blok „Ustawienia” zwija się (można go ponownie rozwinąć).
-Gdy analiza jest włączona, ale **strzałki na planszy są wyłączone**, w panelu pojawia się przycisk **💡 Podpowiedź**:
-na 3 sekundy rysuje strzałki na planszy (potem znikają).
+*Local study screenshot with synthetic test data; no real account or live game is shown.*
 
-## Ustawienia (w panelu)
+## Start with local analysis
 
-Domyślnie: 1 wariant, głębokość 10, strona auto, strzałki wł., 1 kolejny ruch gracza, 0 odpowiedzi przeciwnika, numeracja wł., „tylko dla strony z dołu” wł., język English.
+You do not need an account, an API key or the companion app for local analysis.
 
-- liczba wariantów (1–5) i głębokość analizy,
-- strona na ruchu: *auto* / białe / czarne,
-- strzałki na planszy (wł./wył.) oraz osobno „moje kolejne ruchy” i „odpowiedzi przeciwnika” (0–4 każde): cienkie strzałki w kolorze wariantu pokazujące następne posunięcia, „kolory wariantów” (5 próbników koloru + przycisk ↺ przywracający domyślne; kolor dotyczy strzałek, kropek i dużego zapisu najlepszego ruchu), oraz „numeruj strzałki” – numer kolejności ruchu (1, 2, 3…) w kółku na strzałce,
-- „tylko dla strony z dołu” – podpowiedzi tylko, gdy ruch ma gracz widoczny na dole planszy,
-- ustawienia są zapisywane w `chrome.storage.local` oraz w `localStorage` strony (osobno dla każdej witryny, np. lichess.org i chess.com); przy odczycie wygrywa nowszy zapis, dzięki czemu przeżywają przeładowanie / aktualizację rozszerzenia,
-- **Przywróć ustawienia fabryczne** (na dole ustawień, wymaga drugiego kliknięcia): wszystkie opcje, kolory, język, położenie i zwinięcie panelu wracają do wartości domyślnych,
-- sekcje ustawień (Analiza / Strzałki / Ogólne oraz cały blok „Ustawienia”) można zwijać i rozwijać – stan jest zapamiętywany; gdy panel jest wyższy niż okno przeglądarki, jego zawartość się przewija,
-- nieprzezroczystość okna panelu (suwak 40–100%, domyślnie 100%),
-- język interfejsu: **English / Polski / Español / Deutsch** (domyślnie English, wybór jest zapamiętywany;
-  zapis ruchów zawsze w angielskiej notacji SAN, np. `Nf3`).
+1. Choose **Code → Download ZIP** on this repository, then extract it to a permanent folder. If you already cloned it, use that checkout. The repository includes the built extension.
+2. In Chrome, open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the extracted **`extension`** folder. Select that folder, not the ZIP or the repository root.
+3. Open the extension's **Details → Extension options**, then click **Open study board**. Make moves yourself or import a FEN position. Stockfish starts locally.
 
-## Jak to działa
+Chrome or Edge **120+** is required. The optional account companion currently requires **Windows 10/11 and Node.js 22.15+**. Full instructions, including what to do after an update, are in [Windows setup](WINDOWS-SETUP.md).
 
+## What you can do
+
+- **Compare moves:** see up to three legal engine candidates, their scores and depth. Select one to show a single board arrow.
+- **Practice at your level:** choose a player rating and a thinking budget. See estimated complexity and thinking time; optionally show simulated move-choice weights.
+- **Ask why:** click **Explain position** for concise ideas, candidate tradeoffs and possible replies drawn from the supplied engine lines.
+- **Choose your language:** use the study and account interface in English or Arabic, including right-to-left layout. Choose the AI explanation language separately.
+- **Choose model thinking:** keep the model's default or select a reasoning effort actually supported by the account's selected model. Unavailable choices are not offered.
+- **Stay in control:** move pieces manually, flip the board, undo or import a position. No autoplay is added.
+
+Stockfish scores are **from White's perspective**: positive favors White, negative favors Black. Mate scores are separate from pawn scores. Complexity, estimated thinking time and simulated weights are **estimates, not measured human behavior**. Weights compare only the displayed candidates.
+
+The original extension's unrelated engine controls, accuracy tracking, page adapters, translations and author-support link are retained. Its older guide is preserved in [the upstream guide](docs/UPSTREAM-GUIDE.md); current setup and training behavior are described here.
+
+## Optional AI explanations
+
+The local companion keeps sign-in tokens outside the extension. It accepts only the configured extension on `127.0.0.1:43187` and calls the official OpenAI endpoints.
+
+1. Install an approved Node.js version if needed, then open PowerShell in the extracted source folder.
+2. Prepare the pinned dependencies and verify the project:
+
+   ```powershell
+   .\scripts\setup.ps1 -InstallDependencies
+   ```
+
+3. Copy the extension ID shown in account settings and start the companion:
+
+   ```powershell
+   .\scripts\start-companion.ps1 -ExtensionId YOUR_32_LETTER_EXTENSION_ID
+   ```
+
+4. Leave the terminal open. In **Settings**, click **Check connection & refresh models**, then select **Continue with ChatGPT** after checking the consent box. Review the official sign-in and permission screen yourself.
+5. Click **Check connection & refresh models** again. Choose an available model and click **Use selected model**. In **Your learning preferences**, choose **AI explanation language** and **AI thinking mode**, then click **Save preferences**.
+6. Enable **Allow position sharing when I click Explain position**. Return to the board, confirm local analysis or a built-in bot, then click **Explain position**.
+
+The available models and thinking choices depend on your account. This app does not assume that Astra or any other particular model is available. It does not fall back to API-key billing or automatically repeat explanation requests. [Windows setup](WINDOWS-SETUP.md) includes manual commands if your PowerShell policy prevents running the setup scripts; do not bypass that policy.
+
+**Interface language** changes immediately. The AI explanation language and thinking mode take effect after **Save preferences**. Choosing a different model resets its thinking mode to **Model default (recommended)**; you can then select one of that model's advertised levels and save again.
+
+**Your thinking budget** means the time you want to spend studying the position. **AI thinking mode** controls the AI's supported reasoning effort. These are separate settings; neither predicts how long a real player will think.
+
+## What is shared
+
+Only a validated chess position, side to move, up to three legal candidates, White-relative evaluations, depth, short principal variations and selected training settings are sent for an explicit explanation. Usernames, cookies, page URLs and unrelated page content are excluded. Tokens stay in the companion's encrypted Windows store.
+
+Responses are checked before display. Invented moves, unsafe HTML, invalid output and stale responses are rejected. Model explanations can still be wrong. See [privacy](PRIVACY.md) and [security and estimate methodology](SECURITY.md).
+
+## Set it up with your coding agent
+
+Give your agent this repository and the [copy-paste setup prompt](docs/AI-AGENT-SETUP.md). It covers safe checkout detection, dependencies, build and mocked tests, loading the extension, and the point where you take over for sign-in. Repository guidance is in [AGENTS.md](AGENTS.md).
+
+An agent must not copy tokens into a prompt, sign in on your behalf, create credentials, or send a live explanation request without your applicable authorization. Local setup and mocked tests can be completed first.
+
+## Develop and verify
+
+From the repository root, using an approved Node.js installation:
+
+```powershell
+npm ci --ignore-scripts --no-audit --no-fund
+npm test
+npm run build
+npm run check
 ```
-strona ── content.js ──(port)──► offscreen.js ──► Worker: Stockfish (WASM)
-            │  adapter strony       (dokument offscreen tworzony przez background.js)
-            ├─ wykrycie planszy (największa widoczna)
-            ├─ odczyt figur → FEN (position.js)
-            └─ panel + nakładka SVG ze strzałkami
-```
 
-- **Wykrywanie planszy** – `src/content/adapters.js`. Lichess: `cg-board` (figury odczytywane
-  z pozycji elementów na ekranie, więc działa niezależnie od sposobu pozycjonowania);
-  Chess.com: `wc-chess-board` (klasy `piece wp square-55`). Plansza jest obserwowana
-  `MutationObserver`em, a dodatkowo sprawdzana co sekundę (nawigacja SPA).
-- **Strona na ruchu** – z podświetlenia ostatniego ruchu (figura na polu docelowym ma kolor
-  tego, kto właśnie ruszał), potem z zegara (Lichess), potem „start = białe”. Jeśli nic z tego
-  nie działa, zakładamy ruch strony z dołu (panel to zaznacza) – można wymusić ręcznie.
-  Pozycja, w której strona *bez* ruchu miałaby szacha, jest automatycznie odwracana.
-- **Roszady** – plansza ich nie zdradza, więc rozszerzenie śledzi pozycję w czasie: prawo
-  przepada, gdy król/wieża zostaną zaobserwowani poza polem startowym. Wejście w środku partii
-  zakłada, że roszada jest możliwa, jeśli król i wieża stoją na swoich polach.
-  **En passant** wyprowadzane jest z ostatniego ruchu piona o dwa pola.
-- Numeru posunięcia nie da się odczytać z samej planszy, dlatego warianty są bez numeracji.
+The extension's JavaScript, CSS, ui-sdk components and Stockfish assets are bundled locally. Manifest V3 does not load UI scripts from a CDN. A source change needs a build and an extension reload; a companion-only change needs a companion restart.
 
-## Dodanie kolejnego języka
+Browser verification uses an isolated profile and mocked OAuth, inference and Chess.com content. The extension test copies the build into ignored `work/` and uses a temporary loopback port, leaving a running user companion alone. With an approved test browser, run `npm run test:browser` for extension/engine checks and `npm run test:ui` for interface checks. See [browser test instructions](WINDOWS-SETUP.md#browser-verification) and the [exact test results and live-test limits](TEST-RESULTS.md). A mocked test passing does not prove that the current Chess.com page or every account/model works.
 
-Dopisz słownik w `src/content/i18n.js` (te same klucze co `en`; test `npm test` pilnuje zgodności),
-nazwę języka w `LANGS` oraz plik `extension/_locales/<kod>/messages.json` (nazwa i opis w Chrome).
+## Origin and license
 
-## Dodanie kolejnej strony
+Based on [dzejson91/chess-helper-chrome-extension](https://github.com/dzejson91/chess-helper-chrome-extension) by **Krystian Jasnos**, from commit **`01b990b9424ac0eef905376b40d14faf8dd076c0`**. [BASELINE.md](BASELINE.md) records the inspected source and initial checks.
 
-Dopisz adapter w `src/content/adapters.js` (`findBoards()` + `read(el)` zwracające 64 pola,
-orientację i podświetlone pola ostatniego ruchu), dodaj host do `content_scripts.matches`
-w `extension/manifest.json` i przebuduj.
-
-## Rozwój
-
-```bash
-npm install
-npm run build   # bundluje src/content → extension/content.js (z chess.js)
-npm test        # testy logiki pozycji (FEN, tura, roszady, en passant, SAN)
-```
-
-Pliki silnika w `extension/engine/` pochodzą z pakietu npm `stockfish@19.0.1`
-(`stockfish-19-lite-single.{js,wasm}`) – licencja GPL-3.0, patrz `extension/engine/Copying.txt`.
-Silniejszy (ale ~94 MB) wariant można podmienić, zmieniając nazwę pliku w `extension/offscreen.js`.
-
-## Ściąga z ruchów figur
-
-Przycisk **i** w nagłówku panelu pokazuje / chowa krótkie objaśnienie, jak poruszają się figury (z roszadą, biciem w przelocie i promocją).
-
-## Wsparcie autora
-
-W stopce panelu (zawsze widocznej, także przy zwiniętym panelu) jest przycisk „Postaw kawę dla autora” (buycoffee.to). Obrazek jest dołączony lokalnie
-(`extension/img/buycoffee-pl.png` dla języka polskiego, `buycoffee-en.png` dla pozostałych), więc samo wyświetlenie panelu nie wysyła żadnych zapytań; sieć jest używana dopiero po kliknięciu linku.
-
-## Prywatność
-
-Rozszerzenie nie zbiera ani nie wysyła danych – patrz [PRIVACY.md](PRIVACY.md).
-
-## Licencja
-
-Copyright (C) 2026 Krystian Jasnos <e-json.com>
-
-GPL-3.0-or-later – patrz `LICENSE`. Komponenty zewnętrzne (Stockfish.js, chess.js): `THIRD-PARTY-NOTICES.txt`.
-Pliki licencyjne są kopiowane do `extension/` przy `npm run build` (pliki `LICENSE.txt` i `THIRD-PARTY-NOTICES.txt` w `extension/` to kopie – edytuj te z katalogu głównego).
-
-## Dokładność ruchów
-
-Opcja „Pokaż dokładność ruchów” (Analiza) dodaje w panelu tabelkę: dla białych i czarnych dokładność **ostatniego ruchu**
-oraz **średnią** ze wszystkich ruchów (arytmetyczną; w dymku liczba ruchów). Wzór wzorowany na Lichess (wyniki mogą się od niego nieco różnić): z oceny pozycji przed ruchem i po nim
-liczona jest utrata szans na wygraną, a z niej dokładność 0–100%. Czwarta kolumna to **szanse na wygraną** w bieżącej pozycji (ocena silnika przeliczona tym samym wzorem na procent; zielone ≥60%, czerwone ≤40%).
-Pogrubiony jest ostatni wykonany ruch; kolory: ≥90% zielony, ≥70% żółty, poniżej czerwony.
-
-- Ruchy są rozpoznawane jako legalne przejścia między kolejnymi pozycjami na planszy; skok do innej pozycji (np. cofnięcie na planszy analizy) zeruje statystykę.
-- Wymaga oceny każdej pozycji. Dlatego silnik liczy w tle także w turze przeciwnika (przy „tylko dla strony z dołu”) i **przy wyłączonej analizie** – bez pokazywania wariantów i strzałek; statystyka jest widoczna zawsze, gdy opcja jest włączona.
-- Wyjątek: w wykrytej grze na żywo z człowiekiem (patrz niżej) przy wyłączonej analizie silnik nie liczy nic i statystyka jest ukryta.
-- Oceny płytsze niż głębokość 8 są pomijane (ruch bez wartości, „–”).
-
-## Wykrywanie gry na żywo
-
-Rozszerzenie próbuje rozpoznać, że grasz na żywo z innym graczem (adresy `/play/online`, `/game/live/…`, `/game/daily/…`, `/game/<numer>` na Chess.com;
-partia w trakcie gry na Lichess, w której przeciwnik nie jest botem i partia się nie skończyła). Wtedy pokazuje czerwone ostrzeżenie (że to oszustwo łamiące regulaminy serwisów, grożące blokadą konta)
-i **automatycznie wyłącza analizę**. Nie blokuje jednak niczego na stałe – można ją włączyć ręcznie, a rozszerzenie nie wyłączy jej ponownie
-na tej stronie. Po wyjściu z partii (analiza, zadania, bot, zakończona partia) analiza wraca, jeśli to my ją wyłączyliśmy.
-To heurystyka (adres strony + kilka elementów DOM), nie gwarancja – i nie zabezpieczenie przed oszukiwaniem.
-Logika: `src/content/livegame.js`.
-
-## Uczciwa gra
-
-Narzędzie jest przeznaczone do nauki, analizy własnych partii, zadań i gry z botami.
-Panel pokazuje komunikat „graj fair play”, dopóki nie klikniesz „Rozumiem” – wtedy zgoda jest zapamiętywana i komunikat wraca dopiero następnego dnia.
-Korzystanie z podpowiedzi silnika w partiach z żywymi przeciwnikami łamie regulaminy Lichess
-i Chess.com (i jest po prostu nieuczciwe) – może skutkować zablokowaniem konta.
-
-Projekt nie jest powiązany z Lichess, Chess.com ani projektem Stockfish; nazwy te służą wyłącznie do wskazania obsługiwanych stron i użytego silnika.
+Copyright (C) 2026 Krystian Jasnos <e-json.com>. Distributed under **GPL-3.0-or-later**; see [LICENSE](LICENSE) and [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). Original authorship and license notices are retained. This project is not affiliated with Chess.com, Lichess, Stockfish or OpenAI.

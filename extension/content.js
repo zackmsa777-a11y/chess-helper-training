@@ -94,8 +94,8 @@
   function rootNode(comment) {
     return comment !== null ? { comment, variations: [] } : { variations: [] };
   }
-  function node(move, suffix, nag, comment, variations) {
-    const node2 = { move, variations };
+  function node(move2, suffix, nag, comment, variations) {
+    const node2 = { move: move2, variations };
     if (suffix) {
       node2.suffix = suffix;
     }
@@ -2170,10 +2170,10 @@
     }
     return { ok: true };
   }
-  function getDisambiguator(move, moves) {
-    const from = move.from;
-    const to = move.to;
-    const piece = move.piece;
+  function getDisambiguator(move2, moves) {
+    const from = move2.from;
+    const to = move2.to;
+    const piece = move2.piece;
     let ambiguities = 0;
     let sameRank = 0;
     let sameFile = 0;
@@ -2243,8 +2243,8 @@
     }
     return pieceType;
   }
-  function strippedSan(move) {
-    return move.replace(/=/, "").replace(/[+#]?[?!]*$/, "");
+  function strippedSan(move2) {
+    return move2.replace(/=/, "").replace(/[+#]?[?!]*$/, "");
   }
   var Chess = class {
     _board = new Array(128);
@@ -2726,9 +2726,9 @@
     moves({ verbose = false, square = void 0, piece = void 0 } = {}) {
       const moves = this._moves({ square, piece });
       if (verbose) {
-        return moves.map((move) => new Move(this, move));
+        return moves.map((move2) => new Move(this, move2));
       } else {
-        return moves.map((move) => this._moveToSan(move, moves));
+        return moves.map((move2) => this._moveToSan(move2, moves));
       }
     }
     _moves({ legal = true, piece = void 0, square = void 0 } = {}) {
@@ -2834,26 +2834,26 @@
       }
       return legalMoves;
     }
-    move(move, { strict = false } = {}) {
+    move(move2, { strict = false } = {}) {
       let moveObj = null;
-      if (typeof move === "string") {
-        moveObj = this._moveFromSan(move, strict);
-      } else if (move === null) {
+      if (typeof move2 === "string") {
+        moveObj = this._moveFromSan(move2, strict);
+      } else if (move2 === null) {
         moveObj = this._moveFromSan(SAN_NULLMOVE, strict);
-      } else if (typeof move === "object") {
+      } else if (typeof move2 === "object") {
         const moves = this._moves();
         for (let i = 0, len = moves.length; i < len; i++) {
-          if (move.from === algebraic(moves[i].from) && move.to === algebraic(moves[i].to) && (!("promotion" in moves[i]) || move.promotion === moves[i].promotion)) {
+          if (move2.from === algebraic(moves[i].from) && move2.to === algebraic(moves[i].to) && (!("promotion" in moves[i]) || move2.promotion === moves[i].promotion)) {
             moveObj = moves[i];
             break;
           }
         }
       }
       if (!moveObj) {
-        if (typeof move === "string") {
-          throw new Error(`Invalid move: ${move}`);
+        if (typeof move2 === "string") {
+          throw new Error(`Invalid move: ${move2}`);
         } else {
-          throw new Error(`Invalid move: ${JSON.stringify(move)}`);
+          throw new Error(`Invalid move: ${JSON.stringify(move2)}`);
         }
       }
       if (this.isCheck() && moveObj.flags & BITS.NULL_MOVE) {
@@ -2864,9 +2864,9 @@
       this._incPositionCount();
       return prettyMove;
     }
-    _push(move) {
+    _push(move2) {
       this._history.push({
-        move,
+        move: move2,
         kings: { b: this._kings.b, w: this._kings.w },
         turn: this._turn,
         castling: { b: this._castling.b, w: this._castling.w },
@@ -2881,11 +2881,11 @@
       delete this._board[from];
       this._hash ^= this._pieceKey(to);
     }
-    _makeMove(move) {
+    _makeMove(move2) {
       const us = this._turn;
       const them = swapColor(us);
-      this._push(move);
-      if (move.flags & BITS.NULL_MOVE) {
+      this._push(move2);
+      if (move2.flags & BITS.NULL_MOVE) {
         if (us === BLACK) {
           this._moveNumber++;
         }
@@ -2896,37 +2896,37 @@
       }
       this._hash ^= this._epKey();
       this._hash ^= this._castlingKey();
-      if (move.captured) {
-        this._hash ^= this._pieceKey(move.to);
+      if (move2.captured) {
+        this._hash ^= this._pieceKey(move2.to);
       }
-      this._movePiece(move.from, move.to);
-      if (move.flags & BITS.EP_CAPTURE) {
+      this._movePiece(move2.from, move2.to);
+      if (move2.flags & BITS.EP_CAPTURE) {
         if (this._turn === BLACK) {
-          this._clear(move.to - 16);
+          this._clear(move2.to - 16);
         } else {
-          this._clear(move.to + 16);
+          this._clear(move2.to + 16);
         }
       }
-      if (move.promotion) {
-        this._clear(move.to);
-        this._set(move.to, { type: move.promotion, color: us });
+      if (move2.promotion) {
+        this._clear(move2.to);
+        this._set(move2.to, { type: move2.promotion, color: us });
       }
-      if (this._board[move.to].type === KING) {
-        this._kings[us] = move.to;
-        if (move.flags & BITS.KSIDE_CASTLE) {
-          const castlingTo = move.to - 1;
-          const castlingFrom = move.to + 1;
+      if (this._board[move2.to].type === KING) {
+        this._kings[us] = move2.to;
+        if (move2.flags & BITS.KSIDE_CASTLE) {
+          const castlingTo = move2.to - 1;
+          const castlingFrom = move2.to + 1;
           this._movePiece(castlingFrom, castlingTo);
-        } else if (move.flags & BITS.QSIDE_CASTLE) {
-          const castlingTo = move.to + 1;
-          const castlingFrom = move.to - 2;
+        } else if (move2.flags & BITS.QSIDE_CASTLE) {
+          const castlingTo = move2.to + 1;
+          const castlingFrom = move2.to - 2;
           this._movePiece(castlingFrom, castlingTo);
         }
         this._castling[us] = 0;
       }
       if (this._castling[us]) {
         for (let i = 0, len = ROOKS[us].length; i < len; i++) {
-          if (move.from === ROOKS[us][i].square && this._castling[us] & ROOKS[us][i].flag) {
+          if (move2.from === ROOKS[us][i].square && this._castling[us] & ROOKS[us][i].flag) {
             this._castling[us] ^= ROOKS[us][i].flag;
             break;
           }
@@ -2934,21 +2934,21 @@
       }
       if (this._castling[them]) {
         for (let i = 0, len = ROOKS[them].length; i < len; i++) {
-          if (move.to === ROOKS[them][i].square && this._castling[them] & ROOKS[them][i].flag) {
+          if (move2.to === ROOKS[them][i].square && this._castling[them] & ROOKS[them][i].flag) {
             this._castling[them] ^= ROOKS[them][i].flag;
             break;
           }
         }
       }
       this._hash ^= this._castlingKey();
-      if (move.flags & BITS.BIG_PAWN) {
+      if (move2.flags & BITS.BIG_PAWN) {
         let epSquare;
         if (us === BLACK) {
-          epSquare = move.to - 16;
+          epSquare = move2.to - 16;
         } else {
-          epSquare = move.to + 16;
+          epSquare = move2.to + 16;
         }
-        if (!(move.to - 1 & 136) && this._board[move.to - 1]?.type === PAWN && this._board[move.to - 1]?.color === them || !(move.to + 1 & 136) && this._board[move.to + 1]?.type === PAWN && this._board[move.to + 1]?.color === them) {
+        if (!(move2.to - 1 & 136) && this._board[move2.to - 1]?.type === PAWN && this._board[move2.to - 1]?.color === them || !(move2.to + 1 & 136) && this._board[move2.to + 1]?.type === PAWN && this._board[move2.to + 1]?.color === them) {
           this._epSquare = epSquare;
           this._hash ^= this._epKey();
         } else {
@@ -2957,9 +2957,9 @@
       } else {
         this._epSquare = EMPTY;
       }
-      if (move.piece === PAWN) {
+      if (move2.piece === PAWN) {
         this._halfMoves = 0;
-      } else if (move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE)) {
+      } else if (move2.flags & (BITS.CAPTURE | BITS.EP_CAPTURE)) {
         this._halfMoves = 0;
       } else {
         this._halfMoves++;
@@ -2972,9 +2972,9 @@
     }
     undo() {
       const hash = this._hash;
-      const move = this._undoMove();
-      if (move) {
-        const prettyMove = new Move(this, move);
+      const move2 = this._undoMove();
+      if (move2) {
+        const prettyMove = new Move(this, move2);
         this._decPositionCount(hash);
         return prettyMove;
       }
@@ -2987,7 +2987,7 @@
       }
       this._hash ^= this._epKey();
       this._hash ^= this._castlingKey();
-      const move = old.move;
+      const move2 = old.move;
       this._kings = old.kings;
       this._turn = old.turn;
       this._castling = old.castling;
@@ -2999,39 +2999,39 @@
       this._hash ^= SIDE_KEY;
       const us = this._turn;
       const them = swapColor(us);
-      if (move.flags & BITS.NULL_MOVE) {
-        return move;
+      if (move2.flags & BITS.NULL_MOVE) {
+        return move2;
       }
-      this._movePiece(move.to, move.from);
-      if (move.piece) {
-        this._clear(move.from);
-        this._set(move.from, { type: move.piece, color: us });
+      this._movePiece(move2.to, move2.from);
+      if (move2.piece) {
+        this._clear(move2.from);
+        this._set(move2.from, { type: move2.piece, color: us });
       }
-      if (move.captured) {
-        if (move.flags & BITS.EP_CAPTURE) {
+      if (move2.captured) {
+        if (move2.flags & BITS.EP_CAPTURE) {
           let index;
           if (us === BLACK) {
-            index = move.to - 16;
+            index = move2.to - 16;
           } else {
-            index = move.to + 16;
+            index = move2.to + 16;
           }
           this._set(index, { type: PAWN, color: them });
         } else {
-          this._set(move.to, { type: move.captured, color: them });
+          this._set(move2.to, { type: move2.captured, color: them });
         }
       }
-      if (move.flags & (BITS.KSIDE_CASTLE | BITS.QSIDE_CASTLE)) {
+      if (move2.flags & (BITS.KSIDE_CASTLE | BITS.QSIDE_CASTLE)) {
         let castlingTo, castlingFrom;
-        if (move.flags & BITS.KSIDE_CASTLE) {
-          castlingTo = move.to + 1;
-          castlingFrom = move.to - 1;
+        if (move2.flags & BITS.KSIDE_CASTLE) {
+          castlingTo = move2.to + 1;
+          castlingFrom = move2.to - 1;
         } else {
-          castlingTo = move.to - 2;
-          castlingFrom = move.to + 1;
+          castlingTo = move2.to - 2;
+          castlingFrom = move2.to + 1;
         }
         this._movePiece(castlingFrom, castlingTo);
       }
-      return move;
+      return move2;
     }
     pgn({ newline = "\n", maxWidth = 0 } = {}) {
       const result = [];
@@ -3064,21 +3064,21 @@
       }
       while (reversedHistory.length > 0) {
         moveString = appendComment(moveString);
-        const move = reversedHistory.pop();
-        if (!move) {
+        const move2 = reversedHistory.pop();
+        if (!move2) {
           break;
         }
-        if (!this._history.length && move.color === "b") {
+        if (!this._history.length && move2.color === "b") {
           const prefix = `${this._moveNumber}. ...`;
           moveString = moveString ? `${moveString} ${prefix}` : prefix;
-        } else if (move.color === "w") {
+        } else if (move2.color === "w") {
           if (moveString.length) {
             moves.push(moveString);
           }
           moveString = this._moveNumber + ".";
         }
-        moveString = moveString + " " + this._moveToSan(move, this._moves({ legal: true }));
-        this._makeMove(move);
+        moveString = moveString + " " + this._moveToSan(move2, this._moves({ legal: true }));
+        this._makeMove(move2);
       }
       if (moveString.length) {
         moves.push(appendComment(moveString));
@@ -3094,8 +3094,8 @@
         }
         return false;
       };
-      const wrapComment = function(width, move) {
-        for (const token of move.split(" ")) {
+      const wrapComment = function(width, move2) {
+        for (const token of move2.split(" ")) {
           if (!token) {
             continue;
           }
@@ -3201,11 +3201,11 @@
       let node2 = parsedPgn.root;
       while (node2) {
         if (node2.move) {
-          const move = this._moveFromSan(node2.move, strict);
-          if (move == null) {
+          const move2 = this._moveFromSan(node2.move, strict);
+          if (move2 == null) {
             throw new Error(`Invalid move in PGN: ${node2.move}`);
           } else {
-            this._makeMove(move);
+            this._makeMove(move2);
             this._incPositionCount();
           }
         }
@@ -3230,31 +3230,31 @@
      * 4. ... Nge7 is overly disambiguated because the knight on c6 is pinned
      * 4. ... Ne7 is technically the valid SAN
      */
-    _moveToSan(move, moves) {
+    _moveToSan(move2, moves) {
       let output = "";
-      if (move.flags & BITS.KSIDE_CASTLE) {
+      if (move2.flags & BITS.KSIDE_CASTLE) {
         output = "O-O";
-      } else if (move.flags & BITS.QSIDE_CASTLE) {
+      } else if (move2.flags & BITS.QSIDE_CASTLE) {
         output = "O-O-O";
-      } else if (move.flags & BITS.NULL_MOVE) {
+      } else if (move2.flags & BITS.NULL_MOVE) {
         return SAN_NULLMOVE;
       } else {
-        if (move.piece !== PAWN) {
-          const disambiguator = getDisambiguator(move, moves);
-          output += move.piece.toUpperCase() + disambiguator;
+        if (move2.piece !== PAWN) {
+          const disambiguator = getDisambiguator(move2, moves);
+          output += move2.piece.toUpperCase() + disambiguator;
         }
-        if (move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE)) {
-          if (move.piece === PAWN) {
-            output += algebraic(move.from)[0];
+        if (move2.flags & (BITS.CAPTURE | BITS.EP_CAPTURE)) {
+          if (move2.piece === PAWN) {
+            output += algebraic(move2.from)[0];
           }
           output += "x";
         }
-        output += algebraic(move.to);
-        if (move.promotion) {
-          output += "=" + move.promotion.toUpperCase();
+        output += algebraic(move2.to);
+        if (move2.promotion) {
+          output += "=" + move2.promotion.toUpperCase();
         }
       }
-      this._makeMove(move);
+      this._makeMove(move2);
       if (this.isCheck()) {
         if (this.isCheckmate()) {
           output += "#";
@@ -3266,8 +3266,8 @@
       return output;
     }
     // convert a move from Standard Algebraic Notation (SAN) to 0x88 coordinates
-    _moveFromSan(move, strict = false) {
-      let cleanMove = strippedSan(move);
+    _moveFromSan(move2, strict = false) {
+      let cleanMove = strippedSan(move2);
       if (!strict) {
         if (cleanMove === "0-0") {
           cleanMove = "O-O";
@@ -3431,16 +3431,16 @@
         reversedHistory.push(this._undoMove());
       }
       while (true) {
-        const move = reversedHistory.pop();
-        if (!move) {
+        const move2 = reversedHistory.pop();
+        if (!move2) {
           break;
         }
         if (verbose) {
-          moveHistory.push(new Move(this, move));
+          moveHistory.push(new Move(this, move2));
         } else {
-          moveHistory.push(this._moveToSan(move, this._moves()));
+          moveHistory.push(this._moveToSan(move2, this._moves()));
         }
-        this._makeMove(move);
+        this._makeMove(move2);
       }
       return moveHistory;
     }
@@ -3475,11 +3475,11 @@
       }
       copyComment(this.fen());
       while (true) {
-        const move = reversedHistory.pop();
-        if (!move) {
+        const move2 = reversedHistory.pop();
+        if (!move2) {
           break;
         }
-        this._makeMove(move);
+        this._makeMove(move2);
         copyComment(this.fen());
       }
       this._comments = currentComments;
@@ -3744,6 +3744,10 @@
     }
     // arrows: [{ from, to, rank, ply, n }] – ply > 0 to cienkie strzałki kolejnych ruchów, n to numer w kółku (showOrder).
     draw(arrows, orientation, showOrder = false, colors = DEFAULT_COLORS) {
+      arrows = arrows.filter((a) => a.ply === 0).slice(0, 1);
+      const signature = JSON.stringify([arrows, orientation, showOrder, colors]);
+      if (signature === this.signature) return;
+      this.signature = signature;
       this.colors = colors;
       this.svg.replaceChildren();
       const geo = [];
@@ -3830,6 +3834,8 @@
       return g;
     }
     clear() {
+      if (!this.svg.childNodes.length) return;
+      this.signature = null;
       this.svg.replaceChildren();
     }
     destroy() {
@@ -4312,7 +4318,7 @@
         <summary data-i18n="group.analysis"></summary>
         <div class="opts">
         <span data-i18n="lines"></span>
-        <select data-k="multipv"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+        <select data-k="multipv"><option>1</option><option>2</option><option>3</option></select>
         <span data-i18n="depth"></span>
         <select data-k="depth"><option>10</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>22</option></select>
         <span data-i18n="turn"></span>
@@ -4325,10 +4331,7 @@
         <summary data-i18n="group.arrows"></summary>
         <div class="opts">
         <label for="arrows" data-i18n="arrows"></label><input id="arrows" type="checkbox" data-k="arrows">
-        <span data-i18n="followMine"></span>
-        <select data-k="followMine"><option value="0" data-i18n="off"></option><option>1</option><option>2</option><option>3</option><option>4</option></select>
-        <span data-i18n="followOpp"></span>
-        <select data-k="followOpp"><option value="0" data-i18n="off"></option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+        <span style="grid-column:1/-1">One selected candidate is highlighted. Full variations remain in the list.</span>
         <label for="order" data-i18n="showOrder"></label><input id="order" type="checkbox" data-k="showOrder">
         <span data-i18n="colors"></span>
         <div class="swatches">${DEFAULT_COLORS.map((_, i) => `<input type="color" data-c="${i}">`).join("")}<button class="reset-colors" data-i18n-title="colors.reset">\u21BA</button></div>
@@ -4438,16 +4441,16 @@
         const ox = e.clientX - r.left;
         const oy = e.clientY - r.top;
         header.setPointerCapture(e.pointerId);
-        const move = (ev) => {
+        const move2 = (ev) => {
           this.settings.pos = { left: ev.clientX - ox, top: ev.clientY - oy };
           this.applyPosition();
         };
         const up = () => {
-          header.removeEventListener("pointermove", move);
+          header.removeEventListener("pointermove", move2);
           header.removeEventListener("pointerup", up);
           this.onChange({ pos: this.settings.pos });
         };
-        header.addEventListener("pointermove", move);
+        header.addEventListener("pointermove", move2);
         header.addEventListener("pointerup", up);
       });
       window.addEventListener("resize", () => this.applyPosition());
@@ -4574,6 +4577,9 @@
     }
     // lines: [{ san, scoreText, items: [{ san, white }], fullText, count, depth, percent }] posortowane wg multipv
     results(lines2) {
+      const signature = JSON.stringify([lines2, this.settings.colors, getLang()]);
+      if (this.resultsSignature === signature) return;
+      this.resultsSignature = signature;
       this.lastLines = lines2;
       if (!lines2.length) {
         this.sanEl.textContent = "\u2014";
@@ -4739,10 +4745,400 @@
     }
   };
 
+  // src/shared/training.js
+  var EXPLANATION_LANGUAGES = Object.freeze(["en", "ar"]);
+  var REASONING_EFFORTS = Object.freeze(["none", "minimal", "low", "medium", "high", "xhigh", "max"]);
+  function exact(value, keys) {
+    if (!value || typeof value !== "object" || Array.isArray(value) || Object.keys(value).sort().join("|") !== [...keys].sort().join("|")) throw new Error("Invalid fields");
+  }
+  function integer(n, min, max) {
+    if (!Number.isInteger(n) || n < min || n > max) throw new Error("Invalid number");
+    return n;
+  }
+  function move(chess, uci) {
+    if (typeof uci !== "string" || !/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(uci)) throw new Error("Invalid move");
+    const result = chess.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] });
+    if (!result) throw new Error("Illegal move");
+    return result;
+  }
+  function validateFen2(fen) {
+    if (typeof fen !== "string" || fen.length > 100 || !/^[prnbqkPRNBQK1-8/]+ [wb] (?:-|K?Q?k?q?) (?:-|[a-h][36]) \d{1,5} [1-9]\d{0,4}$/.test(fen)) throw new Error("Invalid FEN");
+    const chess = new Chess(fen);
+    const turn = chess.turn();
+    const opponent = turn === "w" ? "b" : "w";
+    const king = chess.board().flat().find((p) => p?.type === "k" && p.color === opponent);
+    if (!king || chess.isAttacked(king.square, turn)) throw new Error("Impossible position");
+    const rights = fen.split(" ")[2];
+    for (const [right, k, r, color] of [["K", "e1", "h1", "w"], ["Q", "e1", "a1", "w"], ["k", "e8", "h8", "b"], ["q", "e8", "a8", "b"]]) {
+      if (rights.includes(right) && (chess.get(k)?.type !== "k" || chess.get(k)?.color !== color || chess.get(r)?.type !== "r" || chess.get(r)?.color !== color)) throw new Error("Invalid castling rights");
+    }
+    const ep = fen.split(" ")[3];
+    if (ep !== "-") {
+      const pawnSquare = ep[0] + (turn === "w" ? "5" : "4");
+      const originSquare = ep[0] + (turn === "w" ? "7" : "2");
+      if (chess.get(ep) || chess.get(originSquare) || chess.get(pawnSquare)?.type !== "p" || chess.get(pawnSquare)?.color !== opponent) throw new Error("Invalid en passant target");
+    }
+    return chess;
+  }
+  function validateSettings(s) {
+    exact(s, ["rating", "timeBudgetSeconds", "simulateWeights", ...["language", "reasoningEffort"].filter((key) => Object.hasOwn(s ?? {}, key))]);
+    integer(s.rating, 400, 2800);
+    integer(s.timeBudgetSeconds, 5, 600);
+    if (typeof s.simulateWeights !== "boolean") throw new Error("Invalid weights setting");
+    const language = Object.hasOwn(s, "language") ? s.language : "en";
+    const reasoningEffort = Object.hasOwn(s, "reasoningEffort") ? s.reasoningEffort : "default";
+    if (!EXPLANATION_LANGUAGES.includes(language)) throw new Error("Invalid explanation language");
+    if (reasoningEffort !== "default" && !REASONING_EFFORTS.includes(reasoningEffort)) throw new Error("Invalid reasoning effort");
+    return { rating: s.rating, timeBudgetSeconds: s.timeBudgetSeconds, simulateWeights: s.simulateWeights, language, reasoningEffort };
+  }
+  function validateTraining(value) {
+    exact(value, ["fen", "sideToMove", "candidates", "settings"]);
+    const chess = validateFen2(value.fen);
+    if (value.sideToMove !== chess.turn()) throw new Error("Side does not match FEN");
+    if (!Array.isArray(value.candidates) || value.candidates.length < 1 || value.candidates.length > 3 || chess.isGameOver()) throw new Error("No playable candidates");
+    const seen = /* @__PURE__ */ new Set();
+    const candidates = value.candidates.map((c) => {
+      exact(c, ["move", "score", "depth", "pv"]);
+      exact(c.score, ["type", "value", "perspective"]);
+      if (!["cp", "mate"].includes(c.score.type) || c.score.perspective !== "white") throw new Error("Invalid score perspective");
+      integer(c.score.value, -1e5, 1e5);
+      if (c.score.type === "mate" && (c.score.value === 0 || Math.abs(c.score.value) > 1e3)) throw new Error("Invalid mate score");
+      integer(c.depth, 1, 30);
+      if (!Array.isArray(c.pv) || c.pv.length < 1 || c.pv.length > 6 || c.pv[0] !== c.move || seen.has(c.move)) throw new Error("Invalid variation");
+      seen.add(c.move);
+      const replay = new Chess(value.fen);
+      c.pv.forEach((uci) => move(replay, uci));
+      return { move: c.move, score: { ...c.score }, depth: c.depth, pv: [...c.pv] };
+    });
+    return { fen: value.fen, sideToMove: value.sideToMove, candidates, settings: validateSettings(value.settings) };
+  }
+  function utility(score, turn) {
+    const v = score.value * (turn === "b" ? -1 : 1);
+    return score.type === "mate" ? Math.sign(v) * (1e6 - Math.abs(v)) : Math.max(-1e5, Math.min(1e5, v));
+  }
+  function estimateTraining(input) {
+    const data = validateTraining(input);
+    const values = data.candidates.map((c) => utility(c.score, data.sideToMove));
+    const best = Math.max(...values);
+    const ordered = [...values].sort((a, b) => b - a);
+    const gap = ordered.length > 1 ? Math.min(400, ordered[0] - ordered[1]) : 0;
+    let tactical = 0;
+    for (const c of data.candidates) {
+      const board = new Chess(data.fen);
+      for (const uci of c.pv) if (/[x+#]/.test(move(board, uci).san)) tactical++;
+    }
+    const level = tactical >= 5 || gap >= 150 ? "high" : tactical >= 2 || gap >= 50 ? "medium" : "low";
+    const ratingFactor = 1.4 - (data.settings.rating - 400) / 4e3;
+    const seconds = (level === "high" ? 38 : level === "medium" ? 22 : 12) * ratingFactor;
+    const maxSeconds = Math.min(data.settings.timeBudgetSeconds, Math.max(2, Math.round(seconds * 1.5)));
+    const minSeconds = Math.min(maxSeconds, Math.max(1, Math.round(seconds * 0.6)));
+    const temperature = Math.max(25, 220 - (data.settings.rating - 400) * 0.075);
+    const weights = values.map((v) => Math.exp(Math.max(-700, (v - best) / temperature)));
+    const total = weights.reduce((a, b) => a + b, 0);
+    const precise = weights.map((w) => w / total * 100);
+    const percentages = precise.map(Math.floor);
+    const remainder = 100 - percentages.reduce((a, b) => a + b, 0);
+    [...precise.keys()].sort((a, b) => precise[b] - percentages[b] - (precise[a] - percentages[a])).slice(0, remainder).forEach((i) => percentages[i]++);
+    return { level, minSeconds, maxSeconds, weights: data.settings.simulateWeights ? data.candidates.map((c, i) => ({ move: c.move, percent: percentages[i] })) : null };
+  }
+  function prose(s, max = 240) {
+    if (typeof s !== "string" || !s.trim() || s.length > max || /[<>&\u0000-\u001f\u202a-\u202e\u2066-\u2069]/.test(s)) throw new Error("Unsafe or ungrounded explanation text");
+    const notation = s.normalize("NFKC").replace(/[\u0660-\u0669\u06f0-\u06f9]/g, (digit) => String(digit.charCodeAt(0) & 15));
+    if (/https?:|\b[a-h][1-9]\b|\b[a-h][1-9][a-h][1-9]|\b(?:[KQRBN][a-h]?[1-8]?x?[a-h][1-9]|O-O(?:-O)?)\b/i.test(notation)) throw new Error("Unsafe or ungrounded explanation text");
+    return s;
+  }
+  function validateExplanation(out, input) {
+    const data = validateTraining(input);
+    exact(out, ["complexity", "threats", "candidates"]);
+    exact(out.complexity, ["level", "reason"]);
+    if (!["low", "medium", "high"].includes(out.complexity.level)) throw new Error("Invalid complexity");
+    prose(out.complexity.reason);
+    if (!Array.isArray(out.threats) || out.threats.length > 3 || !Array.isArray(out.candidates) || out.candidates.length !== data.candidates.length) throw new Error("Invalid explanation");
+    const seen = /* @__PURE__ */ new Set();
+    for (const c of out.candidates) {
+      exact(c, ["move", "idea", "tradeoff"]);
+      if (!data.candidates.some((x) => x.move === c.move) || seen.has(c.move)) throw new Error("Invented or repeated candidate");
+      seen.add(c.move);
+      prose(c.idea);
+      prose(c.tradeoff);
+    }
+    for (const t2 of out.threats) {
+      exact(t2, ["candidateMove", "replyMove", "description"]);
+      const c = data.candidates.find((x) => x.move === t2.candidateMove);
+      if (!c || c.pv[1] !== t2.replyMove) throw new Error("Invented reply");
+      prose(t2.description);
+    }
+    return out;
+  }
+  var Generation = class {
+    id = 0;
+    key = "";
+    update(key) {
+      if (key !== this.key) {
+        this.key = key;
+        this.id++;
+      }
+      return this.id;
+    }
+    invalidate() {
+      this.id++;
+    }
+    current(id) {
+      return this.id === id;
+    }
+  };
+  function trainingContext(url) {
+    try {
+      const u = new URL(url);
+      return u.protocol === "https:" && ["chess.com", "www.chess.com"].includes(u.hostname) && /^\/(?:play\/computer|analysis)(?:\/|$)/.test(u.pathname);
+    } catch {
+      return false;
+    }
+  }
+
+  // src/ui/preferences.js
+  var efforts = ["default", "none", "minimal", "low", "medium", "high", "xhigh", "max"];
+  function normalizePreferences(value = {}) {
+    const data = value && typeof value === "object" ? value : {};
+    return {
+      uiLanguage: data.uiLanguage === "ar" ? "ar" : "en",
+      explanationLanguage: data.explanationLanguage === "ar" ? "ar" : "en",
+      reasoningEffort: efforts.includes(data.reasoningEffort) ? data.reasoningEffort : "default",
+      reasoningModel: typeof data.reasoningModel === "string" && /^[A-Za-z0-9_.:-]{1,100}$/.test(data.reasoningModel) ? data.reasoningModel : null
+    };
+  }
+  async function readPreferences() {
+    const { trainingPreferences } = await chrome.storage.local.get("trainingPreferences");
+    return normalizePreferences(trainingPreferences);
+  }
+  var pending = Promise.resolve();
+  function watchPreferences(callback) {
+    const listener = (changes, area) => {
+      if (area === "local" && changes.trainingPreferences) callback(normalizePreferences(changes.trainingPreferences.newValue));
+    };
+    chrome.storage.onChanged.addListener(listener);
+    return () => chrome.storage.onChanged.removeListener(listener);
+  }
+
+  // src/content/training-panel.js
+  var COPY = {
+    en: { title: "Make this position a lesson", intro: "Take a moment to choose your move before asking for help.", rating: "Your playing level", budget: "Your thinking budget", seconds15: "15 seconds", seconds30: "30 seconds", minute1: "1 minute", minutes3: "3 minutes", minutes10: "10 minutes", weights: "Show simulated choice weights", estimateNote: "Complexity, thinking time and choice weights are estimates, not measured human behavior. Weights compare only these moves.", highlight: "Highlight a candidate", practice: "This is local analysis or a built-in bot", practiceHelp: "Page detection cannot reliably identify bots. Never use explanations against people. Check the FEN if the turn or castling rights are uncertain.", explain: "Explain position", explaining: "Explaining\u2026", account: "AI settings", privacy: "Optional explanations use your ChatGPT plan after consent. Only validated chess data and your training settings are shared.", local: "Local Stockfish works without signing in.", waiting: "Waiting for a valid local engine line.", changed: "Position or preferences changed. Explain when you\u2019re ready.", requesting: "Using your ChatGPT plan to explain these engine moves\u2026", complete: "Explanation of this snapshot. AI estimates may be wrong; compare them with the local engine.", low: "low", medium: "medium", high: "high", complexity: "Local complexity estimate", thinking: "Estimated thinking time", seconds: "seconds", simulated: "simulated", aiComplexity: "AI complexity estimate", threats: "Potential replies to watch", tradeoff: "Tradeoff", aiLanguage: "AI language", thinkingMode: "Thinking", en: "English", ar: "Arabic", default: "Model default", none: "None", minimal: "Minimal", xhigh: "Extra high", max: "Maximum", failure: "Explanation unavailable.", stillLocal: "Local analysis remains available.", genericError: "Check AI settings and try again when ready.", signIn: "Connect your ChatGPT account in AI settings.", selectModel: "Choose and save an available model in AI settings.", unsupportedEffort: "That thinking mode is not supported by this model. Choose Model default in AI settings.", sharing: "Allow position sharing in AI settings first.", limit: "Your plan has reached a usage limit. Review usage in AI settings.", malformed: "The model returned an answer that did not pass chess validation.", connection: "Check that the local companion is running, then try again.", stream: "The response was interrupted or had an unsupported format. Try again later." },
+    ar: { title: "\u062D\u0648\u0651\u0644 \u0647\u0630\u0647 \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0625\u0644\u0649 \u062F\u0631\u0633", intro: "\u062E\u0630 \u0644\u062D\u0638\u0629 \u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u0646\u0642\u0644\u062A\u0643 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0627\u0644\u0645\u0633\u0627\u0639\u062F\u0629.", rating: "\u0645\u0633\u062A\u0648\u0627\u0643 \u0641\u064A \u0627\u0644\u0644\u0639\u0628", budget: "\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u0645\u062A\u0627\u062D", seconds15: "15 \u062B\u0627\u0646\u064A\u0629", seconds30: "30 \u062B\u0627\u0646\u064A\u0629", minute1: "\u062F\u0642\u064A\u0642\u0629 \u0648\u0627\u062D\u062F\u0629", minutes3: "3 \u062F\u0642\u0627\u0626\u0642", minutes10: "10 \u062F\u0642\u0627\u0626\u0642", weights: "\u0627\u0639\u0631\u0636 \u0623\u0648\u0632\u0627\u0646 \u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u062D\u0627\u0643\u0627\u0629", estimateNote: "\u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0648\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0648\u0623\u0648\u0632\u0627\u0646 \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u062A\u0642\u062F\u064A\u0631\u0627\u062A\u060C \u0648\u0644\u064A\u0633\u062A \u0642\u064A\u0627\u0633\u0627\u062A \u0644\u0633\u0644\u0648\u0643 \u0627\u0644\u0628\u0634\u0631. \u062A\u0642\u0627\u0631\u0646 \u0627\u0644\u0623\u0648\u0632\u0627\u0646 \u0647\u0630\u0647 \u0627\u0644\u0646\u0642\u0644\u0627\u062A \u0641\u0642\u0637.", highlight: "\u0645\u064A\u0651\u0632 \u0646\u0642\u0644\u0629 \u0645\u0631\u0634\u062D\u0629", practice: "\u0647\u0630\u0627 \u062A\u062D\u0644\u064A\u0644 \u0645\u062D\u0644\u064A \u0623\u0648 \u062A\u062F\u0631\u064A\u0628 \u0645\u0639 \u0631\u0648\u0628\u0648\u062A \u0645\u062F\u0645\u062C", practiceHelp: "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0627\u0643\u062A\u0634\u0627\u0641 \u0627\u0644\u0635\u0641\u062D\u0629 \u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0631\u0648\u0628\u0648\u062A\u0627\u062A \u0628\u0634\u0643\u0644 \u0645\u0648\u062B\u0648\u0642. \u0644\u0627 \u062A\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0634\u0631\u062D \u0636\u062F \u0623\u0634\u062E\u0627\u0635. \u062A\u062D\u0642\u0651\u0642 \u0645\u0646 FEN \u0625\u0630\u0627 \u0643\u0627\u0646 \u0627\u0644\u062F\u0648\u0631 \u0623\u0648 \u062D\u0642 \u0627\u0644\u062A\u0628\u064A\u064A\u062A \u063A\u064A\u0631 \u0645\u0624\u0643\u062F.", explain: "\u0627\u0634\u0631\u062D \u0627\u0644\u0648\u0636\u0639\u064A\u0629", explaining: "\u062C\u0627\u0631\u064D \u0627\u0644\u0634\u0631\u062D\u2026", account: "\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A", privacy: "\u064A\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0634\u0631\u062D \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631\u064A \u062E\u0637\u0629 ChatGPT \u0628\u0639\u062F \u0645\u0648\u0627\u0641\u0642\u062A\u0643. \u062A\u064F\u0634\u0627\u0631\u0643 \u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0634\u0637\u0631\u0646\u062C \u0627\u0644\u0645\u062A\u062D\u0642\u0642 \u0645\u0646\u0647\u0627 \u0648\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0641\u0642\u0637.", local: "\u064A\u0639\u0645\u0644 Stockfish \u0645\u062D\u0644\u064A\u064B\u0627 \u062F\u0648\u0646 \u062A\u0633\u062C\u064A\u0644 \u062F\u062E\u0648\u0644.", waiting: "\u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u062E\u0637 \u0644\u0639\u0628 \u0635\u0627\u0644\u062D \u0645\u0646 \u0627\u0644\u0645\u062D\u0631\u0643 \u0627\u0644\u0645\u062D\u0644\u064A.", changed: "\u062A\u063A\u064A\u0651\u0631\u062A \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0623\u0648 \u0627\u0644\u062A\u0641\u0636\u064A\u0644\u0627\u062A. \u0627\u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D \u0639\u0646\u062F\u0645\u0627 \u062A\u0643\u0648\u0646 \u0645\u0633\u062A\u0639\u062F\u064B\u0627.", requesting: "\u062A\u064F\u0633\u062A\u062E\u062F\u0645 \u062E\u0637\u0629 ChatGPT \u0644\u0634\u0631\u062D \u0646\u0642\u0644\u0627\u062A \u0627\u0644\u0645\u062D\u0631\u0643 \u0647\u0630\u0647\u2026", complete: "\u0634\u0631\u062D \u0644\u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629 \u0645\u0646 \u0627\u0644\u0648\u0636\u0639\u064A\u0629. \u0642\u062F \u062A\u062E\u0637\u0626 \u062A\u0642\u062F\u064A\u0631\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A\u061B \u0642\u0627\u0631\u0646\u0647\u0627 \u0628\u0627\u0644\u0645\u062D\u0631\u0643 \u0627\u0644\u0645\u062D\u0644\u064A.", low: "\u0645\u0646\u062E\u0641\u0636", medium: "\u0645\u062A\u0648\u0633\u0637", high: "\u0645\u0631\u062A\u0641\u0639", complexity: "\u062A\u0642\u062F\u064A\u0631 \u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0627\u0644\u0645\u062D\u0644\u064A", thinking: "\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u062A\u0642\u062F\u064A\u0631\u064A", seconds: "\u062B\u0627\u0646\u064A\u0629", simulated: "\u0645\u062D\u0627\u0643\u0627\u0629", aiComplexity: "\u062A\u0642\u062F\u064A\u0631 \u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A", threats: "\u0631\u062F\u0648\u062F \u0645\u062D\u062A\u0645\u0644\u0629 \u062A\u0633\u062A\u062D\u0642 \u0627\u0644\u0627\u0646\u062A\u0628\u0627\u0647", tradeoff: "\u0627\u0644\u0645\u0642\u0627\u0628\u0644", aiLanguage: "\u0644\u063A\u0629 \u0627\u0644\u0634\u0631\u062D", thinkingMode: "\u0627\u0644\u062A\u0641\u0643\u064A\u0631", en: "\u0627\u0644\u0625\u0646\u062C\u0644\u064A\u0632\u064A\u0629", ar: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", default: "\u0627\u0641\u062A\u0631\u0627\u0636\u064A \u0627\u0644\u0646\u0645\u0648\u0630\u062C", none: "\u0628\u0644\u0627 \u062A\u0641\u0643\u064A\u0631 \u0625\u0636\u0627\u0641\u064A", minimal: "\u0623\u062F\u0646\u0649", xhigh: "\u0645\u0631\u062A\u0641\u0639 \u062C\u062F\u064B\u0627", max: "\u0623\u0642\u0635\u0649", failure: "\u0627\u0644\u0634\u0631\u062D \u063A\u064A\u0631 \u0645\u062A\u0627\u062D.", stillLocal: "\u064A\u0628\u0642\u0649 \u0627\u0644\u062A\u062D\u0644\u064A\u0644 \u0627\u0644\u0645\u062D\u0644\u064A \u0645\u062A\u0627\u062D\u064B\u0627.", genericError: "\u0631\u0627\u062C\u0639 \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u062B\u0645 \u062D\u0627\u0648\u0644 \u0639\u0646\u062F\u0645\u0627 \u062A\u0643\u0648\u0646 \u0645\u0633\u062A\u0639\u062F\u064B\u0627.", signIn: "\u0627\u0631\u0628\u0637 \u062D\u0633\u0627\u0628 ChatGPT \u0645\u0646 \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A.", selectModel: "\u0627\u062E\u062A\u0631 \u0646\u0645\u0648\u0630\u062C\u064B\u0627 \u0645\u062A\u0627\u062D\u064B\u0627 \u0648\u0627\u062D\u0641\u0638\u0647 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A.", unsupportedEffort: "\u0647\u0630\u0627 \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0644\u0627 \u064A\u062F\u0639\u0645 \u0648\u0636\u0639 \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u0645\u062D\u062F\u062F. \u0627\u062E\u062A\u0631 \u0627\u0641\u062A\u0631\u0627\u0636\u064A \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0641\u064A \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A.", sharing: "\u0627\u0633\u0645\u062D \u0628\u0645\u0634\u0627\u0631\u0643\u0629 \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0623\u0648\u0644\u064B\u0627.", limit: "\u0628\u0644\u063A\u062A \u062E\u0637\u062A\u0643 \u062D\u062F \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645. \u0631\u0627\u062C\u0639 \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A.", malformed: "\u0623\u0639\u0627\u062F \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0625\u062C\u0627\u0628\u0629 \u0644\u0645 \u062A\u062C\u062A\u0632 \u0627\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0635\u062D\u0629 \u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0634\u0637\u0631\u0646\u062C.", connection: "\u062A\u0623\u0643\u062F \u0645\u0646 \u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0627\u0644\u0645\u062D\u0644\u064A \u062B\u0645 \u062D\u0627\u0648\u0644 \u0645\u062C\u062F\u062F\u064B\u0627.", stream: "\u0627\u0646\u0642\u0637\u0639 \u0627\u0644\u0631\u062F \u0623\u0648 \u0648\u0635\u0644 \u0628\u0635\u064A\u063A\u0629 \u063A\u064A\u0631 \u0645\u062F\u0639\u0648\u0645\u0629. \u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627." }
+  };
+  var STYLE = `
+.training{container:training / inline-size;margin-block-start:12px;border-block-start:1px solid #d3d9d0;padding:22px 24px 24px;background:#fffefb;color:#192b29;font:14px/1.6 "Segoe UI",Tahoma,Arial,sans-serif;user-select:text;border-radius:0 0 11px 11px;text-align:start}
+.training *{box-sizing:border-box}.training h3{font-size:20px;font-weight:650;line-height:1.3;margin:0 0 7px;text-wrap:balance}.training p{margin:7px 0;text-wrap:pretty}.training .muted{color:#556460;font-size:13px}.training .fields{display:grid;grid-template-columns:1fr;gap:12px;margin-block:18px 10px}.training .field{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:650}.training select{inline-size:100%;max-inline-size:none;margin:0;min-block-size:48px;padding:8px 10px;border:1px solid #788781;border-radius:7px;color:#192b29;background:#fffefb;font:16px "Segoe UI",Tahoma,Arial,sans-serif}.training .check{display:flex;align-items:center;gap:9px;min-block-size:48px;line-height:1.5;cursor:pointer;margin:0;font-size:14px}.training input[type=checkbox]{accent-color:#17534a;inline-size:18px;block-size:18px;flex:none;margin:0}.training .estimate-note{font-size:12px;color:#556460;margin-block:4px 14px}.training .estimate{display:grid;gap:2px;background:#edf2e9;border:1px solid #b6c6b4;border-radius:8px;padding:11px 12px;color:#244d40;font-size:12px}.training .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-block:10px 17px;direction:ltr}.training button{font:13px/1.4 "Segoe UI",Tahoma,Arial,sans-serif;cursor:pointer;min-block-size:48px;min-inline-size:0;border:1px solid #788781;border-radius:7px;background:#fffefb;color:#192b29;padding:10px 12px}.training button:hover{background:#edf2e9}.training button:focus-visible,.training input:focus-visible,.training select:focus-visible{outline:3px solid #073a8c;outline-offset:3px}.training button:disabled{opacity:.6;cursor:not-allowed}.training .choices button{padding:9px 5px;font-size:17px;font-weight:650;display:flex;flex-direction:column;align-items:center;gap:3px}.training .choices small{font-size:11px;font-weight:400;line-height:1.4}.training .choices button[aria-pressed=true]{border:2px solid #17534a;background:#e3ece0;color:#17534a;padding:8px 4px}.training .practice-note{font-size:12px;color:#556460;margin:0 0 14px}.training .actions{display:flex;gap:8px;flex-wrap:wrap}.training .primary{font-size:16px;background:#17534a;color:#fffefb;border-color:#17534a;font-weight:650;flex:1;min-inline-size:160px}.training .primary:hover{background:#103f37}.training .account{font-size:14px;flex:1}.training .ai-preferences{font-size:12px;color:#556460;margin-block:10px}.training .message{font-size:13px;color:#465a51;margin-block-start:12px}.training .message[data-error]{border-inline-start:3px solid #9b392d;padding-inline-start:10px;color:#822b20}.training .privacy{font-size:12px;color:#556460;margin-block:12px 0}.training .output{font-size:13px;overflow-wrap:anywhere}.training .output:not(:empty){border-block-start:1px solid #d3d9d0;margin-block-start:18px;padding-block-start:6px}.training .output h4{font-size:15px;margin:14px 0 5px;font-weight:650}.training .output p{margin:4px 0}.training .output .candidate-heading{direction:ltr;unicode-bidi:isolate;text-align:start;color:#17534a;font-size:18px}.training .output .tradeoff{color:#556460}.training [hidden]{display:none}
+@container training (inline-size >= 300px){.training .fields{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.training{padding:20px 18px}}`;
+  var TEMPLATE2 = `<section class="training">
+  <h3 data-copy="title"></h3><p class="muted" data-copy="intro"></p>
+  <div class="fields"><label class="field"><span data-copy="rating"></span><select class="rating" name="rating"><option>600</option><option>800</option><option>1000</option><option selected>1200</option><option>1400</option><option>1600</option><option>1800</option><option>2000</option><option>2400</option></select></label>
+  <label class="field"><span data-copy="budget"></span><select class="budget" name="timeBudget"><option value="15" data-copy="seconds15"></option><option value="30" data-copy="seconds30"></option><option value="60" selected data-copy="minute1"></option><option value="180" data-copy="minutes3"></option><option value="600" data-copy="minutes10"></option></select></label></div>
+  <label class="check"><input type="checkbox" class="weights" name="simulateWeights"><span data-copy="weights"></span></label>
+  <p class="estimate-note" data-copy="estimateNote"></p><div class="estimate"></div><div class="choices"></div>
+  <label class="check" data-agent-confirm="Confirms this position is local study or a built-in bot"><input type="checkbox" class="practice" name="practice"><span data-copy="practice"></span></label>
+  <p class="practice-note" data-copy="practiceHelp"></p><p class="ai-preferences"></p>
+  <div class="actions"><button type="button" class="primary explain" data-agent-confirm="Sends this chess position to the selected model using your ChatGPT plan" disabled></button><button type="button" class="account" data-copy="account"></button></div>
+  <p class="privacy" data-copy="privacy"></p><p class="message" role="status" aria-live="polite"></p><div class="output"></div>
+</section>`;
+  var TrainingPanel = class {
+    constructor(root, { onSelect = () => {
+    }, verifyCurrent = () => true, send = (msg) => chrome.runtime.sendMessage(msg) } = {}) {
+      const style = document.createElement("style");
+      style.textContent = STYLE;
+      root.append(style);
+      this.el = document.createElement("div");
+      this.el.innerHTML = TEMPLATE2;
+      const target = root.querySelector(".body") ?? root;
+      target.insertBefore(this.el, target.querySelector("details.main"));
+      this.$ = (selector) => this.el.querySelector(selector);
+      this.send = send;
+      this.onSelect = onSelect;
+      this.verifyCurrent = verifyCurrent;
+      this.generation = new Generation();
+      this.selected = null;
+      this.data = null;
+      this.allowed = false;
+      this.busy = false;
+      this.preferences = { uiLanguage: "en", explanationLanguage: "en", reasoningEffort: "default" };
+      this.language = "en";
+      this.messageKey = "local";
+      this.translate();
+      this.$(".account").onclick = () => this.send({ type: "training", action: "open-settings" });
+      for (const selector of [".rating", ".budget", ".weights", ".practice"]) this.$(selector).onchange = () => {
+        this.invalidate();
+        this.refresh();
+      };
+      this.$(".explain").onclick = () => this.explain();
+      readPreferences().then((preferences) => this.applyPreferences(preferences)).catch(() => {
+      });
+      this.stopPreferences = watchPreferences((preferences) => this.applyPreferences(preferences));
+    }
+    text(key) {
+      return COPY[this.language][key] ?? COPY.en[key] ?? key;
+    }
+    applyPreferences(preferences) {
+      if (JSON.stringify(this.preferences) === JSON.stringify(preferences)) return;
+      this.preferences = preferences;
+      this.language = preferences.uiLanguage;
+      this.invalidate();
+      this.translate();
+      this.refresh();
+    }
+    translate() {
+      this.$(".training").lang = this.language;
+      this.$(".training").dir = this.language === "ar" ? "rtl" : "ltr";
+      for (const el of this.el.querySelectorAll("[data-copy]")) el.textContent = this.text(el.dataset.copy);
+      this.$(".choices").setAttribute("aria-label", this.text("highlight"));
+      this.$(".message").textContent = this.text(this.messageKey);
+      this.$(".ai-preferences").textContent = `${this.text("aiLanguage")}: ${this.text(this.preferences.explanationLanguage)} \xB7 ${this.text("thinkingMode")}: ${this.text(this.preferences.reasoningEffort)}`;
+    }
+    settings() {
+      return { rating: +this.$(".rating").value, timeBudgetSeconds: +this.$(".budget").value, simulateWeights: this.$(".weights").checked, language: this.preferences.explanationLanguage, reasoningEffort: this.preferences.reasoningEffort };
+    }
+    message(key, error = false) {
+      this.messageKey = key;
+      this.$(".message").textContent = this.text(key);
+      this.$(".message").toggleAttribute("data-error", error);
+    }
+    invalidate() {
+      this.generation.invalidate();
+      this.busy = false;
+      this.$(".output").replaceChildren();
+      this.message("changed");
+      this.send({ type: "training", action: "cancel-explanation" }).catch(() => {
+      });
+    }
+    update(position2, sorted, allowed) {
+      const key = position2?.fen ?? "";
+      const changed = key !== this.generation.key || allowed !== this.allowed;
+      if (changed) {
+        this.invalidate();
+        this.generation.update(key);
+        this.selected = null;
+      }
+      this.allowed = allowed;
+      this.data = null;
+      if (position2 && sorted.length) {
+        try {
+          this.data = validateTraining({ fen: position2.fen, sideToMove: position2.turn, candidates: sorted.slice(0, 3).map((l) => ({ move: l.moves[0].uci, score: { type: l.info.mate !== void 0 ? "mate" : "cp", value: l.info.mate ?? l.info.cp, perspective: "white" }, depth: l.info.depth, pv: l.moves.slice(0, 6).map((m) => m.uci) })), settings: this.settings() });
+        } catch {
+        }
+      }
+      this.refresh();
+    }
+    refresh() {
+      const button = this.$(".explain");
+      button.disabled = !this.data || !this.allowed || !this.$(".practice").checked || this.busy;
+      button.textContent = this.text(this.busy ? "explaining" : "explain");
+      if (!this.data) {
+        this.choicesKey = null;
+        this.$(".estimate").textContent = this.text("waiting");
+        this.$(".choices").replaceChildren();
+        return;
+      }
+      this.data.settings = this.settings();
+      const estimate = estimateTraining(this.data);
+      this.$(".estimate").replaceChildren(...[`${this.text("complexity")}: ${this.text(estimate.level)}.`, `${this.text("thinking")}: ${estimate.minSeconds}\u2013${estimate.maxSeconds} ${this.text("seconds")}.`].map((text) => {
+        const span = document.createElement("span");
+        span.textContent = text;
+        return span;
+      }));
+      const keys = this.data.candidates.map((c) => c.move);
+      if (!keys.includes(this.selected)) this.selected = keys[0];
+      const choicesKey = JSON.stringify([keys, this.selected, estimate.weights, this.language]);
+      if (choicesKey !== this.choicesKey) {
+        const focused = (this.el.getRootNode().activeElement ?? document.activeElement)?.dataset?.candidateMove;
+        this.choicesKey = choicesKey;
+        this.$(".choices").replaceChildren(...this.data.candidates.map((c, i) => {
+          const chess = new Chess(this.data.fen);
+          const move2 = chess.move({ from: c.move.slice(0, 2), to: c.move.slice(2, 4), promotion: c.move[4] });
+          const button2 = document.createElement("button");
+          button2.type = "button";
+          button2.textContent = move2.san;
+          button2.dataset.candidateMove = c.move;
+          button2.setAttribute("aria-pressed", String(c.move === this.selected));
+          if (estimate.weights) {
+            const weight = document.createElement("small");
+            weight.textContent = `${estimate.weights[i].percent}% ${this.text("simulated")}`;
+            button2.append(weight);
+          }
+          button2.onclick = () => {
+            this.selected = c.move;
+            this.refresh();
+            this.onSelect(c.move);
+          };
+          return button2;
+        }));
+        if (focused) this.$(`.choices button[data-candidate-move="${focused}"]`)?.focus({ preventScroll: true });
+      }
+    }
+    async explain() {
+      if (this.$(".explain").disabled) return;
+      const snapshot = structuredClone(this.data), generation = this.generation.id;
+      this.busy = true;
+      this.refresh();
+      this.message("requesting");
+      try {
+        const response = await this.send({ type: "training", action: "explain", data: snapshot, confirmed: this.$(".practice").checked });
+        if (!this.verifyCurrent()) {
+          this.invalidate();
+          this.refresh();
+          return;
+        }
+        if (!this.generation.current(generation)) return;
+        if (!response?.ok) throw new Error(response?.error || "Explanation unavailable");
+        const out = validateExplanation(response.explanation, snapshot), node2 = this.$(".output");
+        node2.replaceChildren();
+        node2.lang = snapshot.settings.language;
+        node2.dir = snapshot.settings.language === "ar" ? "rtl" : "ltr";
+        const outputText = (key) => COPY[snapshot.settings.language][key];
+        const append = (tag, text, className = "") => {
+          const e = document.createElement(tag);
+          e.textContent = text;
+          e.className = className;
+          node2.append(e);
+        };
+        const san = (uci) => {
+          const c = new Chess(snapshot.fen);
+          return c.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] }).san;
+        };
+        append("h4", `${outputText("aiComplexity")}: ${outputText(out.complexity.level)}`);
+        append("p", out.complexity.reason);
+        if (out.threats.length) {
+          append("h4", outputText("threats"));
+          for (const threat of out.threats) {
+            const c = new Chess(snapshot.fen);
+            c.move({ from: threat.candidateMove.slice(0, 2), to: threat.candidateMove.slice(2, 4), promotion: threat.candidateMove[4] });
+            const reply = c.move({ from: threat.replyMove.slice(0, 2), to: threat.replyMove.slice(2, 4), promotion: threat.replyMove[4] }).san;
+            append("p", `${san(threat.candidateMove)} \u2192 ${reply}: ${threat.description}`);
+          }
+        }
+        for (const candidate of out.candidates) {
+          append("h4", san(candidate.move), "candidate-heading");
+          append("p", candidate.idea);
+          append("p", `${outputText("tradeoff")}: ${candidate.tradeoff}`, "tradeoff");
+        }
+        this.message("complete");
+      } catch (error) {
+        if (this.generation.current(generation)) {
+          const keys = { sign_in_required: "signIn", select_model_in_settings: "selectModel", model_unavailable: "selectModel", reasoning_effort_unavailable: "unsupportedEffort", subscription_sharing_usage_limit_exceeded: "limit", malformed_explanation: "malformed", invalid_stream_type: "stream", interrupted_stream: "stream", "Enable position sharing in extension settings first": "sharing", "Companion unavailable or request timed out. Check the companion and try again.": "connection" };
+          this.message("failure", true);
+          this.$(".message").textContent += ` ${this.text(keys[error.message] ?? "genericError")} ${this.text("stillLocal")}`;
+        }
+      } finally {
+        if (this.generation.current(generation)) {
+          this.busy = false;
+          this.refresh();
+        }
+      }
+    }
+  };
+
   // src/content/index.js
   var DEFAULTS = {
     enabled: true,
-    multipv: 1,
+    multipv: 3,
     depth: 10,
     turn: "auto",
     arrows: true,
@@ -4764,6 +5160,7 @@
   var side = (c) => ({ k: `side.${c}` });
   var settings;
   var panel;
+  var training;
   var overlay;
   var current = null;
   var position = null;
@@ -4887,7 +5284,8 @@
   function render() {
     const hideStats = liveNow && !settings.enabled;
     panel.accuracy(settings.showAccuracy && !hideStats ? accuracy.summary() : null);
-    const sorted = [...lines.entries()].sort((a, b) => a[0] - b[0]).map(([, v]) => v);
+    const sorted = [...lines.entries()].sort((a, b) => a[0] - b[0]).map(([, v]) => v).slice(0, 3);
+    training?.update(position, sorted, trainingContext(location.href) && !liveNow && settings.enabled && !silent);
     const view = sorted.map((l) => ({
       san: l.moves[0].san,
       scoreText: formatScore(l.info),
@@ -4899,10 +5297,11 @@
     if ((settings.arrows || forceArrows) && position && sorted.length) {
       const arrows = [];
       sorted.forEach((l, i) => {
+        if (l.moves[0].uci !== (training?.selected || sorted[0].moves[0].uci)) return;
         let n = 0;
         l.moves.forEach((m, ply) => {
           const limit = ply % 2 ? settings.followOpp : settings.followMine;
-          if (ply === 0 || Math.ceil(ply / 2) <= limit) {
+          if (ply === 0) {
             arrows.push({ from: sqIndex(m.from), to: sqIndex(m.to), rank: i, ply, n: ++n });
           }
         });
@@ -4928,7 +5327,13 @@
     } catch (_) {
       return;
     }
-    if (!raw) return;
+    if (!raw) {
+      position = null;
+      lastKey = null;
+      stopAnalysis();
+      render();
+      return;
+    }
     if (raw.dragging) return schedule(200);
     const res = resolvePosition(raw, tracker, { turnOverride: settings.turn });
     if (res.error) {
@@ -5096,6 +5501,7 @@
     settings = { ...DEFAULTS, ...await loadSettings() };
     settings.sections = { ...DEFAULTS.sections, ...settings.sections };
     settings.colors = normalizeColors(settings.colors);
+    settings.multipv = Math.min(3, Math.max(1, settings.multipv | 0));
     if (settings.colors[0] === "#15a34a") settings.colors[0] = DEFAULT_COLORS[0];
     settings.opacity = Math.min(100, Math.max(40, Math.round(+settings.opacity) || DEFAULTS.opacity));
     if (!LANGS[settings.lang]) settings.lang = detectLang();
@@ -5103,6 +5509,14 @@
     settings.enabled = true;
     overlay = new Overlay();
     panel = new Panel(settings, onSettingsChange, onHint, onReset);
+    training = new TrainingPanel(panel.root, { onSelect: render, verifyCurrent: () => {
+      readNow();
+      try {
+        return !!current?.el.isConnected && !!position && !current.adapter.read(current.el)?.dragging;
+      } catch {
+        return false;
+      }
+    } });
     panel.status("status.searching");
     chrome.runtime.onMessage.addListener((msg) => {
       if (msg && msg.type === "toggle-panel") panel.toggleVisible();
