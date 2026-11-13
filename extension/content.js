@@ -4395,7 +4395,13 @@
   .box .training { margin-block-start: 16px; padding: 16px; border: 1px solid #d3d9d0; border-radius: 10px; }
   .box .training h3 { font-size: 19px; }
   .box [hidden] { display: none; }
-  @container chess-panel (inline-size < 350px) { .panel-header { padding-inline: 10px; gap: 4px; } .panel-header .brand-icon { display: none; } .box > .body { padding: 12px; } .box .training { padding: 14px; } }
+  @container chess-panel (inline-size < 350px) {
+    .panel-header { padding-inline: 10px; gap: 4px; }
+    .panel-header .brand-icon { display: none; }
+    .box > .body { padding: 12px; }
+    .box .training { padding: 14px; }
+    .box .training .actions { display: grid; grid-template-columns: minmax(0,1fr); }
+  }
 </style>
 <div class="box">
   <header class="panel-header">

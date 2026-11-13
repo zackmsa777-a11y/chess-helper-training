@@ -7,12 +7,12 @@ Starting checkout: **`541cccf6805adb1b336930e38dbb3048e83f5f6b`**, clean before 
 | Command/check | Final result |
 | --- | --- |
 | `scripts/setup.ps1` | Exit **0**; ran tests, build and checks |
-| `npm test` | **89 passed**: 19 original + 70 added; **0 failed, 0 skipped**; added-suite duration **2027.4026 ms** |
+| `npm test` | **89 passed**: 19 original + 70 added; **0 failed, 0 skipped**; added-suite duration **2172.4026 ms** |
 | `npm run build` | Exit **0**; all five extension bundles generated |
 | `npm run check` | Exit **0**; **40 JavaScript syntax checks**, manifest and all five extension token-boundary checks passed |
 | `npm run test:browser` | Exit **0**; **15 checks passed**, no page errors |
 | `npm run test:ui` | Exit **0**; **21 checks passed** in **14470 ms**, no page errors/external HTTP traffic; three synthetic inference requests |
-| `npm run test:panel` | Exit **0**; **19 checks passed** in **21520 ms**, no page errors, companion requests or external requests |
+| `npm run test:panel` | Exit **0**; **19 checks passed** in **25145 ms**, no page errors, companion requests or external requests |
 | `git diff --check` | Exit **0**, no whitespace errors |
 | Original Stockfish assets | Unchanged under `extension/engine` |
 
@@ -21,6 +21,8 @@ Windows, Node **26.4.0**, npm **12.0.2**, Chrome for Testing **145.0.7632.6**, P
 The new panel suite places the real extension on **synthetic** Chess.com HTML with `dir=rtl`, right alignment and dark styling. It verifies that English stays LTR, Arabic switches to RTL, the host remains unchanged, and SAN, scores, variations and candidate notation remain LTR. It exercises labelled native controls with the keyboard, the settings shortcut, help/collapse/power states, model-independent language synchronization, retained Polish/Spanish/German choices, reset behavior, three local candidates, one stable selected arrow, board orientation, resize and 320/390-pixel layouts. Sampled text contrast ranges from **5.60:1 to 14.67:1**. Screen-reader software and a complete accessibility audit were not run.
 
 Two browser assertions needed event-settling corrections: the existing study test checked before ResizeObserver repositioned its SVG (measured alignment settled to zero difference in **11 ms**), and a new range-input test checked before the second keyboard update settled. Tests now use bounded waits and retain exact values/focus checks; the study overlay must align within **1 pixel** on all four dimensions. The new suite also accepts the browser's valid computed `color-scheme: light only` serialization. Final results above are the successful reruns.
+
+The first Windows CI run exposed **9 pixels of horizontal overflow at 320px**, despite the local panel suite passing. The two training action buttons now stack at full width below a 350px panel width. This prevents the AI settings label from being squeezed beside the primary action, including when a vertical scrollbar reduces available space. The regression retains strict overflow limits and checks the stacked button widths, including a test-only 10px reserved scrollbar gutter. Both buttons retain the full 238px available width in that case, with zero body/training overflow in English and Arabic; no clipping workaround was added.
 
 No live OAuth, model catalog, inference or Chess.com requests were made for this patch. The existing study/settings tests use mocked provider services; the panel test makes **zero** companion requests. Live site compatibility remains unverified, and page detection still cannot reliably identify bots. Earlier authorized provider checks below do not establish current live-site compatibility.
 

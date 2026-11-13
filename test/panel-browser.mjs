@@ -12,7 +12,9 @@ await Promise.all([mkdir(output,{recursive:true}),mkdir(images,{recursive:true})
 const temporary=await mkdtemp(resolve('work/panel-browser-'));
 const extension=join(temporary,'extension');
 const profile=join(temporary,'profile');
-const checks=[],errors=[],requests=[],externalRequests=[],contrast=[];
+const checks=[],errors=[],requests=[],externalRequests=[],contrast=[],layoutDiagnostics=[];
+const testFont=process.env.CHESS_PANEL_TEST_FONT??null;
+assert.ok(testFont===null||['Segoe UI','Tahoma','Arial'].includes(testFont),'Unsupported panel test font');
 const screenshots={};
 let context,page,settings,completed=false,failure=null;
 const server=createServer((req,res)=>{
@@ -65,12 +67,33 @@ async function assertFits(width){
   await page.setViewportSize({width,height:900});
   await page.waitForTimeout(150);
   const geometry=await page.locator('.box').evaluate(box=>{
-    const rect=box.getBoundingClientRect();
+    const rect=box.getBoundingClientRect(),round=value=>Math.round(value*100)/100;
     const body=box.querySelector('.body'),training=box.querySelector('.training');
-    return{left:rect.left,right:rect.right,width:rect.width,viewport:innerWidth,boxOverflow:box.scrollWidth-box.clientWidth,bodyOverflow:body.scrollWidth-body.clientWidth,trainingOverflow:training.scrollWidth-training.clientWidth};
+    const bodyStyle=getComputedStyle(body),bodyRect=body.getBoundingClientRect();
+    const contentLeft=bodyRect.left+body.clientLeft+parseFloat(bodyStyle.paddingLeft);
+    const contentRight=bodyRect.left+body.clientLeft+body.clientWidth-parseFloat(bodyStyle.paddingRight);
+    const metrics=el=>{
+      const r=el.getBoundingClientRect(),s=getComputedStyle(el),range=document.createRange();range.selectNodeContents(el);
+      const textRects=[...range.getClientRects()].map(rect=>({left:round(rect.left),right:round(rect.right),width:round(rect.width)}));
+      return{selector:el.tagName.toLowerCase()+(el.id?`#${el.id}`:[...el.classList].map(c=>`.${c}`).join('')),text:el.textContent.trim().slice(0,65),left:round(r.left),right:round(r.right),width:round(r.width),top:round(r.top),bottom:round(r.bottom),scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,scrollLeft:el.scrollLeft,font:s.fontFamily,fontSize:s.fontSize,direction:s.direction,display:s.display,minWidth:s.minWidth,maxWidth:s.maxWidth,overflowX:s.overflowX,whiteSpace:s.whiteSpace,textRects:textRects.slice(0,6)};
+    };
+    const overflow=[...body.querySelectorAll('*')].filter(el=>{
+      if(!el.getClientRects().length)return false;
+      const r=el.getBoundingClientRect();
+      return r.left<contentLeft-1||r.right>contentRight+1||el.scrollWidth>el.clientWidth+1;
+    }).map(metrics);
+    const actions=training.querySelector('.actions');
+    return{language:box.lang,settingsOpen:box.querySelector('details.main').open,left:round(rect.left),right:round(rect.right),width:round(rect.width),viewport:innerWidth,dpr:devicePixelRatio,boxFont:getComputedStyle(box).fontFamily,bodyFont:bodyStyle.fontFamily,scrollbarGutter:bodyStyle.scrollbarGutter,bodyScrollbar:round(bodyRect.width-body.clientWidth),bodyContentLeft:round(contentLeft),bodyContentRight:round(contentRight),boxOverflow:box.scrollWidth-box.clientWidth,bodyOverflow:body.scrollWidth-body.clientWidth,trainingOverflow:training.scrollWidth-training.clientWidth,actions:metrics(actions),buttons:[...actions.querySelectorAll('button')].map(metrics),overflow:overflow.slice(0,16)};
   });
+  layoutDiagnostics.push(geometry);
   assert.ok(geometry.left>=-1 && geometry.right<=width+1,`Panel exceeds ${width}px viewport: ${JSON.stringify(geometry)}`);
-  for(const key of ['boxOverflow','bodyOverflow','trainingOverflow'])assert.ok(geometry[key]<=1,`${key} at ${width}px: ${geometry[key]}`);
+  for(const key of ['boxOverflow','bodyOverflow','trainingOverflow'])assert.ok(geometry[key]<=1,`${key} at ${width}px: ${JSON.stringify(geometry)}`);
+  if(width===320){
+    const [explain,account]=geometry.buttons;
+    assert.ok(account.top>=explain.bottom-1,`Narrow actions must stack: ${JSON.stringify(geometry)}`);
+    assert.ok(Math.abs(explain.width-geometry.actions.width)<=1&&Math.abs(account.width-geometry.actions.width)<=1,`Narrow actions must use the available width: ${JSON.stringify(geometry)}`);
+    for(const button of [explain,account])assert.ok(button.textRects.every(rect=>rect.left>=button.left-1&&rect.right<=button.right+1),`Narrow action text must remain inside its button: ${JSON.stringify(geometry)}`);
+  }
 }
 async function measureContrast(selector){
   const result=await page.locator(selector).first().evaluate(el=>{
@@ -234,6 +257,9 @@ try{
   assert.ok(Math.abs((await page.locator('svg').boundingBox()).width-(await page.locator('wc-chess-board').boundingBox()).width)<1);
   pass('Board orientation and resize update one aligned arrow without overlapping variations');
 
+  if(testFont)await page.locator('.box').evaluate((box,font)=>{
+    const style=document.createElement('style');style.textContent=`.box,.box *{font-family:"${font}"!important}`;box.getRootNode().append(style);
+  },testFont);
   for(const language of ['ar','en']){
     await selectInterface(language);
     for(const width of [390,320]){
@@ -242,8 +268,16 @@ try{
       await setDetails('details.main',false);
     }
   }
+  await page.locator('.body').evaluate(body=>body.style.scrollbarGutter='stable');
+  for(const language of ['ar','en']){
+    await selectInterface(language);
+    await assertFits(320);
+    await setDetails('details.main',true);await assertFits(320);
+    await setDetails('details.main',false);
+  }
+  await page.locator('.body').evaluate(body=>body.style.removeProperty('scrollbar-gutter'));
   await assertHostUnchanged();
-  pass('English and Arabic panels, open settings and training controls fit both 390px and 320px viewports');
+  pass('English and Arabic panels, open settings and training controls fit 390px/320px; narrow actions stack with and without reserved scrollbar space');
 
   assert.deepEqual(requests,[]);assert.deepEqual(externalRequests,[]);assert.deepEqual(errors,[]);
   pass('No account, catalog, OAuth or inference calls, external HTTP requests or browser page errors occurred');
@@ -254,7 +288,7 @@ try{
   if(page)await page.locator('.box').screenshot({path:join(output,'panel-failure.png')}).catch(()=>{});
   throw error;
 }finally{
-  await writeFile(join(output,'panel-browser-results.json'),JSON.stringify({browser:context?.browser()?.version(),durationMs:Date.now()-startedAt,successful:completed,passed:checks.length,checks,errors,failure,contrast,mocked:['Chess.com HTML','companion access sink'],real:['MV3 content script and settings','Stockfish WASM','native keyboard controls','shared local preferences'],notTested:['live Chess.com','real ChatGPT account','screen reader software'],companionRequests:requests.length,externalRequests:externalRequests.length,ephemeralPort:true},null,2));
+  await writeFile(join(output,'panel-browser-results.json'),JSON.stringify({browser:context?.browser()?.version(),platform:process.platform,testFont,durationMs:Date.now()-startedAt,successful:completed,passed:checks.length,checks,errors,failure,contrast,layoutDiagnostics,mocked:['Chess.com HTML','companion access sink'],real:['MV3 content script and settings','Stockfish WASM','native keyboard controls','shared local preferences'],notTested:['live Chess.com','real ChatGPT account','screen reader software'],companionRequests:requests.length,externalRequests:externalRequests.length,ephemeralPort:true},null,2));
   if(context)await context.close();
   await new Promise(done=>{server.close(done);server.closeAllConnections();});
 }

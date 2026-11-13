@@ -1,6 +1,8 @@
 {
   "browser": "145.0.7632.6",
-  "durationMs": 21520,
+  "platform": "win32",
+  "testFont": null,
+  "durationMs": 25145,
   "successful": true,
   "passed": 19,
   "checks": [
@@ -21,7 +23,7 @@
     "Factory reset retains the chosen interface language while restoring local analysis settings",
     "Repeated website scans preserve the arrow node; candidate changes keep exactly one selected arrow",
     "Board orientation and resize update one aligned arrow without overlapping variations",
-    "English and Arabic panels, open settings and training controls fit both 390px and 320px viewports",
+    "English and Arabic panels, open settings and training controls fit 390px/320px; narrow actions stack with and without reserved scrollbar space",
     "No account, catalog, OAuth or inference calls, external HTTP requests or browser page errors occurred"
   ],
   "errors": [],
@@ -56,6 +58,2268 @@
       "selector": ".box .training h3",
       "ratio": 14.674512364419485,
       "minimum": 4.5
+    }
+  ],
+  "layoutDiagnostics": [
+    {
+      "language": "ar",
+      "settingsOpen": false,
+      "left": 8,
+      "right": 382,
+      "width": 374,
+      "viewport": 390,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 25,
+      "bodyContentRight": 365,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "اشرح الوضعيةإعدادات الذكاء الاصطناعي",
+        "left": 42,
+        "right": 348,
+        "width": 306,
+        "top": 720.75,
+        "bottom": 781.94,
+        "scrollWidth": 306,
+        "clientWidth": 306,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "rtl",
+        "display": "flex",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 188,
+            "right": 348,
+            "width": 160
+          },
+          {
+            "left": 221.03,
+            "right": 314.95,
+            "width": 93.92
+          },
+          {
+            "left": 42,
+            "right": 180,
+            "width": 138
+          },
+          {
+            "left": 70.5,
+            "right": 151.5,
+            "width": 81
+          },
+          {
+            "left": 78.27,
+            "right": 143.73,
+            "width": 65.47
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "اشرح الوضعية",
+          "left": 188,
+          "right": 348,
+          "width": 160,
+          "top": 720.75,
+          "bottom": 781.94,
+          "scrollWidth": 158,
+          "clientWidth": 158,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 221.03,
+              "right": 314.95,
+              "width": 93.92
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "إعدادات الذكاء الاصطناعي",
+          "left": 42,
+          "right": 180,
+          "width": 138,
+          "top": 720.75,
+          "bottom": 781.94,
+          "scrollWidth": 136,
+          "clientWidth": 136,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 70.5,
+              "right": 151.5,
+              "width": 81
+            },
+            {
+              "left": 78.27,
+              "right": 143.73,
+              "width": 65.47
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "ar",
+      "settingsOpen": true,
+      "left": 8,
+      "right": 382,
+      "width": 374,
+      "viewport": 390,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 25,
+      "bodyContentRight": 365,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "اشرح الوضعيةإعدادات الذكاء الاصطناعي",
+        "left": 42,
+        "right": 348,
+        "width": 306,
+        "top": 580.75,
+        "bottom": 641.94,
+        "scrollWidth": 306,
+        "clientWidth": 306,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "rtl",
+        "display": "flex",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 188,
+            "right": 348,
+            "width": 160
+          },
+          {
+            "left": 221.03,
+            "right": 314.95,
+            "width": 93.92
+          },
+          {
+            "left": 42,
+            "right": 180,
+            "width": 138
+          },
+          {
+            "left": 70.5,
+            "right": 151.5,
+            "width": 81
+          },
+          {
+            "left": 78.27,
+            "right": 143.73,
+            "width": 65.47
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "اشرح الوضعية",
+          "left": 188,
+          "right": 348,
+          "width": 160,
+          "top": 580.75,
+          "bottom": 641.94,
+          "scrollWidth": 158,
+          "clientWidth": 158,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 221.03,
+              "right": 314.95,
+              "width": 93.92
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "إعدادات الذكاء الاصطناعي",
+          "left": 42,
+          "right": 180,
+          "width": 138,
+          "top": 580.75,
+          "bottom": 641.94,
+          "scrollWidth": 136,
+          "clientWidth": 136,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 70.5,
+              "right": 151.5,
+              "width": 81
+            },
+            {
+              "left": 78.27,
+              "right": 143.73,
+              "width": 65.47
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "ar",
+      "settingsOpen": false,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 21,
+      "bodyContentRight": 299,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "اشرح الوضعيةإعدادات الذكاء الاصطناعي",
+        "left": 36,
+        "right": 284,
+        "width": 248,
+        "top": 698.33,
+        "bottom": 802.33,
+        "scrollWidth": 248,
+        "clientWidth": 248,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "rtl",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 113.03,
+            "right": 206.95,
+            "width": 93.92
+          },
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 84.84,
+            "right": 235.14,
+            "width": 150.3
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "اشرح الوضعية",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 698.33,
+          "bottom": 746.33,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 113.03,
+              "right": 206.95,
+              "width": 93.92
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "إعدادات الذكاء الاصطناعي",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 754.33,
+          "bottom": 802.33,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 84.84,
+              "right": 235.14,
+              "width": 150.3
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "ar",
+      "settingsOpen": true,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 21,
+      "bodyContentRight": 299,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "اشرح الوضعيةإعدادات الذكاء الاصطناعي",
+        "left": 36,
+        "right": 284,
+        "width": 248,
+        "top": 698.33,
+        "bottom": 802.33,
+        "scrollWidth": 248,
+        "clientWidth": 248,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "rtl",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 113.03,
+            "right": 206.95,
+            "width": 93.92
+          },
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 84.84,
+            "right": 235.14,
+            "width": 150.3
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "اشرح الوضعية",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 698.33,
+          "bottom": 746.33,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 113.03,
+              "right": 206.95,
+              "width": 93.92
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "إعدادات الذكاء الاصطناعي",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 754.33,
+          "bottom": 802.33,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 84.84,
+              "right": 235.14,
+              "width": 150.3
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "en",
+      "settingsOpen": false,
+      "left": 8,
+      "right": 382,
+      "width": 374,
+      "viewport": 390,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 25,
+      "bodyContentRight": 365,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "Explain positionAI settings",
+        "left": 42,
+        "right": 348,
+        "width": 306,
+        "top": 600.73,
+        "bottom": 648.73,
+        "scrollWidth": 306,
+        "clientWidth": 306,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "ltr",
+        "display": "flex",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 42,
+            "right": 202,
+            "width": 160
+          },
+          {
+            "left": 61.7,
+            "right": 182.3,
+            "width": 120.59
+          },
+          {
+            "left": 210,
+            "right": 348,
+            "width": 138
+          },
+          {
+            "left": 246.58,
+            "right": 311.42,
+            "width": 64.84
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "Explain position",
+          "left": 42,
+          "right": 202,
+          "width": 160,
+          "top": 600.73,
+          "bottom": 648.73,
+          "scrollWidth": 158,
+          "clientWidth": 158,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 61.7,
+              "right": 182.3,
+              "width": 120.59
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "AI settings",
+          "left": 210,
+          "right": 348,
+          "width": 138,
+          "top": 600.73,
+          "bottom": 648.73,
+          "scrollWidth": 136,
+          "clientWidth": 136,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 246.58,
+              "right": 311.42,
+              "width": 64.84
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "en",
+      "settingsOpen": true,
+      "left": 8,
+      "right": 382,
+      "width": 374,
+      "viewport": 390,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 25,
+      "bodyContentRight": 365,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "Explain positionAI settings",
+        "left": 42,
+        "right": 348,
+        "width": 306,
+        "top": 600.73,
+        "bottom": 648.73,
+        "scrollWidth": 306,
+        "clientWidth": 306,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "ltr",
+        "display": "flex",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 42,
+            "right": 202,
+            "width": 160
+          },
+          {
+            "left": 61.7,
+            "right": 182.3,
+            "width": 120.59
+          },
+          {
+            "left": 210,
+            "right": 348,
+            "width": 138
+          },
+          {
+            "left": 246.58,
+            "right": 311.42,
+            "width": 64.84
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "Explain position",
+          "left": 42,
+          "right": 202,
+          "width": 160,
+          "top": 600.73,
+          "bottom": 648.73,
+          "scrollWidth": 158,
+          "clientWidth": 158,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 61.7,
+              "right": 182.3,
+              "width": 120.59
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "AI settings",
+          "left": 210,
+          "right": 348,
+          "width": 138,
+          "top": 600.73,
+          "bottom": 648.73,
+          "scrollWidth": 136,
+          "clientWidth": 136,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 246.58,
+              "right": 311.42,
+              "width": 64.84
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "en",
+      "settingsOpen": false,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 21,
+      "bodyContentRight": 299,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "Explain positionAI settings",
+        "left": 36,
+        "right": 284,
+        "width": 248,
+        "top": 718.31,
+        "bottom": 822.31,
+        "scrollWidth": 248,
+        "clientWidth": 248,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "ltr",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 99.7,
+            "right": 220.3,
+            "width": 120.59
+          },
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 127.58,
+            "right": 192.42,
+            "width": 64.84
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "Explain position",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 718.31,
+          "bottom": 766.31,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 99.7,
+              "right": 220.3,
+              "width": 120.59
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "AI settings",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 774.31,
+          "bottom": 822.31,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 127.58,
+              "right": 192.42,
+              "width": 64.84
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "en",
+      "settingsOpen": true,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "auto",
+      "bodyScrollbar": 0,
+      "bodyContentLeft": 21,
+      "bodyContentRight": 299,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "Explain positionAI settings",
+        "left": 36,
+        "right": 284,
+        "width": 248,
+        "top": 718.31,
+        "bottom": 822.31,
+        "scrollWidth": 248,
+        "clientWidth": 248,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "ltr",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 99.7,
+            "right": 220.3,
+            "width": 120.59
+          },
+          {
+            "left": 36,
+            "right": 284,
+            "width": 248
+          },
+          {
+            "left": 127.58,
+            "right": 192.42,
+            "width": 64.84
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "Explain position",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 718.31,
+          "bottom": 766.31,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 99.7,
+              "right": 220.3,
+              "width": 120.59
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "AI settings",
+          "left": 36,
+          "right": 284,
+          "width": 248,
+          "top": 774.31,
+          "bottom": 822.31,
+          "scrollWidth": 246,
+          "clientWidth": 246,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 127.58,
+              "right": 192.42,
+              "width": 64.84
+            }
+          ]
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "language": "ar",
+      "settingsOpen": false,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "stable",
+      "bodyScrollbar": 10,
+      "bodyContentLeft": 31,
+      "bodyContentRight": 299,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "اشرح الوضعيةإعدادات الذكاء الاصطناعي",
+        "left": 46,
+        "right": 284,
+        "width": 238,
+        "top": 698.33,
+        "bottom": 802.33,
+        "scrollWidth": 238,
+        "clientWidth": 238,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "rtl",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 46,
+            "right": 284,
+            "width": 238
+          },
+          {
+            "left": 118.03,
+            "right": 211.95,
+            "width": 93.92
+          },
+          {
+            "left": 46,
+            "right": 284,
+            "width": 238
+          },
+          {
+            "left": 89.84,
+            "right": 240.14,
+            "width": 150.3
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "اشرح الوضعية",
+          "left": 46,
+          "right": 284,
+          "width": 238,
+          "top": 698.33,
+          "bottom": 746.33,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 118.03,
+              "right": 211.95,
+              "width": 93.92
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "إعدادات الذكاء الاصطناعي",
+          "left": 46,
+          "right": 284,
+          "width": 238,
+          "top": 754.33,
+          "bottom": 802.33,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 89.84,
+              "right": 240.14,
+              "width": 150.3
+            }
+          ]
+        }
+      ],
+      "overflow": [
+        {
+          "selector": "div.lines",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)+0.23d4♞︎f6c4e6♘︎f3d5(10+)+0.21♘︎f3d5d",
+          "left": 31,
+          "right": 299,
+          "width": 268,
+          "top": -210.59,
+          "bottom": -76.17,
+          "scrollWidth": 279,
+          "clientWidth": 268,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "grid",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 20.3,
+              "right": 299,
+              "width": 278.7
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 112.11,
+              "width": 13.81
+            },
+            {
+              "left": 117.11,
+              "right": 130.92,
+              "width": 13.81
+            },
+            {
+              "left": 135.92,
+              "right": 152.92,
+              "width": 17
+            },
+            {
+              "left": 153.92,
+              "right": 165,
+              "width": 11.08
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)",
+          "left": 20.3,
+          "right": 299,
+          "width": 278.7,
+          "top": -210.59,
+          "bottom": -170.45,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 31.3,
+              "right": 40.3,
+              "width": 9
+            },
+            {
+              "left": 48.3,
+              "right": 90.3,
+              "width": 42
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 258.13,
+              "width": 159.83
+            },
+            {
+              "left": 98.3,
+              "right": 112.11,
+              "width": 13.81
+            },
+            {
+              "left": 117.11,
+              "right": 130.92,
+              "width": 13.81
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.23d4♞︎f6c4e6♘︎f3d5(10+)",
+          "left": 20.3,
+          "right": 299,
+          "width": 278.7,
+          "top": -163.45,
+          "bottom": -123.31,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 31.3,
+              "right": 40.3,
+              "width": 9
+            },
+            {
+              "left": 48.3,
+              "right": 90.3,
+              "width": 42
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 242.63,
+              "width": 144.33
+            },
+            {
+              "left": 98.3,
+              "right": 112.97,
+              "width": 14.67
+            },
+            {
+              "left": 117.97,
+              "right": 134.97,
+              "width": 17
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.21♘︎f3d5d4♞︎f6c4e6(10+)",
+          "left": 20.3,
+          "right": 299,
+          "width": 278.7,
+          "top": -116.31,
+          "bottom": -76.17,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 31.3,
+              "right": 40.3,
+              "width": 9
+            },
+            {
+              "left": 48.3,
+              "right": 90.3,
+              "width": 42
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 242.63,
+              "width": 144.33
+            },
+            {
+              "left": 98.3,
+              "right": 115.3,
+              "width": 17
+            },
+            {
+              "left": 116.3,
+              "right": 127.38,
+              "width": 11.08
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "settingsOpen": true,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "stable",
+      "bodyScrollbar": 10,
+      "bodyContentLeft": 31,
+      "bodyContentRight": 299,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "اشرح الوضعيةإعدادات الذكاء الاصطناعي",
+        "left": 46,
+        "right": 284,
+        "width": 238,
+        "top": 698.33,
+        "bottom": 802.33,
+        "scrollWidth": 238,
+        "clientWidth": 238,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "rtl",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 46,
+            "right": 284,
+            "width": 238
+          },
+          {
+            "left": 118.03,
+            "right": 211.95,
+            "width": 93.92
+          },
+          {
+            "left": 46,
+            "right": 284,
+            "width": 238
+          },
+          {
+            "left": 89.84,
+            "right": 240.14,
+            "width": 150.3
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "اشرح الوضعية",
+          "left": 46,
+          "right": 284,
+          "width": 238,
+          "top": 698.33,
+          "bottom": 746.33,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 118.03,
+              "right": 211.95,
+              "width": 93.92
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "إعدادات الذكاء الاصطناعي",
+          "left": 46,
+          "right": 284,
+          "width": 238,
+          "top": 754.33,
+          "bottom": 802.33,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 89.84,
+              "right": 240.14,
+              "width": 150.3
+            }
+          ]
+        }
+      ],
+      "overflow": [
+        {
+          "selector": "div.lines",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)+0.23d4♞︎f6c4e6♘︎f3d5(10+)+0.21♘︎f3d5d",
+          "left": 31,
+          "right": 299,
+          "width": 268,
+          "top": -210.59,
+          "bottom": -76.17,
+          "scrollWidth": 279,
+          "clientWidth": 268,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "rtl",
+          "display": "grid",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 20.3,
+              "right": 299,
+              "width": 278.7
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 112.11,
+              "width": 13.81
+            },
+            {
+              "left": 117.11,
+              "right": 130.92,
+              "width": 13.81
+            },
+            {
+              "left": 135.92,
+              "right": 152.92,
+              "width": 17
+            },
+            {
+              "left": 153.92,
+              "right": 165,
+              "width": 11.08
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)",
+          "left": 20.3,
+          "right": 299,
+          "width": 278.7,
+          "top": -210.59,
+          "bottom": -170.45,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 31.3,
+              "right": 40.3,
+              "width": 9
+            },
+            {
+              "left": 48.3,
+              "right": 90.3,
+              "width": 42
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 258.13,
+              "width": 159.83
+            },
+            {
+              "left": 98.3,
+              "right": 112.11,
+              "width": 13.81
+            },
+            {
+              "left": 117.11,
+              "right": 130.92,
+              "width": 13.81
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.23d4♞︎f6c4e6♘︎f3d5(10+)",
+          "left": 20.3,
+          "right": 299,
+          "width": 278.7,
+          "top": -163.45,
+          "bottom": -123.31,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 31.3,
+              "right": 40.3,
+              "width": 9
+            },
+            {
+              "left": 48.3,
+              "right": 90.3,
+              "width": 42
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 242.63,
+              "width": 144.33
+            },
+            {
+              "left": 98.3,
+              "right": 112.97,
+              "width": 14.67
+            },
+            {
+              "left": 117.97,
+              "right": 134.97,
+              "width": 17
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.21♘︎f3d5d4♞︎f6c4e6(10+)",
+          "left": 20.3,
+          "right": 299,
+          "width": 278.7,
+          "top": -116.31,
+          "bottom": -76.17,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 31.3,
+              "right": 40.3,
+              "width": 9
+            },
+            {
+              "left": 48.3,
+              "right": 90.3,
+              "width": 42
+            },
+            {
+              "left": 48.3,
+              "right": 83.45,
+              "width": 35.16
+            },
+            {
+              "left": 98.3,
+              "right": 242.63,
+              "width": 144.33
+            },
+            {
+              "left": 98.3,
+              "right": 115.3,
+              "width": 17
+            },
+            {
+              "left": 116.3,
+              "right": 127.38,
+              "width": 11.08
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "settingsOpen": false,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "stable",
+      "bodyScrollbar": 10,
+      "bodyContentLeft": 21,
+      "bodyContentRight": 289,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "Explain positionAI settings",
+        "left": 36,
+        "right": 274,
+        "width": 238,
+        "top": 737.19,
+        "bottom": 841.19,
+        "scrollWidth": 238,
+        "clientWidth": 238,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "ltr",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 36,
+            "right": 274,
+            "width": 238
+          },
+          {
+            "left": 94.7,
+            "right": 215.3,
+            "width": 120.59
+          },
+          {
+            "left": 36,
+            "right": 274,
+            "width": 238
+          },
+          {
+            "left": 122.58,
+            "right": 187.42,
+            "width": 64.84
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "Explain position",
+          "left": 36,
+          "right": 274,
+          "width": 238,
+          "top": 737.19,
+          "bottom": 785.19,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 94.7,
+              "right": 215.3,
+              "width": 120.59
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "AI settings",
+          "left": 36,
+          "right": 274,
+          "width": 238,
+          "top": 793.19,
+          "bottom": 841.19,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 122.58,
+              "right": 187.42,
+              "width": 64.84
+            }
+          ]
+        }
+      ],
+      "overflow": [
+        {
+          "selector": "div.lines",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)+0.23d4♞︎f6c4e6♘︎f3d5(10+)+0.21♘︎f3d5d",
+          "left": 21,
+          "right": 289,
+          "width": 268,
+          "top": -255.59,
+          "bottom": -121.17,
+          "scrollWidth": 279,
+          "clientWidth": 268,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "grid",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 21,
+              "right": 299.7,
+              "width": 278.7
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 112.81,
+              "width": 13.81
+            },
+            {
+              "left": 117.81,
+              "right": 131.63,
+              "width": 13.81
+            },
+            {
+              "left": 136.63,
+              "right": 153.63,
+              "width": 17
+            },
+            {
+              "left": 154.63,
+              "right": 165.7,
+              "width": 11.08
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)",
+          "left": 21,
+          "right": 299.7,
+          "width": 278.7,
+          "top": -255.59,
+          "bottom": -215.45,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 32,
+              "right": 41,
+              "width": 9
+            },
+            {
+              "left": 49,
+              "right": 91,
+              "width": 42
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 258.83,
+              "width": 159.83
+            },
+            {
+              "left": 99,
+              "right": 112.81,
+              "width": 13.81
+            },
+            {
+              "left": 117.81,
+              "right": 131.63,
+              "width": 13.81
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.23d4♞︎f6c4e6♘︎f3d5(10+)",
+          "left": 21,
+          "right": 299.7,
+          "width": 278.7,
+          "top": -208.45,
+          "bottom": -168.31,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 32,
+              "right": 41,
+              "width": 9
+            },
+            {
+              "left": 49,
+              "right": 91,
+              "width": 42
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 243.33,
+              "width": 144.33
+            },
+            {
+              "left": 99,
+              "right": 113.67,
+              "width": 14.67
+            },
+            {
+              "left": 118.67,
+              "right": 135.67,
+              "width": 17
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.21♘︎f3d5d4♞︎f6c4e6(10+)",
+          "left": 21,
+          "right": 299.7,
+          "width": 278.7,
+          "top": -161.31,
+          "bottom": -121.17,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 32,
+              "right": 41,
+              "width": 9
+            },
+            {
+              "left": 49,
+              "right": 91,
+              "width": 42
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 243.33,
+              "width": 144.33
+            },
+            {
+              "left": 99,
+              "right": 116,
+              "width": 17
+            },
+            {
+              "left": 117,
+              "right": 128.08,
+              "width": 11.08
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "settingsOpen": true,
+      "left": 8,
+      "right": 312,
+      "width": 304,
+      "viewport": 320,
+      "dpr": 1,
+      "boxFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "bodyFont": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+      "scrollbarGutter": "stable",
+      "bodyScrollbar": 10,
+      "bodyContentLeft": 21,
+      "bodyContentRight": 289,
+      "boxOverflow": 0,
+      "bodyOverflow": 0,
+      "trainingOverflow": 0,
+      "actions": {
+        "selector": "div.actions",
+        "text": "Explain positionAI settings",
+        "left": 36,
+        "right": 274,
+        "width": 238,
+        "top": 737.19,
+        "bottom": 841.19,
+        "scrollWidth": 238,
+        "clientWidth": 238,
+        "scrollLeft": 0,
+        "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+        "fontSize": "14px",
+        "direction": "ltr",
+        "display": "grid",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "overflowX": "visible",
+        "whiteSpace": "normal",
+        "textRects": [
+          {
+            "left": 36,
+            "right": 274,
+            "width": 238
+          },
+          {
+            "left": 94.7,
+            "right": 215.3,
+            "width": 120.59
+          },
+          {
+            "left": 36,
+            "right": 274,
+            "width": 238
+          },
+          {
+            "left": 122.58,
+            "right": 187.42,
+            "width": 64.84
+          }
+        ]
+      },
+      "buttons": [
+        {
+          "selector": "button.primary.explain",
+          "text": "Explain position",
+          "left": 36,
+          "right": 274,
+          "width": 238,
+          "top": 737.19,
+          "bottom": 785.19,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "16px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "160px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 94.7,
+              "right": 215.3,
+              "width": 120.59
+            }
+          ]
+        },
+        {
+          "selector": "button.account",
+          "text": "AI settings",
+          "left": 36,
+          "right": 274,
+          "width": 238,
+          "top": 793.19,
+          "bottom": 841.19,
+          "scrollWidth": 236,
+          "clientWidth": 236,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "block",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 122.58,
+              "right": 187.42,
+              "width": 64.84
+            }
+          ]
+        }
+      ],
+      "overflow": [
+        {
+          "selector": "div.lines",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)+0.23d4♞︎f6c4e6♘︎f3d5(10+)+0.21♘︎f3d5d",
+          "left": 21,
+          "right": 289,
+          "width": 268,
+          "top": -255.59,
+          "bottom": -121.17,
+          "scrollWidth": 279,
+          "clientWidth": 268,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "14px",
+          "direction": "ltr",
+          "display": "grid",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 21,
+              "right": 299.7,
+              "width": 278.7
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 112.81,
+              "width": 13.81
+            },
+            {
+              "left": 117.81,
+              "right": 131.63,
+              "width": 13.81
+            },
+            {
+              "left": 136.63,
+              "right": 153.63,
+              "width": 17
+            },
+            {
+              "left": 154.63,
+              "right": 165.7,
+              "width": 11.08
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.26e4e5♘︎f3♞︎c6d4exd4(10)",
+          "left": 21,
+          "right": 299.7,
+          "width": 278.7,
+          "top": -255.59,
+          "bottom": -215.45,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 32,
+              "right": 41,
+              "width": 9
+            },
+            {
+              "left": 49,
+              "right": 91,
+              "width": 42
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 258.83,
+              "width": 159.83
+            },
+            {
+              "left": 99,
+              "right": 112.81,
+              "width": 13.81
+            },
+            {
+              "left": 117.81,
+              "right": 131.63,
+              "width": 13.81
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.23d4♞︎f6c4e6♘︎f3d5(10+)",
+          "left": 21,
+          "right": 299.7,
+          "width": 278.7,
+          "top": -208.45,
+          "bottom": -168.31,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 32,
+              "right": 41,
+              "width": 9
+            },
+            {
+              "left": 49,
+              "right": 91,
+              "width": 42
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 243.33,
+              "width": 144.33
+            },
+            {
+              "left": 99,
+              "right": 113.67,
+              "width": 14.67
+            },
+            {
+              "left": 118.67,
+              "right": 135.67,
+              "width": 17
+            }
+          ]
+        },
+        {
+          "selector": "div.line",
+          "text": "+0.21♘︎f3d5d4♞︎f6c4e6(10+)",
+          "left": 21,
+          "right": 299.7,
+          "width": 278.7,
+          "top": -161.31,
+          "bottom": -121.17,
+          "scrollWidth": 277,
+          "clientWidth": 277,
+          "scrollLeft": 0,
+          "font": "\"Segoe UI\", Tahoma, Arial, sans-serif",
+          "fontSize": "13px",
+          "direction": "ltr",
+          "display": "flex",
+          "minWidth": "auto",
+          "maxWidth": "none",
+          "overflowX": "visible",
+          "whiteSpace": "normal",
+          "textRects": [
+            {
+              "left": 32,
+              "right": 41,
+              "width": 9
+            },
+            {
+              "left": 49,
+              "right": 91,
+              "width": 42
+            },
+            {
+              "left": 49,
+              "right": 84.16,
+              "width": 35.16
+            },
+            {
+              "left": 99,
+              "right": 243.33,
+              "width": 144.33
+            },
+            {
+              "left": 99,
+              "right": 116,
+              "width": 17
+            },
+            {
+              "left": 117,
+              "right": 128.08,
+              "width": 11.08
+            }
+          ]
+        }
+      ]
     }
   ],
   "mocked": [
