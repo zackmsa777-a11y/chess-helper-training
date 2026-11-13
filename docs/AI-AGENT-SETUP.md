@@ -26,7 +26,7 @@ runs tests/build/checks. If an execution policy blocks a script, do not change o
 bypass policy; use the documented approved path and report the specific blocker.
 
 Run npm test, npm run build and npm run check. Use an already approved isolated
-test browser for npm run test:browser and npm run test:ui if available; OAuth,
+test browser for npm run test:browser, npm run test:ui and npm run test:panel if available; OAuth,
 inference and Chess.com should be mocked. The extension harness uses a temporary
 extension copy and an automatically chosen loopback test port. Do not replace my
 installed extension's port, stop another process, or use my normal browser profile

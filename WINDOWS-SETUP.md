@@ -121,7 +121,7 @@ Use **Sign out of active account** to clear local tokens and attempt remote refr
 
 The extension browser test uses an isolated Chromium profile, the real unpacked extension and Stockfish, a local mocked companion, and synthetic Chess.com page content. It copies the extension into ignored `work/` and changes only that temporary copy to use an automatically chosen loopback test port. The installed extension and a running companion on port 43187 stay untouched. It does not test a live Chess.com game or your normal browser profile. Screenshots/results are written to `test-results` and temporary profiles to `work`.
 
-The separate UI suite checks the redesigned interface with mocked services, including language/RTL and agent interactions. Neither browser suite requires real sign-in. Do not terminate an unrelated process to unblock a test.
+The UI suite checks the study/settings interface with mocked services, including language/RTL and agent interactions. The panel suite checks the floating website interface against a synthetic page with conflicting text direction and dark styling, including keyboard controls, language synchronization, resizing and absence of donation UI. None of these suites requires real sign-in. Do not terminate an unrelated process to unblock a test.
 
 Use an already approved Chrome for Testing/Playwright Chromium binary:
 
@@ -129,6 +129,7 @@ Use an already approved Chrome for Testing/Playwright Chromium binary:
 $env:CHESS_TEST_BROWSER = 'C:\approved-path\chrome-win64\chrome.exe'
 npm run test:browser
 npm run test:ui
+npm run test:panel
 ```
 
 If no approved binary is available, obtaining and running the official Playwright browser requires the applicable software-download/execution approval. The optional installation commands are:
@@ -138,6 +139,7 @@ $env:PLAYWRIGHT_BROWSERS_PATH = Join-Path $PWD 'work\playwright-browsers'
 npx playwright install chromium
 npm run test:browser
 npm run test:ui
+npm run test:panel
 ```
 
 Keep mocked and live checks separate in reports. The previously authorized real catalog and explanation checks, their exact scope and the remaining live-site limits are recorded in [TEST-RESULTS.md](TEST-RESULTS.md).

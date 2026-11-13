@@ -1,0 +1,79 @@
+{
+  "browser": "145.0.7632.6",
+  "durationMs": 21520,
+  "successful": true,
+  "passed": 19,
+  "checks": [
+    "Isolated extension loads on synthetic Chess.com HTML with an ephemeral test companion address",
+    "English panel is LTR, left-aligned and light on a hostile RTL/right-aligned/dark host without changing the page",
+    "Donation links, images and their web-accessible manifest entries are absent",
+    "Real bundled Stockfish supplies three local candidates and one selected arrow with no account",
+    "Visible settings shortcut opens the settings and moves keyboard focus to their summary",
+    "Every visible panel button, select, range, color input and checkbox has an accessible name",
+    "Keyboard Tab reaches every available floating-panel control across scrollable sections",
+    "Info, collapse and analysis-power controls respond to the keyboard and expose state",
+    "Native select, opacity slider and training checkboxes are keyboard-operable without sending AI requests",
+    "Sampled panel headings, status, move notation and scores meet applicable text-contrast thresholds",
+    "Changing the options interface language synchronizes the existing panel and training section to Arabic without account access",
+    "Arabic panel keeps SAN, evaluations, principal variations and candidate notation in LTR order",
+    "English selection inside the floating panel synchronizes back to the options interface",
+    "Legacy Polish, Spanish and German panel choices remain available; AI-language changes do not overwrite them",
+    "Factory reset retains the chosen interface language while restoring local analysis settings",
+    "Repeated website scans preserve the arrow node; candidate changes keep exactly one selected arrow",
+    "Board orientation and resize update one aligned arrow without overlapping variations",
+    "English and Arabic panels, open settings and training controls fit both 390px and 320px viewports",
+    "No account, catalog, OAuth or inference calls, external HTTP requests or browser page errors occurred"
+  ],
+  "errors": [],
+  "failure": null,
+  "contrast": [
+    {
+      "selector": ".box .title",
+      "ratio": 7.971771260736023,
+      "minimum": 4.5
+    },
+    {
+      "selector": ".box .status",
+      "ratio": 5.599103696377724,
+      "minimum": 4.5
+    },
+    {
+      "selector": ".box .best .san",
+      "ratio": 7.971771260736023,
+      "minimum": 3
+    },
+    {
+      "selector": ".box .best .score",
+      "ratio": 13.329972760371671,
+      "minimum": 4.5
+    },
+    {
+      "selector": ".box .line .s",
+      "ratio": 14.674512364419485,
+      "minimum": 4.5
+    },
+    {
+      "selector": ".box .training h3",
+      "ratio": 14.674512364419485,
+      "minimum": 4.5
+    }
+  ],
+  "mocked": [
+    "Chess.com HTML",
+    "companion access sink"
+  ],
+  "real": [
+    "MV3 content script and settings",
+    "Stockfish WASM",
+    "native keyboard controls",
+    "shared local preferences"
+  ],
+  "notTested": [
+    "live Chess.com",
+    "real ChatGPT account",
+    "screen reader software"
+  ],
+  "companionRequests": 0,
+  "externalRequests": 0,
+  "ephemeralPort": true
+}

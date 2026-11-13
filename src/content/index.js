@@ -10,6 +10,7 @@ import { AccuracyTracker } from './accuracy.js';
 import { pvToSan, formatScore, whitePercent, summarizeLine } from './format.js';
 import { TrainingPanel } from './training-panel.js';
 import { trainingContext } from '../shared/training.js';
+import { savePreferences } from '../ui/preferences.js';
 
 const DEFAULTS = {
   enabled: true,
@@ -38,6 +39,7 @@ let settings;
 let panel;
 let training;
 let overlay;
+let stopLanguageWatch;
 let current = null;
 let position = null; // { fen, turn, source, orientation, over? }
 let lastKey = null;
@@ -349,9 +351,33 @@ function saveSettings() {
   } catch (_) {}
 }
 
+function sharedLanguage(preferences) {
+  const language = preferences?.uiLanguage;
+  return language === 'en' || language === 'ar' ? language : null;
+}
+
+function watchLanguage() {
+  const listener = (changes, area) => {
+    if (area !== 'local' || !changes.trainingPreferences) return;
+    const change = changes.trainingPreferences;
+    const language = sharedLanguage(change.newValue);
+    // An AI-language-only change must not replace a legacy PL/ES/DE interface.
+    if (!language || language === sharedLanguage(change.oldValue) || language === settings.lang) return;
+    settings.lang = language;
+    setLang(language);
+    saveSettings();
+    panel.applyLang();
+  };
+  chrome.storage.onChanged.addListener(listener);
+  return () => chrome.storage.onChanged.removeListener(listener);
+}
+
 function onSettingsChange(patch) {
   saveSettings();
   const keys = Object.keys(patch);
+  if (keys.includes('lang') && sharedLanguage({ uiLanguage: settings.lang })) {
+    savePreferences({ uiLanguage: settings.lang }).catch(() => {});
+  }
   if (keys.includes('enabled') && !settings.enabled && settings.sections.settings) {
     panel.set({ sections: { ...settings.sections, settings: false } });
   }
@@ -381,8 +407,9 @@ function onHint() {
 }
 
 function onReset() {
+  const language = settings.lang;
   for (const k of Object.keys(settings)) delete settings[k];
-  Object.assign(settings, DEFAULTS, { colors: [...DEFAULT_COLORS], sections: { ...DEFAULTS.sections } });
+  Object.assign(settings, DEFAULTS, { lang: language, colors: [...DEFAULT_COLORS], sections: { ...DEFAULTS.sections } });
   setLang(settings.lang);
   saveSettings();
   panel.applyPosition();
@@ -396,6 +423,8 @@ function shutdown() {
   dead = true;
   clearInterval(scanTimer);
   clearInterval(overlayTimer);
+  stopLanguageWatch?.();
+  training?.stopPreferences?.();
   if (current) current.observer.disconnect();
   if (port) port.disconnect();
   panel && panel.destroy();
@@ -414,6 +443,10 @@ async function main() {
   if (settings.colors[0] === '#15a34a') settings.colors[0] = DEFAULT_COLORS[0]; // migracja: stary domyślny zielony był ciemniejszy
   settings.opacity = Math.min(100, Math.max(40, Math.round(+settings.opacity) || DEFAULTS.opacity));
   if (!LANGS[settings.lang]) settings.lang = detectLang();
+  try {
+    const { trainingPreferences } = await chrome.storage.local.get('trainingPreferences');
+    settings.lang = sharedLanguage(trainingPreferences) ?? settings.lang;
+  } catch (_) {}
   setLang(settings.lang);
   settings.enabled = true; // po odświeżeniu strony zaczynamy od włączonej analizy
 
@@ -424,6 +457,7 @@ async function main() {
     try {return !!current?.el.isConnected && !!position && !current.adapter.read(current.el)?.dragging;} catch {return false;}
   }});
   panel.status('status.searching');
+  stopLanguageWatch = watchLanguage();
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg && msg.type === 'toggle-panel') panel.toggleVisible();

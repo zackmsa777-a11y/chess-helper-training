@@ -1,4 +1,38 @@
-# Release 1.1.0 verification — 2026-11-13
+# Release 1.1.1 verification — 2026-11-13
+
+The floating website panel now matches the study interface, has complete Arabic labels and explicit language direction, and keeps chess notation/scores left-to-right. English/Arabic preferences synchronize with settings without changing the AI explanation language. The donation button, its images and their web-accessible manifest entries are removed. Original attribution, license, engine assets and other panel controls remain.
+
+Starting checkout: **`541cccf6805adb1b336930e38dbb3048e83f5f6b`**, clean before this patch. Original upstream baseline remains **`01b990b9424ac0eef905376b40d14faf8dd076c0`**.
+
+| Command/check | Final result |
+| --- | --- |
+| `scripts/setup.ps1` | Exit **0**; ran tests, build and checks |
+| `npm test` | **89 passed**: 19 original + 70 added; **0 failed, 0 skipped**; added-suite duration **2027.4026 ms** |
+| `npm run build` | Exit **0**; all five extension bundles generated |
+| `npm run check` | Exit **0**; **40 JavaScript syntax checks**, manifest and all five extension token-boundary checks passed |
+| `npm run test:browser` | Exit **0**; **15 checks passed**, no page errors |
+| `npm run test:ui` | Exit **0**; **21 checks passed** in **14470 ms**, no page errors/external HTTP traffic; three synthetic inference requests |
+| `npm run test:panel` | Exit **0**; **19 checks passed** in **21520 ms**, no page errors, companion requests or external requests |
+| `git diff --check` | Exit **0**, no whitespace errors |
+| Original Stockfish assets | Unchanged under `extension/engine` |
+
+Windows, Node **26.4.0**, npm **12.0.2**, Chrome for Testing **145.0.7632.6**, Playwright **1.58.2**. Dependency versions were unchanged by this patch. All browser profiles and test extension copies were isolated; no personal Chrome profile or running companion was used.
+
+The new panel suite places the real extension on **synthetic** Chess.com HTML with `dir=rtl`, right alignment and dark styling. It verifies that English stays LTR, Arabic switches to RTL, the host remains unchanged, and SAN, scores, variations and candidate notation remain LTR. It exercises labelled native controls with the keyboard, the settings shortcut, help/collapse/power states, model-independent language synchronization, retained Polish/Spanish/German choices, reset behavior, three local candidates, one stable selected arrow, board orientation, resize and 320/390-pixel layouts. Sampled text contrast ranges from **5.60:1 to 14.67:1**. Screen-reader software and a complete accessibility audit were not run.
+
+Two browser assertions needed event-settling corrections: the existing study test checked before ResizeObserver repositioned its SVG (measured alignment settled to zero difference in **11 ms**), and a new range-input test checked before the second keyboard update settled. Tests now use bounded waits and retain exact values/focus checks; the study overlay must align within **1 pixel** on all four dimensions. The new suite also accepts the browser's valid computed `color-scheme: light only` serialization. Final results above are the successful reruns.
+
+No live OAuth, model catalog, inference or Chess.com requests were made for this patch. The existing study/settings tests use mocked provider services; the panel test makes **zero** companion requests. Live site compatibility remains unverified, and page detection still cannot reliably identify bots. Earlier authorized provider checks below do not establish current live-site compatibility.
+
+Evidence: [panel results](docs/verification/panel-browser-results.json), [study/settings results](docs/verification/ui-browser-results.json), [extension results](docs/verification/browser-results.json), [English panel](docs/images/panel-en.png), [Arabic panel](docs/images/panel-ar.png). Screenshots contain only synthetic data.
+
+The requested skills guided this patch. Existing ui-sdk components remain bundled on extension pages; the floating panel uses named native controls inside its shadow root, without registering components or agent tools on the chess website.
+
+- **`forms`**: I associated visible labels with native controls, following “always associate `<label>` with its input using `for` and `id`.”
+- **`component-specific-light-dark-theme`**: I paired the explicit light scheme with explicit background/text colors, following “Do not set `color-scheme` on elements without a background”.
+- **`form-factor-adaptation`**: I retained usable controls and container-based spacing at 320 pixels, following “Ensure text and controls are never clipped, squished to zero dimensions, or overflowing”.
+
+## Previous release 1.1.0 verification — historical record
 
 The English/Arabic interface, saved AI preferences, account-advertised thinking levels and Windows setup were verified with **86 unit/integration tests, 15 extension-browser checks and 21 UI-browser checks**. All passed. **No new live OpenAI or Chess.com requests were made for this release verification.** Earlier, separately authorized catalog/inference checks are recorded below and do not validate the new language or thinking settings against a live provider.
 

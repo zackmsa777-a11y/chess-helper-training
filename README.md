@@ -27,13 +27,17 @@ Chrome or Edge **120+** is required. The optional account companion currently re
 - **Compare moves:** see up to three legal engine candidates, their scores and depth. Select one to show a single board arrow.
 - **Practice at your level:** choose a player rating and a thinking budget. See estimated complexity and thinking time; optionally show simulated move-choice weights.
 - **Ask why:** click **Explain position** for concise ideas, candidate tradeoffs and possible replies drawn from the supplied engine lines.
-- **Choose your language:** use the study and account interface in English or Arabic, including right-to-left layout. Choose the AI explanation language separately.
+- **Choose your language:** use the study board, settings and floating website panel in English or Arabic, including right-to-left layout. Choose the AI explanation language separately.
 - **Choose model thinking:** keep the model's default or select a reasoning effort actually supported by the account's selected model. Unavailable choices are not offered.
 - **Stay in control:** move pieces manually, flip the board, undo or import a position. No autoplay is added.
 
 Stockfish scores are **from White's perspective**: positive favors White, negative favors Black. Mate scores are separate from pawn scores. Complexity, estimated thinking time and simulated weights are **estimates, not measured human behavior**. Weights compare only the displayed candidates.
 
-The original extension's unrelated engine controls, accuracy tracking, page adapters, translations and author-support link are retained. Its older guide is preserved in [the upstream guide](docs/UPSTREAM-GUIDE.md); current setup and training behavior are described here.
+The floating website panel uses the same readable paper-and-green interface as local study. Its direction follows your selected language, independently of the website, while chess notation and scores stay left-to-right. The donation button and its bundled images have been removed; original authorship and licenses remain.
+
+[Preview the English panel](docs/images/panel-en.png) · [معاينة اللوحة العربية](docs/images/panel-ar.png). These previews use a synthetic board, not a live game.
+
+The original extension's unrelated engine controls, accuracy tracking, page adapters and translations are retained. Its older guide is preserved in [the upstream guide](docs/UPSTREAM-GUIDE.md); current setup and training behavior are described here.
 
 ## Optional AI explanations
 
@@ -87,7 +91,7 @@ npm run check
 
 The extension's JavaScript, CSS, ui-sdk components and Stockfish assets are bundled locally. Manifest V3 does not load UI scripts from a CDN. A source change needs a build and an extension reload; a companion-only change needs a companion restart.
 
-Browser verification uses an isolated profile and mocked OAuth, inference and Chess.com content. The extension test copies the build into ignored `work/` and uses a temporary loopback port, leaving a running user companion alone. With an approved test browser, run `npm run test:browser` for extension/engine checks and `npm run test:ui` for interface checks. See [browser test instructions](WINDOWS-SETUP.md#browser-verification) and the [exact test results and live-test limits](TEST-RESULTS.md). A mocked test passing does not prove that the current Chess.com page or every account/model works.
+Browser verification uses an isolated profile and mocked OAuth, inference and Chess.com content. The extension test copies the build into ignored `work/` and uses a temporary loopback port, leaving a running user companion alone. With an approved test browser, run `npm run test:browser` for extension/engine checks, `npm run test:ui` for study/settings checks and `npm run test:panel` for the floating website panel. See [browser test instructions](WINDOWS-SETUP.md#browser-verification) and the [exact test results and live-test limits](TEST-RESULTS.md). A mocked test passing does not prove that the current Chess.com page or every account/model works.
 
 ## Origin and license
 

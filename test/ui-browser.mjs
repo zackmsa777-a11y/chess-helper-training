@@ -28,6 +28,7 @@ for(const file of ['manifest.json','background.js']){
 assert.ok((await readFile(join(extension,'options.js'),'utf8')).includes('chessSettingsAgent'),'Run npm run build before this test');
 
 const checks=[];const errors=[];const requests=[];const externalRequests=[];const inferences=[];const contrast=[];
+let resizeAlignment;
 let context,server,settings,study;
 let catalogFailure=false,malformed=false,paused=null,startCount=0,cancelCount=0,signedIn=true;
 const account={id:'synthetic-training-account',label:'Training account',accessToken:'synthetic-test-token',model:'training-balanced',welcomeSeen:true};
@@ -280,9 +281,21 @@ try{
 
   await study.screenshot({path:join(images,'study-en.png'),fullPage:true});
   await study.setViewportSize({width:390,height:844});
+  const measureAlignment=()=>{
+    const board=document.querySelector('#board').getBoundingClientRect(),svg=document.querySelector('svg').getBoundingClientRect();
+    return Object.fromEntries(['left','top','width','height'].map(key=>[key,Math.abs(board[key]-svg[key])]));
+  };
+  const resizeStarted=Date.now();
+  resizeAlignment={immediate:await study.evaluate(measureAlignment)};
+  // Viewport changes resolve before ResizeObserver necessarily places the overlay.
+  await study.waitForFunction(()=>{
+    const board=document.querySelector('#board').getBoundingClientRect(),svg=document.querySelector('svg').getBoundingClientRect();
+    return ['left','top','width','height'].every(key=>Math.abs(board[key]-svg[key])<1);
+  },null,{timeout:2000});
+  resizeAlignment.settled=await study.evaluate(measureAlignment);resizeAlignment.settleMs=Date.now()-resizeStarted;
   assert.ok(await study.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   assert.ok(await study.locator('#study-language ui-select-value').evaluate(el=>el.getBoundingClientRect().height<=parseFloat(getComputedStyle(el).lineHeight)+1),'The short language label should stay on one line');
-  assert.ok(await study.evaluate(()=>Math.abs(document.querySelector('#board').getBoundingClientRect().width-document.querySelector('svg').getBoundingClientRect().width)<1));
+  assert.ok(Object.values(resizeAlignment.settled).every(delta=>delta<1),'The board and arrow overlay must align within one pixel after resize');
   await study.screenshot({path:join(output,'study-ui-narrow.png'),fullPage:true});
   pass('Study layout fits 390 pixels and its arrow overlay remains aligned on resize');
 
@@ -307,11 +320,11 @@ try{
 
   assert.deepEqual(externalRequests,[]);assert.deepEqual(errors,[]);
   pass('No page errors or external HTTP traffic; OAuth and inference remain entirely mocked');
-  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({browser:context.browser()?.version(),durationMs:Date.now()-startedAt,passed:checks.length,checks,errors,contrast,mocked:['OAuth','account model catalog','AI inference'],real:['ui-sdk web components','extension runtime','Stockfish WASM','loopback origin validation'],notTested:['real ChatGPT account','live Chess.com','screen reader software'],inferenceCount:inferences.length,ephemeralPort:true},null,2));
+  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({browser:context.browser()?.version(),durationMs:Date.now()-startedAt,passed:checks.length,checks,errors,contrast,resizeAlignment,mocked:['OAuth','account model catalog','AI inference'],real:['ui-sdk web components','extension runtime','Stockfish WASM','loopback origin validation'],notTested:['real ChatGPT account','live Chess.com','screen reader software'],inferenceCount:inferences.length,ephemeralPort:true},null,2));
   console.log(`${checks.length} UI browser checks passed.`);
 }catch(error){
   await settings?.screenshot({path:join(output,'settings-ui-failure.png'),fullPage:true}).catch(()=>{});
-  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({passed:checks.length,checks,errors,failure:error.message,contrast,requests,modelStatus:await settings?.locator('#model-status').textContent().catch(()=>null)},null,2));
+  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({passed:checks.length,checks,errors,failure:error.message,contrast,resizeAlignment,requests,modelStatus:await settings?.locator('#model-status').textContent().catch(()=>null)},null,2));
   throw error;
 }finally{
   paused?.release?.();

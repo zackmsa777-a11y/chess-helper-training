@@ -1,6 +1,6 @@
 {
   "name": "chess-helper-training",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "type": "module",
   "description": "Local Stockfish chess training with optional ChatGPT explanations and English/Arabic UI",
@@ -22,7 +22,8 @@
     "test:browser": "node test/browser.mjs",
     "test:ui": "node test/ui-browser.mjs",
     "check": "node scripts/check.mjs",
-    "companion": "node companion/main.js"
+    "companion": "node companion/main.js",
+    "test:panel": "node test/panel-browser.mjs"
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {

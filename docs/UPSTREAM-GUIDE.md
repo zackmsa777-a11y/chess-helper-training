@@ -97,10 +97,9 @@ Silniejszy (ale ~94 MB) wariant można podmienić, zmieniając nazwę pliku w `e
 
 Przycisk **i** w nagłówku panelu pokazuje / chowa krótkie objaśnienie, jak poruszają się figury (z roszadą, biciem w przelocie i promocją).
 
-## Wsparcie autora
+## Zmiana w wersji treningowej
 
-W stopce panelu (zawsze widocznej, także przy zwiniętym panelu) jest przycisk „Postaw kawę dla autora” (buycoffee.to). Obrazek jest dołączony lokalnie
-(`extension/img/buycoffee-pl.png` dla języka polskiego, `buycoffee-en.png` dla pozostałych), więc samo wyświetlenie panelu nie wysyła żadnych zapytań; sieć jest używana dopiero po kliknięciu linku.
+Przycisk wsparcia finansowego i powiązane obrazy usunięto z wersji treningowej. Oryginalne autorstwo i licencja pozostają zachowane.
 
 ## Prywatność
 

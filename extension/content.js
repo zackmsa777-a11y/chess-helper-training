@@ -3844,15 +3844,19 @@
   };
 
   // src/content/i18n.js
-  var LANGS = { en: "English", pl: "Polski", es: "Espa\xF1ol", de: "Deutsch" };
+  var LANGS = { en: "English", ar: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", pl: "Polski", es: "Espa\xF1ol", de: "Deutsch" };
   var DICT = {
     en: {
       title: "Chess Helper",
+      "panel.subtitle": "Local engine \xB7 practice & analysis",
+      "panel.settings": "Panel settings",
       "power.title": "Turn analysis on / off",
       "fold.title": "Collapse / expand",
-      fairplay: "Learning and analysis tool. Using it in games against other players is prohibited by the rules of chess sites. Play fair!",
+      "fold.expand": "Expand panel",
+      "fold.collapse": "Collapse panel",
+      fairplay: "For local study and practice against built-in bots. Do not use engine assistance against people. Page detection cannot reliably identify bots.",
       "fairplay.ok": "I understand",
-      "live.warn": "A live game against another player was detected. Using an engine in such a game is cheating and violates the rules of chess sites \u2013 your account may be banned. Analysis was switched off.",
+      "live.warn": "This page may be a game against another person. Analysis has been turned off. Page detection cannot reliably identify bots. Use only local study or built-in bots.",
       "status.liveOff": "Analysis off",
       on: "On",
       off: "Off",
@@ -3865,7 +3869,10 @@
       "side.w": "White",
       "side.b": "Black",
       arrows: "Arrows on the board",
+      "arrow.note": "One selected candidate is highlighted. Full variations remain in the list.",
       colors: "Line colors",
+      "color.label": "Line {n} color",
+      "score.note": "Scores favor White when positive. Mate scores are separate.",
       "colors.reset": "Restore default colors",
       showOrder: "Number the arrows (move order)",
       followMine: "Arrows: my next moves",
@@ -3880,7 +3887,6 @@
       "acc.moves": "{n} moves",
       showAccuracy: "Show move accuracy",
       opacity: "Window opacity",
-      coffee: "Buy the author a coffee",
       "info.title": "How the pieces move",
       "piece.k": "King",
       "info.k": "One square in any direction. Castling: the king moves two squares towards a rook and the rook jumps over it (neither may have moved before; the king must not pass through check).",
@@ -3903,7 +3909,7 @@
       depthLabel: "depth {n}",
       "status.searching": "Looking for a board\u2026",
       "status.detected": "Board detected ({site})",
-      "status.noBoard": "No board detected. Open a game or an analysis.",
+      "status.noBoard": "No board detected. Open local analysis or a built-in bot game.",
       "status.off": "Analysis off",
       "status.turn": "{site} \xB7 to move: {side}",
       "status.turnAssumed": "{site} \xB7 to move: {side} (assumed \u2013 change in settings)",
@@ -3916,13 +3922,93 @@
       "err.parse": "Could not interpret the position",
       "err.impossible": "Impossible position (the side not to move is in check)"
     },
+    ar: {
+      title: "\u0645\u0633\u0627\u0639\u062F \u0627\u0644\u0634\u0637\u0631\u0646\u062C",
+      "panel.subtitle": "\u0645\u062D\u0631\u0643 \u0645\u062D\u0644\u064A \xB7 \u062A\u062F\u0631\u064A\u0628 \u0648\u062A\u062D\u0644\u064A\u0644",
+      "panel.settings": "\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0644\u0648\u062D\u0629",
+      "power.title": "\u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u062A\u062D\u0644\u064A\u0644 \u0623\u0648 \u0625\u064A\u0642\u0627\u0641\u0647",
+      "fold.title": "\u0637\u064A \u0627\u0644\u0644\u0648\u062D\u0629 \u0623\u0648 \u062A\u0648\u0633\u064A\u0639\u0647\u0627",
+      "fold.expand": "\u062A\u0648\u0633\u064A\u0639 \u0627\u0644\u0644\u0648\u062D\u0629",
+      "fold.collapse": "\u0637\u064A \u0627\u0644\u0644\u0648\u062D\u0629",
+      fairplay: "\u0644\u0644\u062F\u0631\u0627\u0633\u0629 \u0627\u0644\u0645\u062D\u0644\u064A\u0629 \u0648\u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0645\u0639 \u0627\u0644\u0631\u0648\u0628\u0648\u062A\u0627\u062A \u0627\u0644\u0645\u062F\u0645\u062C\u0629. \u0644\u0627 \u062A\u0633\u062A\u062E\u062F\u0645 \u0645\u0633\u0627\u0639\u062F\u0629 \u0627\u0644\u0645\u062D\u0631\u0643 \u0636\u062F \u0623\u0634\u062E\u0627\u0635. \u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0627\u0643\u062A\u0634\u0627\u0641 \u0627\u0644\u0635\u0641\u062D\u0629 \u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0631\u0648\u0628\u0648\u062A\u0627\u062A \u0628\u0634\u0643\u0644 \u0645\u0648\u062B\u0648\u0642.",
+      "fairplay.ok": "\u0641\u0647\u0645\u062A",
+      "live.warn": "\u0642\u062F \u062A\u0643\u0648\u0646 \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629 \u0645\u0628\u0627\u0631\u0627\u0629 \u0636\u062F \u0634\u062E\u0635 \u0622\u062E\u0631. \u062A\u0645 \u0625\u064A\u0642\u0627\u0641 \u0627\u0644\u062A\u062D\u0644\u064A\u0644. \u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0627\u0643\u062A\u0634\u0627\u0641 \u0627\u0644\u0635\u0641\u062D\u0629 \u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0631\u0648\u0628\u0648\u062A\u0627\u062A \u0628\u0634\u0643\u0644 \u0645\u0648\u062B\u0648\u0642. \u0627\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0623\u062F\u0627\u0629 \u0644\u0644\u062F\u0631\u0627\u0633\u0629 \u0627\u0644\u0645\u062D\u0644\u064A\u0629 \u0623\u0648 \u0645\u0639 \u0627\u0644\u0631\u0648\u0628\u0648\u062A\u0627\u062A \u0627\u0644\u0645\u062F\u0645\u062C\u0629 \u0641\u0642\u0637.",
+      "status.liveOff": "\u0627\u0644\u062A\u062D\u0644\u064A\u0644 \u0645\u062A\u0648\u0642\u0641",
+      on: "\u0645\u0641\u0639\u0651\u0644",
+      off: "\u0645\u062A\u0648\u0642\u0641",
+      hint: "\u062A\u0644\u0645\u064A\u062D",
+      settings: "\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A",
+      lines: "\u0639\u062F\u062F \u062E\u0637\u0648\u0637 \u0627\u0644\u0644\u0639\u0628",
+      depth: "\u0639\u0645\u0642 \u0627\u0644\u062A\u062D\u0644\u064A\u0644",
+      turn: "\u0635\u0627\u062D\u0628 \u0627\u0644\u062F\u0648\u0631",
+      "turn.auto": "\u062A\u0644\u0642\u0627\u0626\u064A",
+      "side.w": "\u0627\u0644\u0623\u0628\u064A\u0636",
+      "side.b": "\u0627\u0644\u0623\u0633\u0648\u062F",
+      arrows: "\u0627\u0644\u0623\u0633\u0647\u0645 \u0639\u0644\u0649 \u0627\u0644\u0631\u0642\u0639\u0629",
+      "arrow.note": "\u062A\u064F\u0645\u064A\u0651\u0632 \u0646\u0642\u0644\u0629 \u0645\u0631\u0634\u062D\u0629 \u0648\u0627\u062D\u062F\u0629 \u0645\u062D\u062F\u062F\u0629. \u062A\u0628\u0642\u0649 \u062E\u0637\u0648\u0637 \u0627\u0644\u0644\u0639\u0628 \u0643\u0627\u0645\u0644\u0629 \u0641\u064A \u0627\u0644\u0642\u0627\u0626\u0645\u0629.",
+      colors: "\u0623\u0644\u0648\u0627\u0646 \u062E\u0637\u0648\u0637 \u0627\u0644\u0644\u0639\u0628",
+      "color.label": "\u0644\u0648\u0646 \u062E\u0637 \u0627\u0644\u0644\u0639\u0628 {n}",
+      "score.note": "\u0627\u0644\u062A\u0642\u064A\u064A\u0645 \u0627\u0644\u0645\u0648\u062C\u0628 \u0644\u0635\u0627\u0644\u062D \u0627\u0644\u0623\u0628\u064A\u0636. \u062A\u0642\u064A\u064A\u0645\u0627\u062A \u0643\u0634 \u0645\u0627\u062A \u0645\u0646\u0641\u0635\u0644\u0629.",
+      "colors.reset": "\u0627\u0633\u062A\u0639\u0627\u062F\u0629 \u0627\u0644\u0623\u0644\u0648\u0627\u0646 \u0627\u0644\u0627\u0641\u062A\u0631\u0627\u0636\u064A\u0629",
+      showOrder: "\u062A\u0631\u0642\u064A\u0645 \u0627\u0644\u0623\u0633\u0647\u0645 \u062D\u0633\u0628 \u062A\u0631\u062A\u064A\u0628 \u0627\u0644\u0646\u0642\u0644\u0627\u062A",
+      followMine: "\u0627\u0644\u0623\u0633\u0647\u0645: \u0646\u0642\u0644\u0627\u062A\u064A \u0627\u0644\u062A\u0627\u0644\u064A\u0629",
+      followOpp: "\u0627\u0644\u0623\u0633\u0647\u0645: \u0631\u062F\u0648\u062F \u0627\u0644\u062E\u0635\u0645",
+      onlyBottom: "\u0627\u0644\u0637\u0631\u0641 \u0623\u0633\u0641\u0644 \u0627\u0644\u0631\u0642\u0639\u0629 \u0641\u0642\u0637",
+      "group.analysis": "\u0627\u0644\u062A\u062D\u0644\u064A\u0644",
+      "group.arrows": "\u0627\u0644\u0623\u0633\u0647\u0645",
+      "group.general": "\u0639\u0627\u0645",
+      "acc.title": "\u0627\u0644\u062F\u0642\u0629",
+      "acc.last": "\u0627\u0644\u0623\u062E\u064A\u0631\u0629",
+      "acc.avg": "\u0627\u0644\u0645\u062A\u0648\u0633\u0637",
+      "acc.moves": "{n} \u0646\u0642\u0644\u0627\u062A",
+      showAccuracy: "\u0625\u0638\u0647\u0627\u0631 \u062F\u0642\u0629 \u0627\u0644\u0646\u0642\u0644\u0627\u062A",
+      opacity: "\u0639\u062A\u0627\u0645\u0629 \u0627\u0644\u0646\u0627\u0641\u0630\u0629",
+      "info.title": "\u0643\u064A\u0641 \u062A\u062A\u062D\u0631\u0643 \u0627\u0644\u0642\u0637\u0639",
+      "piece.k": "\u0627\u0644\u0645\u0644\u0643",
+      "info.k": "\u0645\u0631\u0628\u0639 \u0648\u0627\u062D\u062F \u0641\u064A \u0623\u064A \u0627\u062A\u062C\u0627\u0647. \u0641\u064A \u0627\u0644\u062A\u0628\u064A\u064A\u062A \u064A\u062A\u062D\u0631\u0643 \u0627\u0644\u0645\u0644\u0643 \u0645\u0631\u0628\u0639\u064A\u0646 \u0646\u062D\u0648 \u0627\u0644\u0631\u062E\u060C \u0648\u064A\u0646\u062A\u0642\u0644 \u0627\u0644\u0631\u062E \u0625\u0644\u0649 \u0627\u0644\u062C\u0627\u0646\u0628 \u0627\u0644\u0622\u062E\u0631 \u0645\u0646\u0647. \u064A\u0634\u062A\u0631\u0637 \u0623\u0644\u0627 \u064A\u0643\u0648\u0646 \u0623\u064A \u0645\u0646\u0647\u0645\u0627 \u0642\u062F \u062A\u062D\u0631\u0643\u060C \u0648\u0623\u0644\u0627 \u064A\u0643\u0648\u0646 \u0627\u0644\u0645\u0644\u0643 \u0641\u064A \u0643\u0634 \u0623\u0648 \u064A\u0645\u0631 \u0628\u0645\u0631\u0628\u0639 \u0645\u0647\u062F\u062F \u0623\u0648 \u064A\u0635\u0644 \u0625\u0644\u064A\u0647.",
+      "piece.q": "\u0627\u0644\u0648\u0632\u064A\u0631",
+      "info.q": "\u0623\u064A \u0639\u062F\u062F \u0645\u0646 \u0627\u0644\u0645\u0631\u0628\u0639\u0627\u062A \u0623\u0641\u0642\u064A\u064B\u0627 \u0623\u0648 \u0639\u0645\u0648\u062F\u064A\u064B\u0627 \u0623\u0648 \u0642\u0637\u0631\u064A\u064B\u0627.",
+      "piece.r": "\u0627\u0644\u0631\u062E",
+      "info.r": "\u0623\u064A \u0639\u062F\u062F \u0645\u0646 \u0627\u0644\u0645\u0631\u0628\u0639\u0627\u062A \u0623\u0641\u0642\u064A\u064B\u0627 \u0623\u0648 \u0639\u0645\u0648\u062F\u064A\u064B\u0627.",
+      "piece.b": "\u0627\u0644\u0641\u064A\u0644",
+      "info.b": "\u0623\u064A \u0639\u062F\u062F \u0645\u0646 \u0627\u0644\u0645\u0631\u0628\u0639\u0627\u062A \u0642\u0637\u0631\u064A\u064B\u0627\u060C \u0648\u064A\u0628\u0642\u0649 \u062F\u0627\u0626\u0645\u064B\u0627 \u0639\u0644\u0649 \u0644\u0648\u0646 \u0627\u0644\u0645\u0631\u0628\u0639\u0627\u062A \u0646\u0641\u0633\u0647.",
+      "piece.n": "\u0627\u0644\u062D\u0635\u0627\u0646",
+      "info.n": "\u0645\u0631\u0628\u0639\u0627\u0646 \u0641\u064A \u0627\u062A\u062C\u0627\u0647 \u062B\u0645 \u0645\u0631\u0628\u0639 \u0639\u0645\u0648\u062F\u064A \u0639\u0644\u064A\u0647. \u0647\u0648 \u0627\u0644\u0642\u0637\u0639\u0629 \u0627\u0644\u0648\u062D\u064A\u062F\u0629 \u0627\u0644\u062A\u064A \u062A\u0642\u0641\u0632 \u0641\u0648\u0642 \u0627\u0644\u0642\u0637\u0639 \u0627\u0644\u0623\u062E\u0631\u0649.",
+      "piece.p": "\u0627\u0644\u0628\u064A\u062F\u0642",
+      "info.p": "\u0645\u0631\u0628\u0639 \u0648\u0627\u062D\u062F \u0625\u0644\u0649 \u0627\u0644\u0623\u0645\u0627\u0645\u060C \u0623\u0648 \u0645\u0631\u0628\u0639\u0627\u0646 \u0645\u0646 \u0645\u0648\u0636\u0639 \u0627\u0644\u0628\u062F\u0627\u064A\u0629. \u064A\u0623\u062E\u0630 \u0642\u0637\u0639\u0629 \u0641\u064A \u0627\u0644\u0645\u0631\u0628\u0639 \u0627\u0644\u0642\u0637\u0631\u064A \u0627\u0644\u0623\u0645\u0627\u0645\u064A. \u0644\u0647 \u062D\u0631\u0643\u062A\u0627\u0646 \u062E\u0627\u0635\u062A\u0627\u0646: \u0627\u0644\u0623\u062E\u0630 \u0628\u0627\u0644\u062A\u062C\u0627\u0648\u0632 \u0648\u0627\u0644\u062A\u0631\u0642\u064A\u0629 \u0641\u064A \u0627\u0644\u0635\u0641 \u0627\u0644\u0623\u062E\u064A\u0631.",
+      "acc.win": "\u0627\u0644\u0641\u0648\u0632",
+      "acc.win.title": "\u0627\u062D\u062A\u0645\u0627\u0644 \u0627\u0644\u0641\u0648\u0632 \u0641\u064A \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0627\u0644\u062D\u0627\u0644\u064A\u0629\u060C \u0648\u0641\u0642 \u062A\u0642\u062F\u064A\u0631 \u0627\u0644\u0645\u062D\u0631\u0643",
+      language: "\u0644\u063A\u0629 \u0627\u0644\u0648\u0627\u062C\u0647\u0629",
+      reset: "\u0627\u0633\u062A\u0639\u0627\u062F\u0629 \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0627\u0641\u062A\u0631\u0627\u0636\u064A\u0629",
+      "reset.confirm": "\u0627\u0646\u0642\u0631 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649 \u0644\u0644\u062A\u0623\u0643\u064A\u062F",
+      engineNote: "\u0627\u0644\u0645\u062D\u0631\u0643: Stockfish 19 (lite)\u060C \u064A\u0639\u0645\u0644 \u0645\u062D\u0644\u064A\u064B\u0627 \u0641\u064A \u0645\u062A\u0635\u0641\u062D\u0643.",
+      depthLabel: "\u0627\u0644\u0639\u0645\u0642 {n}",
+      "status.searching": "\u062C\u0627\u0631\u064D \u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0631\u0642\u0639\u0629\u2026",
+      "status.detected": "\u062A\u0645 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0631\u0642\u0639\u0629 ({site})",
+      "status.noBoard": "\u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0631\u0642\u0639\u0629. \u0627\u0641\u062A\u062D \u062A\u062D\u0644\u064A\u0644\u064B\u0627 \u0645\u062D\u0644\u064A\u064B\u0627 \u0623\u0648 \u0645\u0628\u0627\u0631\u0627\u0629 \u0645\u0639 \u0631\u0648\u0628\u0648\u062A \u0645\u062F\u0645\u062C.",
+      "status.off": "\u0627\u0644\u062A\u062D\u0644\u064A\u0644 \u0645\u062A\u0648\u0642\u0641",
+      "status.turn": "{site} \xB7 \u0627\u0644\u062F\u0648\u0631: {side}",
+      "status.turnAssumed": "{site} \xB7 \u0627\u0644\u062F\u0648\u0631: {side} (\u062A\u0642\u062F\u064A\u0631\u064A\u060C \u0648\u064A\u0645\u0643\u0646 \u062A\u063A\u064A\u064A\u0631\u0647 \u0641\u064A \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A)",
+      "status.opponent": "\u062F\u0648\u0631 \u0627\u0644\u062E\u0635\u0645 ({side})\u2026",
+      "status.mate": "\u0643\u0634 \u0645\u0627\u062A\u060C \u0627\u0646\u062A\u0647\u062A \u0627\u0644\u0645\u0628\u0627\u0631\u0627\u0629",
+      "status.draw": "\u062A\u0639\u0627\u062F\u0644\u060C \u0627\u0646\u062A\u0647\u062A \u0627\u0644\u0645\u0628\u0627\u0631\u0627\u0629",
+      "status.noPosition": "\u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0648\u0636\u0639\u064A\u0629 \u0635\u0627\u0644\u062D\u0629 \u0639\u0644\u0649 \u0627\u0644\u0631\u0642\u0639\u0629",
+      "err.kings": "\u064A\u062C\u0628 \u0623\u0646 \u064A\u0643\u0648\u0646 \u0627\u0644\u0645\u0644\u0643\u0627\u0646 \u0639\u0644\u0649 \u0627\u0644\u0631\u0642\u0639\u0629",
+      "err.pawn": "\u064A\u0648\u062C\u062F \u0628\u064A\u062F\u0642 \u0641\u064A \u0627\u0644\u0635\u0641 \u0627\u0644\u0623\u0648\u0644 \u0623\u0648 \u0627\u0644\u0623\u062E\u064A\u0631",
+      "err.parse": "\u062A\u0639\u0630\u0651\u0631\u062A \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u0648\u0636\u0639\u064A\u0629",
+      "err.impossible": "\u0648\u0636\u0639\u064A\u0629 \u0645\u0633\u062A\u062D\u064A\u0644\u0629: \u0627\u0644\u0645\u0644\u0643 \u0627\u0644\u0630\u064A \u0644\u064A\u0633 \u0644\u0647 \u0627\u0644\u062F\u0648\u0631 \u0641\u064A \u0643\u0634"
+    },
     pl: {
       title: "Chess Helper",
+      "panel.subtitle": "Lokalny silnik \xB7 trening i analiza",
+      "panel.settings": "Ustawienia panelu",
       "power.title": "W\u0142\u0105cz / wy\u0142\u0105cz analiz\u0119",
       "fold.title": "Zwi\u0144 / rozwi\u0144",
-      fairplay: "Aplikacja do nauki i analizy. U\u017Cywanie jej w partiach z innymi graczami jest zabronione regulaminami serwis\xF3w szachowych. Graj fair play!",
+      "fold.expand": "Rozwi\u0144 panel",
+      "fold.collapse": "Zwi\u0144 panel",
+      fairplay: "Do lokalnej nauki i treningu z wbudowanymi botami. Nie korzystaj z pomocy silnika przeciwko ludziom. Wykrywanie strony nie pozwala wiarygodnie rozpozna\u0107 bot\xF3w.",
       "fairplay.ok": "Rozumiem",
-      "live.warn": "Wykryto parti\u0119 na \u017Cywo z innym graczem. U\u017Cywanie silnika w takiej grze to oszustwo i \u0142amie regulaminy serwis\xF3w szachowych \u2013 grozi blokad\u0105 konta. Analiz\u0119 wy\u0142\u0105czono.",
+      "live.warn": "Ta strona mo\u017Ce przedstawia\u0107 parti\u0119 przeciwko innej osobie. Analiz\u0119 wy\u0142\u0105czono. Wykrywanie strony nie pozwala wiarygodnie rozpozna\u0107 bot\xF3w. U\u017Cywaj tylko do lokalnej nauki lub z wbudowanymi botami.",
       "status.liveOff": "Analiza wy\u0142\u0105czona",
       on: "W\u0142.",
       off: "Wy\u0142.",
@@ -3935,7 +4021,10 @@
       "side.w": "bia\u0142e",
       "side.b": "czarne",
       arrows: "Strza\u0142ki na planszy",
+      "arrow.note": "Wyr\xF3\u017Cniony jest jeden wybrany ruch. Pe\u0142ne warianty pozostaj\u0105 na li\u015Bcie.",
       colors: "Kolory wariant\xF3w",
+      "color.label": "Kolor wariantu {n}",
+      "score.note": "Dodatnia ocena sprzyja bia\u0142ym. Oceny mata s\u0105 oddzielne.",
       "colors.reset": "Przywr\xF3\u0107 domy\u015Blne kolory",
       showOrder: "Numeruj strza\u0142ki (kolejno\u015B\u0107 ruch\xF3w)",
       followMine: "Strza\u0142ki: moje kolejne ruchy",
@@ -3950,7 +4039,6 @@
       "acc.moves": "ruch\xF3w: {n}",
       showAccuracy: "Poka\u017C dok\u0142adno\u015B\u0107 ruch\xF3w",
       opacity: "Nieprzezroczysto\u015B\u0107 okna",
-      coffee: "Postaw kaw\u0119 dla autora",
       "info.title": "Jak poruszaj\u0105 si\u0119 figury",
       "piece.k": "Kr\xF3l",
       "info.k": "Jedno pole w dowolnym kierunku. Roszada: kr\xF3l idzie o dwa pola w stron\u0119 wie\u017Cy, a wie\u017Ca przeskakuje na drug\u0105 jego stron\u0119 (\u017Cadna z nich nie mog\u0142a si\u0119 wcze\u015Bniej ruszy\u0107, a kr\xF3l nie przechodzi przez szach).",
@@ -3973,7 +4061,7 @@
       depthLabel: "g\u0142\u0119b. {n}",
       "status.searching": "Szukam planszy\u2026",
       "status.detected": "Wykryto plansz\u0119 ({site})",
-      "status.noBoard": "Nie wykryto planszy. Otw\xF3rz parti\u0119 lub analiz\u0119.",
+      "status.noBoard": "Nie wykryto planszy. Otw\xF3rz lokaln\u0105 analiz\u0119 lub parti\u0119 z wbudowanym botem.",
       "status.off": "Analiza wy\u0142\u0105czona",
       "status.turn": "{site} \xB7 na ruchu: {side}",
       "status.turnAssumed": "{site} \xB7 na ruchu: {side} (za\u0142o\u017Cono \u2013 zmie\u0144 w ustawieniach)",
@@ -3988,11 +4076,15 @@
     },
     es: {
       title: "Chess Helper",
+      "panel.subtitle": "Motor local \xB7 pr\xE1ctica y an\xE1lisis",
+      "panel.settings": "Ajustes del panel",
       "power.title": "Activar / desactivar el an\xE1lisis",
       "fold.title": "Contraer / expandir",
-      fairplay: "Herramienta de aprendizaje y an\xE1lisis. Usarla en partidas contra otras personas est\xE1 prohibido por las normas de los sitios de ajedrez. \xA1Juega limpio!",
+      "fold.expand": "Expandir panel",
+      "fold.collapse": "Contraer panel",
+      fairplay: "Para estudiar localmente y practicar contra bots integrados. No uses la ayuda del motor contra personas. La detecci\xF3n de p\xE1ginas no puede identificar bots de forma fiable.",
       "fairplay.ok": "Entendido",
-      "live.warn": "Se detect\xF3 una partida en vivo contra otra persona. Usar un motor en una partida as\xED es hacer trampa e infringe las normas de los sitios de ajedrez; tu cuenta puede ser bloqueada. Se desactiv\xF3 el an\xE1lisis.",
+      "live.warn": "Esta p\xE1gina podr\xEDa ser una partida contra otra persona. Se desactiv\xF3 el an\xE1lisis. La detecci\xF3n de p\xE1ginas no puede identificar bots de forma fiable. \xDAsalo solo para estudio local o con bots integrados.",
       "status.liveOff": "An\xE1lisis desactivado",
       on: "Act.",
       off: "Desact.",
@@ -4005,7 +4097,10 @@
       "side.w": "blancas",
       "side.b": "negras",
       arrows: "Flechas en el tablero",
+      "arrow.note": "Se destaca una jugada candidata seleccionada. Las variantes completas permanecen en la lista.",
       colors: "Colores de las variantes",
+      "color.label": "Color de la variante {n}",
+      "score.note": "Las puntuaciones positivas favorecen a las blancas. Las de mate se muestran por separado.",
       "colors.reset": "Restaurar colores por defecto",
       showOrder: "Numerar las flechas (orden de jugadas)",
       followMine: "Flechas: mis siguientes jugadas",
@@ -4020,7 +4115,6 @@
       "acc.moves": "{n} jugadas",
       showAccuracy: "Mostrar precisi\xF3n de las jugadas",
       opacity: "Opacidad de la ventana",
-      coffee: "Invita al autor a un caf\xE9",
       "info.title": "C\xF3mo se mueven las piezas",
       "piece.k": "Rey",
       "info.k": "Una casilla en cualquier direcci\xF3n. Enroque: el rey se mueve dos casillas hacia una torre y la torre salta al otro lado (ninguno debe haberse movido antes y el rey no puede pasar por jaque).",
@@ -4043,7 +4137,7 @@
       depthLabel: "prof. {n}",
       "status.searching": "Buscando un tablero\u2026",
       "status.detected": "Tablero detectado ({site})",
-      "status.noBoard": "No se detecta ning\xFAn tablero. Abre una partida o un an\xE1lisis.",
+      "status.noBoard": "No se detecta ning\xFAn tablero. Abre un an\xE1lisis local o una partida contra un bot integrado.",
       "status.off": "An\xE1lisis desactivado",
       "status.turn": "{site} \xB7 mueve: {side}",
       "status.turnAssumed": "{site} \xB7 mueve: {side} (supuesto: c\xE1mbialo en los ajustes)",
@@ -4058,11 +4152,15 @@
     },
     de: {
       title: "Chess Helper",
+      "panel.subtitle": "Lokale Engine \xB7 Training und Analyse",
+      "panel.settings": "Panel-Einstellungen",
       "power.title": "Analyse ein- / ausschalten",
       "fold.title": "Einklappen / ausklappen",
-      fairplay: "Lern- und Analysewerkzeug. Die Nutzung in Partien gegen andere Spieler ist durch die Regeln der Schachplattformen verboten. Spiel fair!",
+      "fold.expand": "Panel ausklappen",
+      "fold.collapse": "Panel einklappen",
+      fairplay: "F\xFCr lokales Lernen und Training gegen integrierte Bots. Verwende keine Engine-Hilfe gegen Menschen. Die Seitenerkennung kann Bots nicht zuverl\xE4ssig identifizieren.",
       "fairplay.ok": "Verstanden",
-      "live.warn": "Eine Live-Partie gegen einen anderen Spieler wurde erkannt. Die Nutzung einer Engine in so einer Partie ist Betrug und verst\xF6\xDFt gegen die Regeln der Schachplattformen \u2013 dein Konto kann gesperrt werden. Die Analyse wurde ausgeschaltet.",
+      "live.warn": "Diese Seite k\xF6nnte eine Partie gegen einen Menschen zeigen. Die Analyse wurde ausgeschaltet. Die Seitenerkennung kann Bots nicht zuverl\xE4ssig identifizieren. Nur f\xFCr lokales Lernen oder integrierte Bots verwenden.",
       "status.liveOff": "Analyse aus",
       on: "Ein",
       off: "Aus",
@@ -4075,7 +4173,10 @@
       "side.w": "Wei\xDF",
       "side.b": "Schwarz",
       arrows: "Pfeile auf dem Brett",
+      "arrow.note": "Ein ausgew\xE4hlter Kandidatenzug wird hervorgehoben. Vollst\xE4ndige Varianten bleiben in der Liste.",
       colors: "Farben der Varianten",
+      "color.label": "Farbe der Variante {n}",
+      "score.note": "Positive Bewertungen sprechen f\xFCr Wei\xDF. Mattbewertungen werden getrennt angezeigt.",
       "colors.reset": "Standardfarben wiederherstellen",
       showOrder: "Pfeile nummerieren (Zugreihenfolge)",
       followMine: "Pfeile: meine n\xE4chsten Z\xFCge",
@@ -4090,7 +4191,6 @@
       "acc.moves": "{n} Z\xFCge",
       showAccuracy: "Zuggenauigkeit anzeigen",
       opacity: "Deckkraft des Fensters",
-      coffee: "Spendiere dem Autor einen Kaffee",
       "info.title": "So ziehen die Figuren",
       "piece.k": "K\xF6nig",
       "info.k": "Ein Feld in jede Richtung. Rochade: Der K\xF6nig zieht zwei Felder zu einem Turm, der Turm springt auf die andere Seite (beide d\xFCrfen vorher nicht gezogen haben, der K\xF6nig darf nicht durch ein Schachgebot ziehen).",
@@ -4113,7 +4213,7 @@
       depthLabel: "Tiefe {n}",
       "status.searching": "Suche ein Brett\u2026",
       "status.detected": "Brett erkannt ({site})",
-      "status.noBoard": "Kein Brett erkannt. \xD6ffne eine Partie oder eine Analyse.",
+      "status.noBoard": "Kein Brett erkannt. \xD6ffne eine lokale Analyse oder eine Partie gegen einen integrierten Bot.",
       "status.off": "Analyse aus",
       "status.turn": "{site} \xB7 am Zug: {side}",
       "status.turnAssumed": "{site} \xB7 am Zug: {side} (angenommen \u2013 in den Einstellungen \xE4nderbar)",
@@ -4208,139 +4308,146 @@
   // src/content/panel.js
   var TEMPLATE = `
 <style>
-  :host { all: initial; }
-  .box { display: flex; flex-direction: column; position: fixed; z-index: 2147483001; width: 336px; font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: #e5e7eb; background: #1f2229; border: 1px solid #3a3f4b; border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.45); user-select: none; }
-  header { display: flex; align-items: center; gap: 6px; padding: 7px 8px 7px 10px; cursor: move; border-bottom: 1px solid #323744; }
-  header .title { flex: 1; font-weight: 600; }
-  button { font: inherit; color: inherit; background: #2c313c; border: 1px solid #3a3f4b; border-radius: 6px; padding: 1px 7px; cursor: pointer; }
-  button:hover { background: #373d4b; }
-  button.off { color: #f87171; }
-  .fair { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: #3b2f0b; border-bottom: 1px solid #5c4a10; color: #fde68a; font-size: 12px; line-height: 1.35; }
-  .fair[hidden] { display: none; }
-  .fair span { flex: 1; }
-  .fair button { flex: none; color: #fde68a; border-color: #8a6d1a; background: #4d3d0e; }
-  .fair button:hover { background: #5c4a10; }
-  .live { display: flex; padding: 7px 10px; background: #3f1d1d; border-bottom: 1px solid #6b2a2a; color: #fecaca; font-size: 12px; line-height: 1.35; }
-  .live[hidden] { display: none; }
-  header, .fair, .live, .foot { flex: none; }
-  .foot { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 10px 10px; border-top: 1px solid #323744; }
-  .foot .hint { margin: 0; text-align: center; }
-  .foot a { display: block; line-height: 0; }
-  .foot img { height: 40px; width: auto; }
-  .body { padding: 9px 10px 10px; overflow-y: auto; min-height: 0; scrollbar-width: thin; scrollbar-color: #4b5160 transparent; }
-  .collapsed .body { display: none; }
-  .status { color: #9ca3af; font-size: 12px; min-height: 17px; }
-  .status.err { color: #fbbf24; }
-  .best { display: flex; align-items: baseline; gap: 10px; margin: 8px 0 6px; }
-  .best .san { font-size: 26px; font-weight: 700; color: #4ade80; letter-spacing: .5px; }
-  .best .score { font-size: 15px; font-weight: 600; }
-  .best .depth { margin-left: auto; color: #9ca3af; font-size: 11px; }
-  .bar { height: 6px; background: #111; border-radius: 3px; overflow: hidden; }
-  .bar > div { height: 100%; width: 50%; background: #f3f4f6; transition: width .25s; }
-  .lines { margin-top: 8px; display: grid; gap: 3px; }
-  .line { display: flex; gap: 8px; font-size: 12px; }
-  .line .c { flex: none; width: 10px; height: 10px; margin-top: 4px; border-radius: 50%; }
-  .line .s { flex: none; width: 42px; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .line .t { color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .line .t .m { margin-right: 5px; }
-  .line .t .pc { font-size: 15px; line-height: 1; vertical-align: -1px; margin-right: 1px; color: #f3f4f6; }
-  .line .n { flex: none; color: #9ca3af; font-variant-numeric: tabular-nums; }
-  details.main { margin-top: 10px; border-top: 1px solid #323744; padding-top: 7px; }
-  summary { cursor: pointer; color: #9ca3af; list-style: none; }
-  summary::-webkit-details-marker { display: none; }
-  summary::before { content: "\u25B8"; display: inline-block; width: 14px; }
-  details[open] > summary::before { content: "\u25BE"; }
-  details.sec { margin-top: 8px; }
-  details.sec > summary { padding-bottom: 2px; border-bottom: 1px solid #323744; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
-  .opacity { display: flex; align-items: center; gap: 6px; }
-  .opacity input { width: 90px; margin: 0; }
-  .opacity .pct { min-width: 32px; text-align: right; color: #9ca3af; font-variant-numeric: tabular-nums; }
-  .info-btn { width: 20px; height: 20px; padding: 0; border-radius: 50%; font: italic 700 13px/1 Georgia, "Times New Roman", serif; }
-  .info-btn.on { background: #3b82f6; border-color: #3b82f6; color: #fff; }
-  .info-box { display: grid; gap: 6px; margin-bottom: 10px; padding: 8px 9px; background: #262a33; border: 1px solid #323744; border-radius: 8px; font-size: 12px; line-height: 1.35; user-select: text; }
-  .info-box[hidden] { display: none; }
-  .info-box h4 { margin: 0; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: #9ca3af; }
-  .info-box .pr { display: grid; grid-template-columns: 22px 1fr; gap: 6px; }
-  .info-box .pc { font-size: 20px; line-height: 1.1; color: #f3f4f6; text-align: center; }
-  .info-box b { color: #e5e7eb; }
-  .info-box span.tx { color: #aeb6c4; }
-  .acc { margin-top: 10px; display: grid; grid-template-columns: 1fr 50px 50px 50px; gap: 2px 6px; font-size: 12px; align-items: baseline; }
-  .acc[hidden] { display: none; }
-  .acc .h { color: #9ca3af; font-size: 11px; text-align: right; }
-  .acc .h:first-child { text-align: left; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
-  .acc .who { text-transform: capitalize; color: #cbd5e1; }
-  .acc .who .pc { font-size: 15px; margin-right: 3px; vertical-align: -1px; }
-  .acc .v { text-align: right; font-variant-numeric: tabular-nums; color: #6b7280; }
+  :host { all: initial; unicode-bidi: isolate; }
+  .box, .box * { box-sizing: border-box; }
+  .box { container: chess-panel / inline-size; display: flex; flex-direction: column; position: fixed; z-index: 2147483001;
+    inline-size: 380px; min-inline-size: min(320px, calc(100vw - 16px)); max-inline-size: calc(100vw - 16px);
+    font: 14px/1.55 "Segoe UI", Tahoma, Arial, sans-serif; color: #192b29; background: #f5f3ec; color-scheme: only light;
+    border: 1px solid #9caaa1; border-radius: 14px; box-shadow: 0 10px 36px #192b292e; text-align: start; unicode-bidi: isolate; overflow: hidden; }
+  .panel-header { display: grid; grid-template-columns: minmax(0,1fr) repeat(3,48px); align-items: center; gap: 6px; padding: 12px 14px 8px; cursor: move; touch-action: none; flex: none; }
+  .panel-header .title { font-size: 17px; line-height: 1.25; font-weight: 700; color: #17534a; min-inline-size: 0; }
+  .panel-header .brand-icon { font-size: 25px; vertical-align: -2px; margin-inline-end: 3px; }
+  :where(.panel-header,.panel-intro,.fair,.panel-settings) button, .hint-btn { min-block-size: 48px; min-inline-size: 48px; padding: 9px 12px; font: 16px/1.4 "Segoe UI",Tahoma,Arial,sans-serif; color: #192b29; background: #fffefb; border: 1px solid #788781; border-radius: 7px; cursor: pointer; }
+  :where(.panel-header,.panel-intro,.fair,.panel-settings) button:hover, .hint-btn:hover { background: #e7eee3; }
+  :where(.panel-header,.panel-intro,.fair,.panel-settings) :is(button,input,select,summary):focus-visible, .hint-btn:focus-visible { outline: 3px solid #073a8c; outline-offset: 3px; }
+  .panel-header button { padding-inline: 4px; font-size: 14px; font-weight: 650; }
+  .panel-header .power { color: #17534a; background: #e3ece0; border-color: #17534a; }
+  .panel-header .power.off { color: #822b20; background: #fff1e9; border-color: #9b392d; }
+  .panel-header .fold { font-size: 23px; font-weight: 400; }
+  .panel-intro { display: flex; align-items: center; gap: 12px; padding: 0 14px 12px; border-block-end: 1px solid #d3d9d0; flex: none; }
+  .panel-subtitle { margin: 0; color: #556460; font-size: 12px; flex: 1; }
+  .panel-intro .settings-jump { font-size: 13px; color: #17534a; font-weight: 650; }
+  .fair { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 16px; background: #f6eed6; border-block-end: 1px solid #bfae77; color: #624c17; font-size: 13px; flex: none; }
+  .fair button { align-self: flex-start; color: #624c17; border-color: #8e7840; background: #fffaf0; }
+  .live { padding: 12px 16px; background: #fff1e9; border-block-end: 1px solid #c38c77; color: #822b20; font-size: 13px; flex: none; }
+  .box > .foot { flex: none; padding: 10px 16px; border-block-start: 1px solid #d3d9d0; color: #556460; background: #f5f3ec; font-size: 12px; }
+  .box > .body { padding: 16px; overflow-y: auto; min-block-size: 0; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #788781 #f5f3ec; }
+  .box.collapsed > .body { display: none; }
+  .body > .status { color: #556460; font-size: 13px; min-block-size: 20px; }
+  .body > .status.err { color: #822b20; }
+  .best { display: flex; flex-wrap: wrap; align-items: baseline; gap: 9px; margin-block: 10px 7px; }
+  .best .san { font-size: 32px; font-weight: 700; line-height: 1.2; color: #17534a; }
+  .best .score { font-size: 18px; font-weight: 650; }
+  .best .depth { margin-inline-start: auto; color: #556460; font-size: 12px; }
+  .best :is(.san,.score), .line, .line :is(.s,.t,.n), .opacity .pct, .acc .v { direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums; }
+  .bar { block-size: 8px; background: #192b29; border: 1px solid #788781; border-radius: 5px; overflow: hidden; direction: ltr; }
+  .bar > div { block-size: 100%; width: 50%; background: #fffefb; }
+  .score-note { margin: 7px 0 10px; color: #556460; font-size: 12px; }
+  .lines { display: grid; gap: 7px; }
+  .line { display: flex; align-items: baseline; gap: 8px; padding: 9px 10px; border: 1px solid #d3d9d0; background: #fffefb; border-radius: 7px; font-size: 13px; text-align: left; }
+  .line .c { flex: none; inline-size: 9px; block-size: 9px; border-radius: 50%; box-shadow: 0 0 0 1px #192b2940; }
+  .line .s { flex: none; min-inline-size: 42px; font-weight: 650; }
+  .line .t { color: #192b29; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .line .t .m { margin-inline-end: 5px; }
+  .line .t .pc { font-size: 17px; line-height: 1; vertical-align: -1px; margin-inline-end: 1px; color: #192b29; }
+  .line .n { flex: none; color: #556460; margin-inline-start: auto; }
+  .panel-settings { margin-block-start: 16px; border-block-start: 1px solid #d3d9d0; }
+  .panel-settings summary { display: flex; align-items: center; min-block-size: 48px; gap: 8px; cursor: pointer; color: #192b29; font-size: 16px; font-weight: 650; list-style: none; }
+  .panel-settings summary::-webkit-details-marker { display: none; }
+  .panel-settings summary::before { content: "+"; display: inline-block; min-inline-size: 16px; color: #17534a; font-size: 20px; }
+  .panel-settings details[open] > summary::before, .panel-settings[open] > summary::before { content: "\u2212"; }
+  .panel-settings .sec { border-block-start: 1px solid #d3d9d0; padding-block-end: 10px; }
+  .panel-settings .sec > summary { color: #556460; font-size: 14px; }
+  .panel-settings .opts { display: grid; gap: 14px; }
+  .panel-settings .field { display: grid; gap: 5px; min-inline-size: 0; }
+  .panel-settings .field > label, .panel-settings .colors-label { font-size: 13px; font-weight: 650; }
+  .panel-settings select { inline-size: 100%; min-inline-size: 0; min-block-size: 48px; padding: 9px 10px; font: 16px "Segoe UI",Tahoma,Arial,sans-serif; color: #192b29; background: #fffefb; border: 1px solid #788781; border-radius: 7px; }
+  .panel-settings label { cursor: pointer; }
+  .panel-settings .check-setting { display: flex; align-items: center; gap: 10px; min-block-size: 48px; font-size: 14px; }
+  .panel-settings input[type=checkbox] { flex: none; inline-size: 18px; block-size: 18px; margin: 0; accent-color: #17534a; }
+  .panel-settings .opacity { display: flex; align-items: center; gap: 10px; }
+  .panel-settings .opacity input { flex: 1; inline-size: 100%; min-inline-size: 0; min-block-size: 48px; margin: 0; accent-color: #17534a; }
+  .panel-settings .opacity .pct { min-inline-size: 40px; text-align: end; color: #556460; }
+  .panel-header .info-btn { font: italic 700 19px/1 Georgia,"Times New Roman",serif; }
+  .panel-header .info-btn.on { background: #17534a; border-color: #17534a; color: #fffefb; }
+  .info-box { display: grid; gap: 11px; margin-block-end: 16px; padding: 14px; background: #fffefb; border: 1px solid #b6c6b4; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+  .info-box h4 { margin: 0 0 3px; font-size: 16px; font-weight: 650; color: #17534a; }
+  .info-box .pr { display: grid; grid-template-columns: 24px minmax(0,1fr); gap: 8px; }
+  .info-box .pc { font-size: 24px; line-height: 1.2; color: #192b29; text-align: center; }
+  .info-box span.tx { color: #556460; }
+  .info-box b { color: #192b29; }
+  .acc { margin-block-start: 12px; display: grid; grid-template-columns: minmax(0,1fr) repeat(3,minmax(40px,auto)); gap: 5px 8px; font-size: 12px; align-items: baseline; }
+  .acc .h { color: #556460; font-size: 11px; text-align: end; }
+  .acc .h:first-child { text-align: start; font-weight: 650; }
+  .acc .who { text-transform: capitalize; }
+  .acc .who .pc { font-size: 17px; margin-inline-end: 4px; vertical-align: -1px; }
+  .acc .v { text-align: end; color: #556460; }
   .acc .latest { font-weight: 700; }
-  .acc .n { color: #cbd5e1; }
-  .acc .g { color: #4ade80; } .acc .y { color: #fbbf24; } .acc .r { color: #f87171; }
-  .opts { display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; margin-top: 8px; align-items: center; }
-  select { font: inherit; color: inherit; background: #2c313c; border: 1px solid #3a3f4b; border-radius: 6px; padding: 1px 4px; }
-  label { cursor: pointer; }
-  .swatches { display: flex; align-items: center; gap: 4px; }
-  .swatches input[type=color] { width: 24px; height: 22px; padding: 0; border: 1px solid #3a3f4b; border-radius: 5px; background: none; cursor: pointer; }
-  .swatches button { padding: 0 6px; }
-  .reset-btn { display: block; width: 100%; margin-top: 10px; }
-  .reset-btn.confirm { color: #fbbf24; border-color: #fbbf24; }
-  .hint-btn { display: block; width: 100%; margin-top: 8px; padding: 6px; font-weight: 600; color: #052e16; background: #4ade80; border-color: #4ade80; }
-  .hint-btn:hover { background: #86efac; }
-  .hint-btn[hidden] { display: none; }
-  .hint { color: #6b7280; font-size: 11px; margin-top: 8px; }
+  .acc .n { color: #192b29; }
+  .acc .g { color: #17534a; } .acc .y { color: #765000; } .acc .r { color: #9b392d; }
+  .panel-settings .swatches { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-block-start: 5px; }
+  .panel-settings .swatches input[type=color] { inline-size: 48px; block-size: 48px; padding: 4px; border: 1px solid #788781; border-radius: 7px; background: #fffefb; cursor: pointer; }
+  .panel-settings .reset-btn { display: block; inline-size: 100%; margin-block-start: 12px; }
+  .panel-settings .reset-btn.confirm { color: #822b20; border-color: #9b392d; background: #fff1e9; }
+  .panel-settings .arrow-note { margin: 0; color: #556460; font-size: 12px; }
+  .hint-btn { display: block; inline-size: 100%; margin-block-start: 10px; font-weight: 650; color: #fffefb; background: #17534a; border-color: #17534a; }
+  .hint-btn:hover { background: #103f37; }
+  .box .training { margin-block-start: 16px; padding: 16px; border: 1px solid #d3d9d0; border-radius: 10px; }
+  .box .training h3 { font-size: 19px; }
+  .box [hidden] { display: none; }
+  @container chess-panel (inline-size < 350px) { .panel-header { padding-inline: 10px; gap: 4px; } .panel-header .brand-icon { display: none; } .box > .body { padding: 12px; } .box .training { padding: 14px; } }
 </style>
 <div class="box">
-  <header>
-    <span class="title">\u265E <span data-i18n="title"></span></span>
-    <button class="info-btn" data-i18n-title="info.title">i</button>
-    <button class="power" data-i18n-title="power.title"></button>
-    <button class="fold" data-i18n-title="fold.title">\u2013</button>
+  <header class="panel-header">
+    <span class="title"><span class="brand-icon" aria-hidden="true">\u265E</span><span data-i18n="title"></span></span>
+    <button type="button" class="info-btn" data-i18n-title="info.title" aria-expanded="false" aria-controls="piece-help">i</button>
+    <button type="button" class="power" data-i18n-title="power.title"></button>
+    <button type="button" class="fold" aria-controls="panel-body">\u2212</button>
   </header>
-  <div class="fair"><span data-i18n="fairplay"></span><button class="fair-ok" data-i18n="fairplay.ok"></button></div>
+  <div class="panel-intro"><p class="panel-subtitle" data-i18n="panel.subtitle"></p><button type="button" class="settings-jump" data-i18n="panel.settings" aria-controls="panel-settings"></button></div>
+  <div class="fair"><span data-i18n="fairplay"></span><button type="button" class="fair-ok" data-i18n="fairplay.ok"></button></div>
   <div class="live" hidden data-i18n="live.warn"></div>
-  <div class="body">
-    <div class="info-box" hidden></div>
-    <div class="status"></div>
-    <button class="hint-btn" data-i18n="hint" hidden></button>
+  <div class="body" id="panel-body">
+    <div class="info-box" id="piece-help" hidden></div>
+    <div class="status" role="status"></div>
+    <button type="button" class="hint-btn" data-i18n="hint" hidden></button>
     <div class="best"><span class="san">\u2014</span><span class="score"></span><span class="depth"></span></div>
     <div class="bar"><div></div></div>
+    <p class="score-note" data-i18n="score.note"></p>
     <div class="lines"></div>
     <div class="acc" hidden></div>
-    <details class="main" data-sec="settings">
+    <details class="main panel-settings" id="panel-settings" data-sec="settings">
       <summary data-i18n="settings"></summary>
       <details class="sec" data-sec="general">
         <summary data-i18n="group.general"></summary>
         <div class="opts">
-        <span data-i18n="opacity"></span><div class="opacity"><input type="range" min="40" max="100" step="5" data-k="opacity"><span class="pct"></span></div>
-        <span data-i18n="language"></span><select data-k="lang">${Object.entries(LANGS).map(([c, n]) => `<option value="${c}">${n}</option>`).join("")}</select>
+        <div class="field"><label for="panel-opacity" data-i18n="opacity"></label><div class="opacity"><input id="panel-opacity" name="opacity" type="range" min="40" max="100" step="5" data-k="opacity"><output for="panel-opacity" class="pct"></output></div></div>
+        <div class="field"><label for="panel-language" data-i18n="language"></label><select id="panel-language" name="language" data-k="lang">${Object.entries(LANGS).map(([c, n]) => `<option value="${c}">${n}</option>`).join("")}</select></div>
         </div>
       </details>
       <details class="sec" data-sec="analysis">
         <summary data-i18n="group.analysis"></summary>
         <div class="opts">
-        <span data-i18n="lines"></span>
-        <select data-k="multipv"><option>1</option><option>2</option><option>3</option></select>
-        <span data-i18n="depth"></span>
-        <select data-k="depth"><option>10</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>22</option></select>
-        <span data-i18n="turn"></span>
-        <select data-k="turn"><option value="auto" data-i18n="turn.auto"></option><option value="w" data-i18n="side.w"></option><option value="b" data-i18n="side.b"></option></select>
-        <label for="bottom" data-i18n="onlyBottom"></label><input id="bottom" type="checkbox" data-k="onlyBottom">
-        <label for="acc" data-i18n="showAccuracy"></label><input id="acc" type="checkbox" data-k="showAccuracy">
+        <div class="field"><label for="panel-lines" data-i18n="lines"></label><select id="panel-lines" name="multipv" data-k="multipv"><option>1</option><option>2</option><option>3</option></select></div>
+        <div class="field"><label for="panel-depth" data-i18n="depth"></label><select id="panel-depth" name="depth" data-k="depth"><option>10</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>22</option></select></div>
+        <div class="field"><label for="panel-turn" data-i18n="turn"></label><select id="panel-turn" name="turn" data-k="turn"><option value="auto" data-i18n="turn.auto"></option><option value="w" data-i18n="side.w"></option><option value="b" data-i18n="side.b"></option></select></div>
+        <label class="check-setting" for="bottom"><input id="bottom" name="onlyBottom" type="checkbox" data-k="onlyBottom"><span data-i18n="onlyBottom"></span></label>
+        <label class="check-setting" for="acc"><input id="acc" name="showAccuracy" type="checkbox" data-k="showAccuracy"><span data-i18n="showAccuracy"></span></label>
         </div>
       </details>
       <details class="sec" data-sec="arrows">
         <summary data-i18n="group.arrows"></summary>
         <div class="opts">
-        <label for="arrows" data-i18n="arrows"></label><input id="arrows" type="checkbox" data-k="arrows">
-        <span style="grid-column:1/-1">One selected candidate is highlighted. Full variations remain in the list.</span>
-        <label for="order" data-i18n="showOrder"></label><input id="order" type="checkbox" data-k="showOrder">
-        <span data-i18n="colors"></span>
-        <div class="swatches">${DEFAULT_COLORS.map((_, i) => `<input type="color" data-c="${i}">`).join("")}<button class="reset-colors" data-i18n-title="colors.reset">\u21BA</button></div>
+        <label class="check-setting" for="arrows"><input id="arrows" name="arrows" type="checkbox" data-k="arrows"><span data-i18n="arrows"></span></label>
+        <p class="arrow-note" data-i18n="arrow.note"></p>
+        <label class="check-setting" for="order"><input id="order" name="showOrder" type="checkbox" data-k="showOrder"><span data-i18n="showOrder"></span></label>
+        <div><span class="colors-label" data-i18n="colors"></span><div class="swatches">${DEFAULT_COLORS.map((_, i) => `<input type="color" name="color-${i + 1}" data-c="${i}">`).join("")}<button type="button" class="reset-colors" data-i18n-title="colors.reset">\u21BA</button></div></div>
         </div>
       </details>
-      <button class="reset-btn" data-i18n="reset"></button>
+      <button type="button" class="reset-btn" data-i18n="reset"></button>
     </details>
   </div>
-  <div class="foot"><div class="hint" data-i18n="engineNote"></div><a href="https://buycoffee.to/e-json" target="_blank" rel="noopener noreferrer"><img></a></div>
+  <div class="foot" data-i18n="engineNote"></div>
 </div>`;
   var today = () => {
     const d = /* @__PURE__ */ new Date();
@@ -4359,7 +4466,6 @@
       document.documentElement.appendChild(this.host);
       const $ = (s) => this.root.querySelector(s);
       this.box = $(".box");
-      this.coffeeImg = $(".foot img");
       this.infoEl = $(".info-box");
       this.infoBtn = $(".info-btn");
       this.statusEl = $(".status");
@@ -4370,6 +4476,7 @@
       this.linesEl = $(".lines");
       this.accEl = $(".acc");
       this.powerBtn = $(".power");
+      this.foldBtn = $(".fold");
       this.hintBtn = $(".hint-btn");
       this.lastStatus = { key: "status.searching", params: null, err: false };
       this.lastLines = [];
@@ -4386,12 +4493,19 @@
           if (this.settings.sections[id] !== d.open) this.set({ sections: { ...this.settings.sections, [id]: d.open } });
         });
       }
-      $(".fold").addEventListener("click", () => this.set({ collapsed: !this.settings.collapsed }));
+      this.foldBtn.addEventListener("click", () => this.set({ collapsed: !this.settings.collapsed }));
+      $(".settings-jump").addEventListener("click", () => {
+        this.set({ collapsed: false, sections: { ...this.settings.sections, settings: true } });
+        const details = $(".panel-settings"), body = $(".body");
+        body.scrollTop = details.offsetTop - body.offsetTop;
+        details.querySelector("summary").focus({ preventScroll: true });
+      });
       this.hintBtn.addEventListener("click", () => this.onHint());
       this.infoBtn.addEventListener("click", () => {
         if (this.settings.collapsed) this.set({ collapsed: false });
         this.infoEl.hidden = !this.infoEl.hidden;
         this.infoBtn.classList.toggle("on", !this.infoEl.hidden);
+        this.infoBtn.setAttribute("aria-expanded", String(!this.infoEl.hidden));
       });
       this.liveEl = $(".live");
       this.fairEl = $(".fair");
@@ -4436,7 +4550,7 @@
       }
       const header = $("header");
       header.addEventListener("pointerdown", (e) => {
-        if (e.target.closest("button")) return;
+        if (e.button !== 0 || e.target.closest("button")) return;
         const r = this.box.getBoundingClientRect();
         const ox = e.clientX - r.left;
         const oy = e.clientY - r.top;
@@ -4448,12 +4562,16 @@
         const up = () => {
           header.removeEventListener("pointermove", move2);
           header.removeEventListener("pointerup", up);
+          header.removeEventListener("pointercancel", up);
+          if (header.hasPointerCapture(e.pointerId)) header.releasePointerCapture(e.pointerId);
           this.onChange({ pos: this.settings.pos });
         };
         header.addEventListener("pointermove", move2);
         header.addEventListener("pointerup", up);
+        header.addEventListener("pointercancel", up);
       });
-      window.addEventListener("resize", () => this.applyPosition());
+      this.onResize = () => this.applyPosition();
+      window.addEventListener("resize", this.onResize);
     }
     set(patch) {
       Object.assign(this.settings, patch);
@@ -4466,14 +4584,22 @@
       this.box.classList.toggle("collapsed", !!s.collapsed);
       this.powerBtn.classList.toggle("off", !s.enabled);
       this.powerBtn.textContent = s.enabled ? t("on") : t("off");
+      this.powerBtn.setAttribute("aria-pressed", String(!!s.enabled));
+      this.foldBtn.setAttribute("aria-expanded", String(!s.collapsed));
+      this.foldBtn.textContent = s.collapsed ? "+" : "\u2212";
+      this.foldBtn.title = t(s.collapsed ? "fold.expand" : "fold.collapse");
+      this.foldBtn.setAttribute("aria-label", this.foldBtn.title);
+      this.root.querySelector(".settings-jump").setAttribute("aria-expanded", String(!!s.sections.settings && !s.collapsed));
       this.hintBtn.hidden = !(s.enabled && !s.arrows);
       for (const d of this.root.querySelectorAll("details[data-sec]")) d.open = !!s.sections[d.dataset.sec];
       const opacity = Math.min(100, Math.max(40, +s.opacity || 100));
       this.box.style.opacity = opacity / 100;
       this.root.querySelector(".pct").textContent = opacity + "%";
       const colors = normalizeColors(s.colors);
-      this.root.querySelectorAll("input[data-c]").forEach((el) => el.value = colors[+el.dataset.c]);
-      this.sanEl.style.color = colors[0];
+      this.root.querySelectorAll("input[data-c]").forEach((el) => {
+        el.value = colors[+el.dataset.c];
+        el.setAttribute("aria-label", t("color.label", { n: +el.dataset.c + 1 }));
+      });
       for (const el of this.root.querySelectorAll("[data-k]")) {
         const v = s[el.dataset.k];
         if (el.type === "checkbox") el.checked = !!v;
@@ -4502,13 +4628,14 @@
       this.infoEl.replaceChildren(head, ...rows);
     }
     applyLang() {
+      const lang2 = getLang(), direction = lang2 === "ar" ? "rtl" : "ltr";
+      this.host.lang = this.box.lang = lang2;
+      this.host.dir = this.box.dir = direction;
       for (const el of this.root.querySelectorAll("[data-i18n]")) el.textContent = t(el.dataset.i18n);
-      for (const el of this.root.querySelectorAll("[data-i18n-title]")) el.title = t(el.dataset.i18nTitle);
-      try {
-        this.coffeeImg.src = chrome.runtime.getURL(`img/buycoffee-${getLang() === "pl" ? "pl" : "en"}.png`);
-      } catch (_) {
+      for (const el of this.root.querySelectorAll("[data-i18n-title]")) {
+        el.title = t(el.dataset.i18nTitle);
+        el.setAttribute("aria-label", el.title);
       }
-      this.coffeeImg.alt = t("coffee");
       this.renderInfo();
       this.syncControls();
       this.status(this.lastStatus.key, this.lastStatus.params, this.lastStatus.err);
@@ -4516,12 +4643,12 @@
       this.accuracy(this.lastAcc);
     }
     applyPosition() {
-      const p = this.settings.pos || { left: window.innerWidth - 356, top: 80 };
-      const w = this.box.offsetWidth || 336;
-      this.box.style.left = Math.max(0, Math.min(window.innerWidth - w, p.left)) + "px";
-      const top = Math.max(0, Math.min(window.innerHeight - 40, p.top));
+      const w = this.box.offsetWidth || 380;
+      const p = this.settings.pos || { left: window.innerWidth - w - 16, top: 80 };
+      this.box.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, p.left)) + "px";
+      const top = Math.max(8, Math.min(Math.max(8, window.innerHeight - 240), p.top));
       this.box.style.top = top + "px";
-      this.box.style.maxHeight = Math.max(120, window.innerHeight - top - 8) + "px";
+      this.box.style.maxHeight = Math.max(0, window.innerHeight - top - 8) + "px";
     }
     live(show) {
       this.liveEl.hidden = !show;
@@ -4629,6 +4756,7 @@
       );
     }
     destroy() {
+      window.removeEventListener("resize", this.onResize);
       this.host.remove();
     }
   };
@@ -4912,6 +5040,16 @@
     return normalizePreferences(trainingPreferences);
   }
   var pending = Promise.resolve();
+  function savePreferences(patch) {
+    const task = pending.then(async () => {
+      const next = normalizePreferences({ ...await readPreferences(), ...patch });
+      await chrome.storage.local.set({ trainingPreferences: next });
+      return next;
+    });
+    pending = task.catch(() => {
+    });
+    return task;
+  }
   function watchPreferences(callback) {
     const listener = (changes, area) => {
       if (area === "local" && changes.trainingPreferences) callback(normalizePreferences(changes.trainingPreferences.newValue));
@@ -5162,6 +5300,7 @@
   var panel;
   var training;
   var overlay;
+  var stopLanguageWatch;
   var current = null;
   var position = null;
   var lastKey = null;
@@ -5445,9 +5584,31 @@
     } catch (_) {
     }
   }
+  function sharedLanguage(preferences) {
+    const language = preferences?.uiLanguage;
+    return language === "en" || language === "ar" ? language : null;
+  }
+  function watchLanguage() {
+    const listener = (changes, area) => {
+      if (area !== "local" || !changes.trainingPreferences) return;
+      const change = changes.trainingPreferences;
+      const language = sharedLanguage(change.newValue);
+      if (!language || language === sharedLanguage(change.oldValue) || language === settings.lang) return;
+      settings.lang = language;
+      setLang(language);
+      saveSettings();
+      panel.applyLang();
+    };
+    chrome.storage.onChanged.addListener(listener);
+    return () => chrome.storage.onChanged.removeListener(listener);
+  }
   function onSettingsChange(patch) {
     saveSettings();
     const keys = Object.keys(patch);
+    if (keys.includes("lang") && sharedLanguage({ uiLanguage: settings.lang })) {
+      savePreferences({ uiLanguage: settings.lang }).catch(() => {
+      });
+    }
     if (keys.includes("enabled") && !settings.enabled && settings.sections.settings) {
       panel.set({ sections: { ...settings.sections, settings: false } });
     }
@@ -5475,8 +5636,9 @@
     syncOverlay();
   }
   function onReset() {
+    const language = settings.lang;
     for (const k of Object.keys(settings)) delete settings[k];
-    Object.assign(settings, DEFAULTS, { colors: [...DEFAULT_COLORS], sections: { ...DEFAULTS.sections } });
+    Object.assign(settings, DEFAULTS, { lang: language, colors: [...DEFAULT_COLORS], sections: { ...DEFAULTS.sections } });
     setLang(settings.lang);
     saveSettings();
     panel.applyPosition();
@@ -5489,6 +5651,8 @@
     dead = true;
     clearInterval(scanTimer);
     clearInterval(overlayTimer);
+    stopLanguageWatch?.();
+    training?.stopPreferences?.();
     if (current) current.observer.disconnect();
     if (port) port.disconnect();
     panel && panel.destroy();
@@ -5505,6 +5669,11 @@
     if (settings.colors[0] === "#15a34a") settings.colors[0] = DEFAULT_COLORS[0];
     settings.opacity = Math.min(100, Math.max(40, Math.round(+settings.opacity) || DEFAULTS.opacity));
     if (!LANGS[settings.lang]) settings.lang = detectLang();
+    try {
+      const { trainingPreferences } = await chrome.storage.local.get("trainingPreferences");
+      settings.lang = sharedLanguage(trainingPreferences) ?? settings.lang;
+    } catch (_) {
+    }
     setLang(settings.lang);
     settings.enabled = true;
     overlay = new Overlay();
@@ -5518,6 +5687,7 @@
       }
     } });
     panel.status("status.searching");
+    stopLanguageWatch = watchLanguage();
     chrome.runtime.onMessage.addListener((msg) => {
       if (msg && msg.type === "toggle-panel") panel.toggleVisible();
     });

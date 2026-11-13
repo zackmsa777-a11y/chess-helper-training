@@ -1,6 +1,6 @@
 {
   "browser": "145.0.7632.6",
-  "durationMs": 13663,
+  "durationMs": 14470,
   "passed": 21,
   "checks": [
     "Isolated extension copy and synthetic companion use an ephemeral port, never 43187",
@@ -60,6 +60,21 @@
       "focus": 8.850986971983351
     }
   ],
+  "resizeAlignment": {
+    "immediate": {
+      "left": 96,
+      "top": 91.171875,
+      "width": 230.359375,
+      "height": 230.359375
+    },
+    "settled": {
+      "left": 0,
+      "top": 0,
+      "width": 0,
+      "height": 0
+    },
+    "settleMs": 11
+  },
   "mocked": [
     "OAuth",
     "account model catalog",
