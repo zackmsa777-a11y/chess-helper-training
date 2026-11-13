@@ -4343,8 +4343,8 @@
   .bar { block-size: 8px; background: #192b29; border: 1px solid #788781; border-radius: 5px; overflow: hidden; direction: ltr; }
   .bar > div { block-size: 100%; width: 50%; background: #fffefb; }
   .score-note { margin: 7px 0 10px; color: #556460; font-size: 12px; }
-  .lines { display: grid; gap: 7px; }
-  .line { display: flex; align-items: baseline; gap: 8px; padding: 9px 10px; border: 1px solid #d3d9d0; background: #fffefb; border-radius: 7px; font-size: 13px; text-align: left; }
+  .lines { display: grid; grid-template-columns: minmax(0,1fr); gap: 7px; }
+  .line { display: flex; min-inline-size: 0; align-items: baseline; gap: 8px; padding: 9px 10px; border: 1px solid #d3d9d0; background: #fffefb; border-radius: 7px; font-size: 13px; text-align: left; }
   .line .c { flex: none; inline-size: 9px; block-size: 9px; border-radius: 50%; box-shadow: 0 0 0 1px #192b2940; }
   .line .s { flex: none; min-inline-size: 42px; font-weight: 650; }
   .line .t { color: #192b29; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

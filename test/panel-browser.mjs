@@ -15,6 +15,11 @@ const profile=join(temporary,'profile');
 const checks=[],errors=[],requests=[],externalRequests=[],contrast=[],layoutDiagnostics=[];
 const testFont=process.env.CHESS_PANEL_TEST_FONT??null;
 assert.ok(testFont===null||['Segoe UI','Tahoma','Arial'].includes(testFont),'Unsupported panel test font');
+// A deterministic legal six-ply PV exercises grid sizing independently of Stockfish's variable search output.
+// This fixture replaces displayed notation only; it is never supplied to the engine or companion.
+const layoutPv={fen:'r3k2r/p1ppqpb1/bn2pnp1/2pP4/1p2P3/2N2N2/PPQBBPPP/R3K2R w KQkq - 0 1',san:['O-O-O','Nbxd5','Bxa6','bxc3','bxc3','Nxc3']};
+const layoutChess=new Chess(layoutPv.fen);
+for(const san of layoutPv.san)assert.equal(layoutChess.move(san).san,san);
 const screenshots={};
 let context,page,settings,completed=false,failure=null;
 const server=createServer((req,res)=>{
@@ -66,7 +71,11 @@ async function waitForCandidates(){
 async function assertFits(width){
   await page.setViewportSize({width,height:900});
   await page.waitForTimeout(150);
-  const geometry=await page.locator('.box').evaluate(box=>{
+  const geometry=await page.locator('.box').evaluate((box,pv)=>{
+    for(const notation of box.querySelectorAll('.line .t')){
+      notation.replaceChildren(...pv.map(san=>{const move=document.createElement('span');move.className='m';move.textContent=san;return move;}));
+      notation.title=pv.join(' ');
+    }
     const rect=box.getBoundingClientRect(),round=value=>Math.round(value*100)/100;
     const body=box.querySelector('.body'),training=box.querySelector('.training');
     const bodyStyle=getComputedStyle(body),bodyRect=body.getBoundingClientRect();
@@ -83,11 +92,14 @@ async function assertFits(width){
       return r.left<contentLeft-1||r.right>contentRight+1||el.scrollWidth>el.clientWidth+1;
     }).map(metrics);
     const actions=training.querySelector('.actions');
-    return{language:box.lang,settingsOpen:box.querySelector('details.main').open,left:round(rect.left),right:round(rect.right),width:round(rect.width),viewport:innerWidth,dpr:devicePixelRatio,boxFont:getComputedStyle(box).fontFamily,bodyFont:bodyStyle.fontFamily,scrollbarGutter:bodyStyle.scrollbarGutter,bodyScrollbar:round(bodyRect.width-body.clientWidth),bodyContentLeft:round(contentLeft),bodyContentRight:round(contentRight),boxOverflow:box.scrollWidth-box.clientWidth,bodyOverflow:body.scrollWidth-body.clientWidth,trainingOverflow:training.scrollWidth-training.clientWidth,actions:metrics(actions),buttons:[...actions.querySelectorAll('button')].map(metrics),overflow:overflow.slice(0,16)};
-  });
+    const lines=box.querySelector('.lines');
+    return{language:box.lang,settingsOpen:box.querySelector('details.main').open,left:round(rect.left),right:round(rect.right),width:round(rect.width),viewport:innerWidth,dpr:devicePixelRatio,boxFont:getComputedStyle(box).fontFamily,bodyFont:bodyStyle.fontFamily,scrollbarGutter:bodyStyle.scrollbarGutter,bodyScrollbar:round(bodyRect.width-body.clientWidth),bodyContentLeft:round(contentLeft),bodyContentRight:round(contentRight),boxOverflow:box.scrollWidth-box.clientWidth,bodyOverflow:body.scrollWidth-body.clientWidth,trainingOverflow:training.scrollWidth-training.clientWidth,actions:metrics(actions),buttons:[...actions.querySelectorAll('button')].map(metrics),lines:metrics(lines),rows:[...lines.querySelectorAll('.line')].map(metrics),pvClipping:[...lines.querySelectorAll('.t')].map(el=>({overflowX:getComputedStyle(el).overflowX,textOverflow:getComputedStyle(el).textOverflow})),overflow:overflow.slice(0,16)};
+  },layoutPv.san);
   layoutDiagnostics.push(geometry);
   assert.ok(geometry.left>=-1 && geometry.right<=width+1,`Panel exceeds ${width}px viewport: ${JSON.stringify(geometry)}`);
   for(const key of ['boxOverflow','bodyOverflow','trainingOverflow'])assert.ok(geometry[key]<=1,`${key} at ${width}px: ${JSON.stringify(geometry)}`);
+  for(const row of geometry.rows)assert.ok(row.left>=geometry.lines.left-1&&row.right<=geometry.lines.right+1,`Candidate row must fit its grid at ${width}px: ${JSON.stringify(geometry)}`);
+  assert.ok(geometry.pvClipping.every(pv=>pv.overflowX==='hidden'&&pv.textOverflow==='ellipsis'),'Only the inner PV uses ellipsis when notation is too wide');
   if(width===320){
     const [explain,account]=geometry.buttons;
     assert.ok(account.top>=explain.bottom-1,`Narrow actions must stack: ${JSON.stringify(geometry)}`);
@@ -277,7 +289,7 @@ try{
   }
   await page.locator('.body').evaluate(body=>body.style.removeProperty('scrollbar-gutter'));
   await assertHostUnchanged();
-  pass('English and Arabic panels, open settings and training controls fit 390px/320px; narrow actions stack with and without reserved scrollbar space');
+  pass('English and Arabic panels, settings and a legal six-ply PV fit 390px/320px; candidate rows stay inside their grid and narrow actions stack with/without reserved scrollbar space');
 
   assert.deepEqual(requests,[]);assert.deepEqual(externalRequests,[]);assert.deepEqual(errors,[]);
   pass('No account, catalog, OAuth or inference calls, external HTTP requests or browser page errors occurred');
@@ -288,7 +300,7 @@ try{
   if(page)await page.locator('.box').screenshot({path:join(output,'panel-failure.png')}).catch(()=>{});
   throw error;
 }finally{
-  await writeFile(join(output,'panel-browser-results.json'),JSON.stringify({browser:context?.browser()?.version(),platform:process.platform,testFont,durationMs:Date.now()-startedAt,successful:completed,passed:checks.length,checks,errors,failure,contrast,layoutDiagnostics,mocked:['Chess.com HTML','companion access sink'],real:['MV3 content script and settings','Stockfish WASM','native keyboard controls','shared local preferences'],notTested:['live Chess.com','real ChatGPT account','screen reader software'],companionRequests:requests.length,externalRequests:externalRequests.length,ephemeralPort:true},null,2));
+  await writeFile(join(output,'panel-browser-results.json'),JSON.stringify({browser:context?.browser()?.version(),platform:process.platform,testFont,durationMs:Date.now()-startedAt,successful:completed,passed:checks.length,checks,errors,failure,contrast,layoutPv,layoutDiagnostics,mocked:['Chess.com HTML','companion access sink','displayed PV in narrow-layout checks'],real:['MV3 content script and settings','Stockfish WASM','native keyboard controls','shared local preferences'],notTested:['live Chess.com','real ChatGPT account','screen reader software'],companionRequests:requests.length,externalRequests:externalRequests.length,ephemeralPort:true},null,2));
   if(context)await context.close();
   await new Promise(done=>{server.close(done);server.closeAllConnections();});
 }
