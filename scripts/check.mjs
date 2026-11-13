@@ -11,7 +11,8 @@ assert.equal(manifest.externally_connectable,undefined);
 assert.equal(manifest.options_page,'options.html');
 assert.equal(manifest.permissions.includes('cookies'),false);
 for(const p of ['extension/content.js','extension/background.js','extension/offscreen.js','extension/study.js','extension/options.js']){
-  const text=await readFile(p,'utf8');assert.ok(!text.includes('refresh_token'),`${p} must not contain OAuth token code`);
+  // Credential field names are forbidden; fixed diagnostics such as refresh_token_expired are safe.
+  const text=await readFile(p,'utf8');assert.ok(!/\b(?:access_token|refresh_token|id_token)\b/.test(text),`${p} must not contain OAuth token fields`);
   assert.ok(!text.includes('api/accounts/oauth/token'),`${p} must not exchange credentials`);
 }
 console.log(`Syntax: ${count} JavaScript files passed. Manifest boundaries and all five extension token-boundary checks passed.`);

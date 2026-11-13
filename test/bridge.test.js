@@ -45,3 +45,41 @@ test('Tabless study cancellation aborts its request and rejects a late explanati
   assert.match(result.error,/Position changed/);
   assert.equal(Object.hasOwn(result,'explanation'),false);
 }));
+
+test('Companion transport and response-body failures use fixed codes without raw details',async()=>{
+  for(const phase of ['fetch','body'])for(const [name,code] of [['TimeoutError','companion_timeout'],['TypeError','companion_unavailable']]){
+    await withBridge(async({send})=>{
+      const error=new Error('private transport detail must not escape');error.name=name;
+      globalThis.fetch=async()=>{if(phase==='fetch')throw error;return{ok:true,text:async()=>{throw error;}};};
+      const result=await send({type:'training',action:'explain',data:fixture(),confirmed:true});
+      assert.deepEqual(result,{ok:false,error:code});
+    });
+  }
+});
+
+test('Malformed companion envelopes and unvalidated answers have distinct safe codes',async()=>{
+  for(const body of ['null','[]','<html>private page</html>','x'.repeat(65537)])await withBridge(async({send})=>{
+    globalThis.fetch=async()=>new Response(body);
+    assert.deepEqual(await send({type:'training',action:'explain',data:fixture(),confirmed:true}),{ok:false,error:'invalid_companion_response'});
+  });
+  await withBridge(async({send})=>{
+    const answer=explanation();answer.candidates[0].move='e2e5';
+    globalThis.fetch=async()=>Response.json({explanation:answer});
+    assert.deepEqual(await send({type:'training',action:'explain',data:fixture(),confirmed:true}),{ok:false,error:'malformed_explanation'});
+  });
+});
+
+test('Immediate companion rejection preserves its code and never retries or forwards diagnostics',()=>withBridge(async({send,calls})=>{
+  globalThis.fetch=async(url,options)=>{calls.push({url,options});return Response.json({error:'invalid_request',diagnostic:{message:'private upstream body'}},{status:400});};
+  assert.deepEqual(await send({type:'training',action:'explain',data:fixture(),confirmed:true}),{ok:false,error:'invalid_request'});
+  assert.equal(calls.length,1);
+}));
+
+test('An expired companion deadline stays a timeout when body reading throws AbortError',()=>withBridge(async({send})=>{
+  const originalTimeout=AbortSignal.timeout;
+  AbortSignal.timeout=()=>AbortSignal.abort(new DOMException('private timeout detail','TimeoutError'));
+  try{
+    globalThis.fetch=async()=>({ok:true,text:async()=>{throw new DOMException('private body detail','AbortError');}});
+    assert.deepEqual(await send({type:'training',action:'explain',data:fixture(),confirmed:true}),{ok:false,error:'companion_timeout'});
+  }finally{AbortSignal.timeout=originalTimeout;}
+}));

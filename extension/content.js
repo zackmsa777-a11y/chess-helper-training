@@ -5064,15 +5064,222 @@
     return () => chrome.storage.onChanged.removeListener(listener);
   }
 
+  // src/shared/explanation-errors.js
+  var GROUPS = [
+    {
+      codes: ["extension_reloaded"],
+      en: "The extension was reloaded or updated. Refresh this chess tab, then request the explanation again.",
+      ar: "\u0623\u064F\u0639\u064A\u062F \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0623\u0648 \u062A\u062D\u062F\u064A\u062B\u0647\u0627. \u062D\u062F\u0651\u062B \u0639\u0644\u0627\u0645\u0629 \u062A\u0628\u0648\u064A\u0628 \u0627\u0644\u0634\u0637\u0631\u0646\u062C \u0647\u0630\u0647\u060C \u062B\u0645 \u0627\u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D \u0645\u062C\u062F\u062F\u064B\u0627."
+    },
+    {
+      codes: ["invalid_request", "openai_http_400", "openai_http_422"],
+      en: "The explanation request was rejected. Refresh this chess tab; if it repeats, report the code below so the app\u2019s request can be checked.",
+      ar: "\u0631\u064F\u0641\u0636 \u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D. \u062D\u062F\u0651\u062B \u0639\u0644\u0627\u0645\u0629 \u062A\u0628\u0648\u064A\u0628 \u0627\u0644\u0634\u0637\u0631\u0646\u062C \u0647\u0630\u0647\u061B \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623\u060C \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647 \u0644\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u0637\u0644\u0628 \u0627\u0644\u0630\u064A \u064A\u0631\u0633\u0644\u0647 \u0627\u0644\u062A\u0637\u0628\u064A\u0642."
+    },
+    {
+      codes: ["openai_http_401"],
+      en: "The AI service did not accept the request\u2019s authorization. Check the account status in AI settings; if it repeats, report the code below.",
+      ar: "\u0644\u0645 \u062A\u0642\u0628\u0644 \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u062A\u0641\u0648\u064A\u0636 \u0627\u0644\u0637\u0644\u0628. \u062A\u062D\u0642\u0651\u0642 \u0645\u0646 \u062D\u0627\u0644\u0629 \u0627\u0644\u062D\u0633\u0627\u0628 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A\u061B \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623\u060C \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["openai_http_403"],
+      en: "The AI service denied this request because of permission or policy. Review the selected account and available model in AI settings, and report the code if it persists.",
+      ar: "\u0631\u0641\u0636\u062A \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0647\u0630\u0627 \u0627\u0644\u0637\u0644\u0628 \u0628\u0633\u0628\u0628 \u0625\u0630\u0646 \u0623\u0648 \u0633\u064A\u0627\u0633\u0629. \u0631\u0627\u062C\u0639 \u0627\u0644\u062D\u0633\u0627\u0628 \u0627\u0644\u0645\u062D\u062F\u062F \u0648\u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0627\u0644\u0645\u062A\u0627\u062D \u0641\u064A \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A\u060C \u0648\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0625\u0630\u0627 \u0627\u0633\u062A\u0645\u0631 \u0627\u0644\u062E\u0637\u0623."
+    },
+    {
+      codes: ["openai_http_404"],
+      en: "The AI service could not find the requested resource. Refresh the available models in AI settings; if it repeats, report the code below.",
+      ar: "\u0644\u0645 \u062A\u0639\u062B\u0631 \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0639\u0644\u0649 \u0627\u0644\u0645\u0648\u0631\u062F \u0627\u0644\u0645\u0637\u0644\u0648\u0628. \u062D\u062F\u0651\u062B \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0646\u0645\u0627\u0630\u062C \u0627\u0644\u0645\u062A\u0627\u062D\u0629 \u0641\u064A \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A\u061B \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623\u060C \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["openai_http_409"],
+      en: "The request conflicted with the AI service\u2019s current state. Wait before requesting another explanation; if it repeats, report the code below.",
+      ar: "\u062A\u0639\u0627\u0631\u0636 \u0627\u0644\u0637\u0644\u0628 \u0645\u0639 \u0627\u0644\u062D\u0627\u0644\u0629 \u0627\u0644\u062D\u0627\u0644\u064A\u0629 \u0644\u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A. \u0627\u0646\u062A\u0638\u0631 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0634\u0631\u062D \u0622\u062E\u0631\u061B \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623\u060C \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["openai_http_413"],
+      en: "The AI service rejected the request\u2019s size. Report the code below so the app\u2019s request can be checked.",
+      ar: "\u0631\u0641\u0636\u062A \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u062D\u062C\u0645 \u0627\u0644\u0637\u0644\u0628. \u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647 \u0644\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u0637\u0644\u0628 \u0627\u0644\u0630\u064A \u064A\u0631\u0633\u0644\u0647 \u0627\u0644\u062A\u0637\u0628\u064A\u0642."
+    },
+    {
+      codes: ["openai_http_429"],
+      en: "The AI service reported a usage or request-rate limit. Review usage in AI settings and wait before requesting another explanation.",
+      ar: "\u0623\u0628\u0644\u063A\u062A \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0639\u0646 \u062D\u062F \u0644\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0623\u0648 \u0645\u0639\u062F\u0644 \u0627\u0644\u0637\u0644\u0628\u0627\u062A. \u0631\u0627\u062C\u0639 \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0641\u064A \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0648\u0627\u0646\u062A\u0638\u0631 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0634\u0631\u062D \u0622\u062E\u0631."
+    },
+    {
+      codes: ["openai_http_500", "openai_http_502", "openai_http_503"],
+      en: "The AI service could not complete this request. Keep your current sign-in and try again later.",
+      ar: "\u062A\u0639\u0630\u0651\u0631 \u0639\u0644\u0649 \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0625\u0643\u0645\u0627\u0644 \u0647\u0630\u0627 \u0627\u0644\u0637\u0644\u0628. \u0627\u062D\u062A\u0641\u0638 \u0628\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0627\u0644\u062D\u0627\u0644\u064A \u0648\u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627."
+    },
+    {
+      codes: ["request_in_progress", "sign_out_in_progress"],
+      en: "Another explanation or account action is still running. Wait for it to finish before requesting an explanation.",
+      ar: "\u0645\u0627 \u0632\u0627\u0644 \u0637\u0644\u0628 \u0634\u0631\u062D \u0623\u0648 \u0625\u062C\u0631\u0627\u0621 \u0645\u062A\u0639\u0644\u0642 \u0628\u0627\u0644\u062D\u0633\u0627\u0628 \u0642\u064A\u062F \u0627\u0644\u062A\u0646\u0641\u064A\u0630. \u0627\u0646\u062A\u0638\u0631 \u0627\u0646\u062A\u0647\u0627\u0621\u0647 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D."
+    },
+    {
+      codes: ["local_rate_limit"],
+      en: "The local request limit was reached. Wait before requesting another explanation.",
+      ar: "\u0628\u0644\u063A\u062A \u0627\u0644\u062D\u062F \u0627\u0644\u0645\u062D\u0644\u064A \u0644\u0644\u0637\u0644\u0628\u0627\u062A. \u0627\u0646\u062A\u0638\u0631 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0634\u0631\u062D \u0622\u062E\u0631."
+    },
+    {
+      codes: ["sign_in_required"],
+      en: "Open AI settings and sign in with ChatGPT before requesting an explanation.",
+      ar: "\u0627\u0641\u062A\u062D \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0648\u0633\u062C\u0651\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0628\u0627\u0633\u062A\u062E\u062F\u0627\u0645 ChatGPT \u0642\u0628\u0644 \u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D."
+    },
+    {
+      codes: ["invalid_grant", "invalid_refresh_token", "token_expired", "refresh_token_expired", "refresh_token_invalidated", "refresh_token_reused"],
+      en: "The saved sign-in session is no longer valid. Open AI settings and sign in with ChatGPT again.",
+      ar: "\u0644\u0645 \u062A\u0639\u062F \u062C\u0644\u0633\u0629 \u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0627\u0644\u0645\u062D\u0641\u0648\u0638\u0629 \u0635\u0627\u0644\u062D\u0629. \u0627\u0641\u062A\u062D \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0648\u0633\u062C\u0651\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0628\u0627\u0633\u062A\u062E\u062F\u0627\u0645 ChatGPT \u0645\u062C\u062F\u062F\u064B\u0627."
+    },
+    {
+      codes: ["plan_permission_required"],
+      en: "ChatGPT-plan permission is required. Open AI settings and review the plan permission during sign-in.",
+      ar: "\u064A\u0644\u0632\u0645 \u0645\u0646\u062D \u0627\u0644\u0625\u0630\u0646 \u0628\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u062E\u0637\u0629 ChatGPT. \u0627\u0641\u062A\u062D \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0648\u0631\u0627\u062C\u0639 \u0625\u0630\u0646 \u0627\u0644\u062E\u0637\u0629 \u0623\u062B\u0646\u0627\u0621 \u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644."
+    },
+    {
+      codes: ["subscription_sharing_usage_limit_exceeded"],
+      en: "A ChatGPT-plan usage limit was reached; it may apply specifically to this app. Review usage in AI settings before requesting another explanation.",
+      ar: "\u0628\u0644\u063A\u062A \u0623\u062D\u062F \u062D\u062F\u0648\u062F \u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u062E\u0637\u0629 ChatGPT\u061B \u0648\u0642\u062F \u064A\u0643\u0648\u0646 \u062E\u0627\u0635\u064B\u0627 \u0628\u0647\u0630\u0627 \u0627\u0644\u062A\u0637\u0628\u064A\u0642. \u0631\u0627\u062C\u0639 \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0645\u0646 \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0642\u0628\u0644 \u0637\u0644\u0628 \u0634\u0631\u062D \u0622\u062E\u0631."
+    },
+    {
+      codes: ["subscription_sharing_usage_unavailable"],
+      en: "ChatGPT could not check usage availability. Keep your current sign-in and try again later.",
+      ar: "\u062A\u0639\u0630\u0651\u0631 \u0639\u0644\u0649 ChatGPT \u0627\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u062A\u0648\u0641\u0631 \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645. \u0627\u062D\u062A\u0641\u0638 \u0628\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0627\u0644\u062D\u0627\u0644\u064A \u0648\u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627."
+    },
+    {
+      codes: ["select_model_in_settings", "model_unavailable"],
+      en: "Open AI settings, refresh the available models, then choose and save a model offered for your account.",
+      ar: "\u0627\u0641\u062A\u062D \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0648\u062D\u062F\u0651\u062B \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0646\u0645\u0627\u0630\u062C\u060C \u062B\u0645 \u0627\u062E\u062A\u0631 \u0646\u0645\u0648\u0630\u062C\u064B\u0627 \u0645\u062A\u0627\u062D\u064B\u0627 \u0644\u062D\u0633\u0627\u0628\u0643 \u0648\u0627\u062D\u0641\u0638\u0647."
+    },
+    {
+      codes: ["reasoning_effort_unavailable"],
+      en: "The selected model does not support that thinking mode. Choose Model default in AI settings and save your preferences.",
+      ar: "\u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0627\u0644\u0645\u062D\u062F\u062F \u0644\u0627 \u064A\u062F\u0639\u0645 \u0648\u0636\u0639 \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0647\u0630\u0627. \u0627\u062E\u062A\u0631 \u0627\u0641\u062A\u0631\u0627\u0636\u064A \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0648\u0627\u062D\u0641\u0638 \u062A\u0641\u0636\u064A\u0644\u0627\u062A\u0643."
+    },
+    {
+      codes: ["subscription_sharing_unsupported_capability"],
+      en: "The request uses a capability that is unsupported through your plan. Report the code below so the app\u2019s request can be checked.",
+      ar: "\u064A\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0637\u0644\u0628 \u0645\u064A\u0632\u0629 \u063A\u064A\u0631 \u0645\u062F\u0639\u0648\u0645\u0629 \u0639\u0628\u0631 \u062E\u0637\u062A\u0643. \u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647 \u0644\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u0637\u0644\u0628 \u0627\u0644\u0630\u064A \u064A\u0631\u0633\u0644\u0647 \u0627\u0644\u062A\u0637\u0628\u064A\u0642."
+    },
+    {
+      codes: ["subscription_sharing_user_not_eligible"],
+      en: "ChatGPT-plan use is unavailable for the selected account, workspace or policy. Review the account restrictions; repeating sign-in will not resolve this error.",
+      ar: "\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u062E\u0637\u0629 ChatGPT \u063A\u064A\u0631 \u0645\u062A\u0627\u062D \u0644\u0644\u062D\u0633\u0627\u0628 \u0623\u0648 \u0645\u0633\u0627\u062D\u0629 \u0627\u0644\u0639\u0645\u0644 \u0623\u0648 \u0627\u0644\u0633\u064A\u0627\u0633\u0629 \u0627\u0644\u0645\u062D\u062F\u062F\u0629. \u0631\u0627\u062C\u0639 \u0642\u064A\u0648\u062F \u0627\u0644\u062D\u0633\u0627\u0628\u061B \u062A\u0643\u0631\u0627\u0631 \u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0644\u0627 \u064A\u062D\u0644 \u0647\u0630\u0627 \u0627\u0644\u062E\u0637\u0623."
+    },
+    {
+      codes: ["subscription_sharing_user_unavailable"],
+      en: "ChatGPT account or workspace information is temporarily unavailable. Keep your current sign-in and try again later.",
+      ar: "\u0645\u0639\u0644\u0648\u0645\u0627\u062A \u062D\u0633\u0627\u0628 ChatGPT \u0623\u0648 \u0645\u0633\u0627\u062D\u0629 \u0627\u0644\u0639\u0645\u0644 \u063A\u064A\u0631 \u0645\u062A\u0627\u062D\u0629 \u0645\u0624\u0642\u062A\u064B\u0627. \u0627\u062D\u062A\u0641\u0638 \u0628\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0627\u0644\u062D\u0627\u0644\u064A \u0648\u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627."
+    },
+    {
+      codes: ["subscription_sharing_invalid_user", "chatpass_v2_scope_not_authorized", "chatpass_v2_invalid_authorization_context"],
+      en: "The account authorization could not be validated for this request. Report the code below so the app\u2019s authorization can be checked.",
+      ar: "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u062A\u0641\u0648\u064A\u0636 \u0627\u0644\u062D\u0633\u0627\u0628 \u0644\u0647\u0630\u0627 \u0627\u0644\u0637\u0644\u0628. \u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647 \u0644\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u062A\u0641\u0648\u064A\u0636 \u0627\u0644\u062A\u0637\u0628\u064A\u0642."
+    },
+    {
+      codes: ["subscription_sharing_route_not_supported"],
+      en: "The app\u2019s AI request route is unsupported. Update the extension and companion together; if it repeats, report the code below.",
+      ar: "\u0645\u0633\u0627\u0631 \u0637\u0644\u0628 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0641\u064A \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u063A\u064A\u0631 \u0645\u062F\u0639\u0648\u0645. \u062D\u062F\u0651\u062B \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0648\u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0645\u0639\u064B\u0627\u061B \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623\u060C \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["sharing_required"],
+      en: "Enable position sharing in AI settings before requesting an explanation.",
+      ar: "\u0641\u0639\u0651\u0644 \u0645\u0634\u0627\u0631\u0643\u0629 \u0627\u0644\u0648\u0636\u0639\u064A\u0627\u062A \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0642\u0628\u0644 \u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D."
+    },
+    {
+      codes: ["practice_confirmation_required", "unsupported_context"],
+      en: "Use local study or a supported analysis or built-in bot page, and confirm the practice checkbox before requesting an explanation.",
+      ar: "\u0627\u0633\u062A\u062E\u062F\u0645 \u0644\u0648\u062D\u0629 \u0627\u0644\u062F\u0631\u0627\u0633\u0629 \u0627\u0644\u0645\u062D\u0644\u064A\u0629 \u0623\u0648 \u0635\u0641\u062D\u0629 \u062A\u062D\u0644\u064A\u0644 \u0623\u0648 \u0631\u0648\u0628\u0648\u062A \u0645\u062F\u0645\u062C \u0645\u062F\u0639\u0648\u0645\u0629\u060C \u0648\u0623\u0643\u0651\u062F \u0645\u0631\u0628\u0639 \u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D."
+    },
+    {
+      codes: ["companion_unavailable"],
+      en: "The local companion could not be reached. Start it with this extension\u2019s ID, then check the connection in AI settings.",
+      ar: "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0627\u0644\u0645\u062D\u0644\u064A. \u0634\u063A\u0651\u0644\u0647 \u0628\u0645\u0639\u0631\u0651\u0641 \u0647\u0630\u0647 \u0627\u0644\u0625\u0636\u0627\u0641\u0629\u060C \u062B\u0645 \u0627\u0641\u062D\u0635 \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0645\u0646 \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A."
+    },
+    {
+      codes: ["companion_timeout"],
+      en: "The local companion did not respond in time. Check that it is running, then request the explanation when ready.",
+      ar: "\u0644\u0645 \u064A\u0633\u062A\u062C\u0628 \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0627\u0644\u0645\u062D\u0644\u064A \u0641\u064A \u0627\u0644\u0648\u0642\u062A \u0627\u0644\u0645\u062D\u062F\u062F. \u062A\u0623\u0643\u062F \u0645\u0646 \u062A\u0634\u063A\u064A\u0644\u0647\u060C \u062B\u0645 \u0627\u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D \u0639\u0646\u062F\u0645\u0627 \u062A\u0643\u0648\u0646 \u0645\u0633\u062A\u0639\u062F\u064B\u0627."
+    },
+    {
+      codes: ["upstream_timeout", "openai_http_408", "openai_http_504"],
+      en: "The AI service did not finish in time. Try again later; you can also choose a lower supported thinking mode in AI settings.",
+      ar: "\u0644\u0645 \u062A\u064F\u0643\u0645\u0644 \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0627\u0644\u0637\u0644\u0628 \u0641\u064A \u0627\u0644\u0648\u0642\u062A \u0627\u0644\u0645\u062D\u062F\u062F. \u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627\u061B \u0648\u064A\u0645\u0643\u0646\u0643 \u0627\u062E\u062A\u064A\u0627\u0631 \u0648\u0636\u0639 \u062A\u0641\u0643\u064A\u0631 \u0623\u0642\u0644 \u064A\u062F\u0639\u0645\u0647 \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0645\u0646 \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A."
+    },
+    {
+      codes: ["upstream_unavailable", "oauth_unavailable"],
+      en: "The companion could not reach the AI service. Check your connection and try again later.",
+      ar: "\u062A\u0639\u0630\u0651\u0631 \u0639\u0644\u0649 \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A. \u062A\u062D\u0642\u0651\u0642 \u0645\u0646 \u0627\u062A\u0635\u0627\u0644\u0643 \u0648\u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627."
+    },
+    {
+      codes: ["invalid_stream_type", "malformed_stream", "interrupted_stream", "inference_incomplete", "inference_failed", "empty_response"],
+      en: "The AI service did not return a complete supported response. No explanation was accepted. Try again later; if it repeats, report the code below.",
+      ar: "\u0644\u0645 \u062A\u064F\u0639\u062F \u062E\u062F\u0645\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0631\u062F\u064B\u0627 \u0645\u0643\u062A\u0645\u0644\u064B\u0627 \u0628\u0635\u064A\u063A\u0629 \u0645\u062F\u0639\u0648\u0645\u0629. \u0644\u0645 \u064A\u064F\u0639\u062A\u0645\u062F \u0623\u064A \u0634\u0631\u062D. \u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627\u060C \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623 \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["invalid_response", "invalid_companion_response", "malformed_explanation"],
+      en: "The returned explanation failed validation and was discarded. Try another available model; if it repeats, report the code below.",
+      ar: "\u0644\u0645 \u064A\u062C\u062A\u0632 \u0627\u0644\u0634\u0631\u062D \u0627\u0644\u0645\u064F\u0639\u0627\u062F \u0627\u0644\u062A\u062D\u0642\u0642\u060C \u0641\u062A\u0645 \u062A\u062C\u0627\u0647\u0644\u0647. \u062C\u0631\u0651\u0628 \u0646\u0645\u0648\u0630\u062C\u064B\u0627 \u0622\u062E\u0631 \u0645\u062A\u0627\u062D\u064B\u0627\u060C \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623 \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["response_too_large", "stream_too_large", "explanation_too_large"],
+      en: "The response exceeded the app\u2019s size limit and was discarded. Try another available model; if it repeats, report the code below.",
+      ar: "\u062A\u062C\u0627\u0648\u0632 \u0627\u0644\u0631\u062F \u0627\u0644\u062D\u062F \u0627\u0644\u0623\u0642\u0635\u0649 \u0644\u0644\u062D\u062C\u0645 \u0641\u064A \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u060C \u0641\u062A\u0645 \u062A\u062C\u0627\u0647\u0644\u0647. \u062C\u0631\u0651\u0628 \u0646\u0645\u0648\u0630\u062C\u064B\u0627 \u0622\u062E\u0631 \u0645\u062A\u0627\u062D\u064B\u0627\u060C \u0648\u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623 \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["stale_response", "account_changed"],
+      en: "The position, preferences or account changed, so this request was discarded. Review the current position and request a new explanation when ready.",
+      ar: "\u062A\u063A\u064A\u0651\u0631\u062A \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0623\u0648 \u0627\u0644\u062A\u0641\u0636\u064A\u0644\u0627\u062A \u0623\u0648 \u0627\u0644\u062D\u0633\u0627\u0628\u060C \u0641\u062A\u0645 \u062A\u062C\u0627\u0647\u0644 \u0647\u0630\u0627 \u0627\u0644\u0637\u0644\u0628. \u0631\u0627\u062C\u0639 \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0627\u0644\u062D\u0627\u0644\u064A\u0629 \u0648\u0627\u0637\u0644\u0628 \u0634\u0631\u062D\u064B\u0627 \u062C\u062F\u064A\u062F\u064B\u0627 \u0639\u0646\u062F\u0645\u0627 \u062A\u0643\u0648\u0646 \u0645\u0633\u062A\u0639\u062F\u064B\u0627."
+    },
+    {
+      codes: ["invalid_client"],
+      en: "The app\u2019s client configuration was rejected. Verify the companion\u2019s extension ID in AI settings; if it matches, report the code below.",
+      ar: "\u0631\u064F\u0641\u0636 \u0625\u0639\u062F\u0627\u062F \u0639\u0645\u064A\u0644 \u0627\u0644\u062A\u0637\u0628\u064A\u0642. \u062A\u062D\u0642\u0651\u0642 \u0645\u0646 \u062A\u0637\u0627\u0628\u0642 \u0645\u0639\u0631\u0651\u0641 \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0644\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0645\u0639 \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A\u061B \u0648\u0625\u0630\u0627 \u0643\u0627\u0646 \u0645\u0637\u0627\u0628\u0642\u064B\u0627\u060C \u0641\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    },
+    {
+      codes: ["invalid_origin"],
+      en: "The companion rejected this extension connection. Restart it with the extension ID shown in AI settings.",
+      ar: "\u0631\u0641\u0636 \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0627\u062A\u0635\u0627\u0644 \u0647\u0630\u0647 \u0627\u0644\u0625\u0636\u0627\u0641\u0629. \u0623\u0639\u062F \u062A\u0634\u063A\u064A\u0644\u0647 \u0628\u0645\u0639\u0631\u0651\u0641 \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0627\u0644\u0638\u0627\u0647\u0631 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A."
+    },
+    {
+      codes: ["unknown_error"],
+      en: "The explanation failed for an unrecognized reason. Refresh this chess tab. If it happens again, report when it occurred and the code below.",
+      ar: "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u0634\u0631\u062D \u0644\u0633\u0628\u0628 \u063A\u064A\u0631 \u0645\u0639\u0631\u0648\u0641. \u062D\u062F\u0651\u062B \u0639\u0644\u0627\u0645\u0629 \u062A\u0628\u0648\u064A\u0628 \u0627\u0644\u0634\u0637\u0631\u0646\u062C \u0647\u0630\u0647. \u0625\u0630\u0627 \u062A\u0643\u0631\u0631 \u0627\u0644\u062E\u0637\u0623\u060C \u0623\u0628\u0644\u063A \u0639\u0646 \u0648\u0642\u062A \u062D\u062F\u0648\u062B\u0647 \u0648\u0627\u0644\u0631\u0645\u0632 \u0623\u062F\u0646\u0627\u0647."
+    }
+  ];
+  var MESSAGES = new Map(GROUPS.flatMap((group) => group.codes.map((code) => [code, group])));
+  var ALIASES = /* @__PURE__ */ new Map([
+    ["Extension context invalidated.", "extension_reloaded"],
+    ["Extension context invalidated", "extension_reloaded"],
+    ["Enable position sharing in extension settings first", "sharing_required"],
+    ["Confirm local analysis or a built-in bot first", "practice_confirmation_required"],
+    ["Training explanations are limited to local study, Chess.com analysis and the computer page", "unsupported_context"],
+    ["Wait before requesting another explanation", "local_rate_limit"],
+    ["Position changed", "stale_response"],
+    ["Position changed; request discarded.", "stale_response"],
+    ["Invalid companion response", "invalid_companion_response"],
+    ["Companion unavailable or request timed out. Check the companion and try again.", "companion_unavailable"]
+  ]);
+  function explanationError(value, language = "en") {
+    const candidates = typeof value === "string" ? [value] : [value?.code, value?.error, value?.message];
+    for (const candidate of candidates) {
+      if (typeof candidate !== "string") continue;
+      const code = ALIASES.get(candidate) ?? candidate;
+      if (MESSAGES.has(code)) return { code, message: MESSAGES.get(code)[language === "ar" ? "ar" : "en"] };
+    }
+    return { code: "unknown_error", message: MESSAGES.get("unknown_error")[language === "ar" ? "ar" : "en"] };
+  }
+
   // src/content/training-panel.js
   var COPY = {
-    en: { title: "Make this position a lesson", intro: "Take a moment to choose your move before asking for help.", rating: "Your playing level", budget: "Your thinking budget", seconds15: "15 seconds", seconds30: "30 seconds", minute1: "1 minute", minutes3: "3 minutes", minutes10: "10 minutes", weights: "Show simulated choice weights", estimateNote: "Complexity, thinking time and choice weights are estimates, not measured human behavior. Weights compare only these moves.", highlight: "Highlight a candidate", practice: "This is local analysis or a built-in bot", practiceHelp: "Page detection cannot reliably identify bots. Never use explanations against people. Check the FEN if the turn or castling rights are uncertain.", explain: "Explain position", explaining: "Explaining\u2026", account: "AI settings", privacy: "Optional explanations use your ChatGPT plan after consent. Only validated chess data and your training settings are shared.", local: "Local Stockfish works without signing in.", waiting: "Waiting for a valid local engine line.", changed: "Position or preferences changed. Explain when you\u2019re ready.", requesting: "Using your ChatGPT plan to explain these engine moves\u2026", complete: "Explanation of this snapshot. AI estimates may be wrong; compare them with the local engine.", low: "low", medium: "medium", high: "high", complexity: "Local complexity estimate", thinking: "Estimated thinking time", seconds: "seconds", simulated: "simulated", aiComplexity: "AI complexity estimate", threats: "Potential replies to watch", tradeoff: "Tradeoff", aiLanguage: "AI language", thinkingMode: "Thinking", en: "English", ar: "Arabic", default: "Model default", none: "None", minimal: "Minimal", xhigh: "Extra high", max: "Maximum", failure: "Explanation unavailable.", stillLocal: "Local analysis remains available.", genericError: "Check AI settings and try again when ready.", signIn: "Connect your ChatGPT account in AI settings.", selectModel: "Choose and save an available model in AI settings.", unsupportedEffort: "That thinking mode is not supported by this model. Choose Model default in AI settings.", sharing: "Allow position sharing in AI settings first.", limit: "Your plan has reached a usage limit. Review usage in AI settings.", malformed: "The model returned an answer that did not pass chess validation.", connection: "Check that the local companion is running, then try again.", stream: "The response was interrupted or had an unsupported format. Try again later." },
-    ar: { title: "\u062D\u0648\u0651\u0644 \u0647\u0630\u0647 \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0625\u0644\u0649 \u062F\u0631\u0633", intro: "\u062E\u0630 \u0644\u062D\u0638\u0629 \u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u0646\u0642\u0644\u062A\u0643 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0627\u0644\u0645\u0633\u0627\u0639\u062F\u0629.", rating: "\u0645\u0633\u062A\u0648\u0627\u0643 \u0641\u064A \u0627\u0644\u0644\u0639\u0628", budget: "\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u0645\u062A\u0627\u062D", seconds15: "15 \u062B\u0627\u0646\u064A\u0629", seconds30: "30 \u062B\u0627\u0646\u064A\u0629", minute1: "\u062F\u0642\u064A\u0642\u0629 \u0648\u0627\u062D\u062F\u0629", minutes3: "3 \u062F\u0642\u0627\u0626\u0642", minutes10: "10 \u062F\u0642\u0627\u0626\u0642", weights: "\u0627\u0639\u0631\u0636 \u0623\u0648\u0632\u0627\u0646 \u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u062D\u0627\u0643\u0627\u0629", estimateNote: "\u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0648\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0648\u0623\u0648\u0632\u0627\u0646 \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u062A\u0642\u062F\u064A\u0631\u0627\u062A\u060C \u0648\u0644\u064A\u0633\u062A \u0642\u064A\u0627\u0633\u0627\u062A \u0644\u0633\u0644\u0648\u0643 \u0627\u0644\u0628\u0634\u0631. \u062A\u0642\u0627\u0631\u0646 \u0627\u0644\u0623\u0648\u0632\u0627\u0646 \u0647\u0630\u0647 \u0627\u0644\u0646\u0642\u0644\u0627\u062A \u0641\u0642\u0637.", highlight: "\u0645\u064A\u0651\u0632 \u0646\u0642\u0644\u0629 \u0645\u0631\u0634\u062D\u0629", practice: "\u0647\u0630\u0627 \u062A\u062D\u0644\u064A\u0644 \u0645\u062D\u0644\u064A \u0623\u0648 \u062A\u062F\u0631\u064A\u0628 \u0645\u0639 \u0631\u0648\u0628\u0648\u062A \u0645\u062F\u0645\u062C", practiceHelp: "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0627\u0643\u062A\u0634\u0627\u0641 \u0627\u0644\u0635\u0641\u062D\u0629 \u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0631\u0648\u0628\u0648\u062A\u0627\u062A \u0628\u0634\u0643\u0644 \u0645\u0648\u062B\u0648\u0642. \u0644\u0627 \u062A\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0634\u0631\u062D \u0636\u062F \u0623\u0634\u062E\u0627\u0635. \u062A\u062D\u0642\u0651\u0642 \u0645\u0646 FEN \u0625\u0630\u0627 \u0643\u0627\u0646 \u0627\u0644\u062F\u0648\u0631 \u0623\u0648 \u062D\u0642 \u0627\u0644\u062A\u0628\u064A\u064A\u062A \u063A\u064A\u0631 \u0645\u0624\u0643\u062F.", explain: "\u0627\u0634\u0631\u062D \u0627\u0644\u0648\u0636\u0639\u064A\u0629", explaining: "\u062C\u0627\u0631\u064D \u0627\u0644\u0634\u0631\u062D\u2026", account: "\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A", privacy: "\u064A\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0634\u0631\u062D \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631\u064A \u062E\u0637\u0629 ChatGPT \u0628\u0639\u062F \u0645\u0648\u0627\u0641\u0642\u062A\u0643. \u062A\u064F\u0634\u0627\u0631\u0643 \u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0634\u0637\u0631\u0646\u062C \u0627\u0644\u0645\u062A\u062D\u0642\u0642 \u0645\u0646\u0647\u0627 \u0648\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0641\u0642\u0637.", local: "\u064A\u0639\u0645\u0644 Stockfish \u0645\u062D\u0644\u064A\u064B\u0627 \u062F\u0648\u0646 \u062A\u0633\u062C\u064A\u0644 \u062F\u062E\u0648\u0644.", waiting: "\u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u062E\u0637 \u0644\u0639\u0628 \u0635\u0627\u0644\u062D \u0645\u0646 \u0627\u0644\u0645\u062D\u0631\u0643 \u0627\u0644\u0645\u062D\u0644\u064A.", changed: "\u062A\u063A\u064A\u0651\u0631\u062A \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0623\u0648 \u0627\u0644\u062A\u0641\u0636\u064A\u0644\u0627\u062A. \u0627\u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D \u0639\u0646\u062F\u0645\u0627 \u062A\u0643\u0648\u0646 \u0645\u0633\u062A\u0639\u062F\u064B\u0627.", requesting: "\u062A\u064F\u0633\u062A\u062E\u062F\u0645 \u062E\u0637\u0629 ChatGPT \u0644\u0634\u0631\u062D \u0646\u0642\u0644\u0627\u062A \u0627\u0644\u0645\u062D\u0631\u0643 \u0647\u0630\u0647\u2026", complete: "\u0634\u0631\u062D \u0644\u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629 \u0645\u0646 \u0627\u0644\u0648\u0636\u0639\u064A\u0629. \u0642\u062F \u062A\u062E\u0637\u0626 \u062A\u0642\u062F\u064A\u0631\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A\u061B \u0642\u0627\u0631\u0646\u0647\u0627 \u0628\u0627\u0644\u0645\u062D\u0631\u0643 \u0627\u0644\u0645\u062D\u0644\u064A.", low: "\u0645\u0646\u062E\u0641\u0636", medium: "\u0645\u062A\u0648\u0633\u0637", high: "\u0645\u0631\u062A\u0641\u0639", complexity: "\u062A\u0642\u062F\u064A\u0631 \u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0627\u0644\u0645\u062D\u0644\u064A", thinking: "\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u062A\u0642\u062F\u064A\u0631\u064A", seconds: "\u062B\u0627\u0646\u064A\u0629", simulated: "\u0645\u062D\u0627\u0643\u0627\u0629", aiComplexity: "\u062A\u0642\u062F\u064A\u0631 \u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A", threats: "\u0631\u062F\u0648\u062F \u0645\u062D\u062A\u0645\u0644\u0629 \u062A\u0633\u062A\u062D\u0642 \u0627\u0644\u0627\u0646\u062A\u0628\u0627\u0647", tradeoff: "\u0627\u0644\u0645\u0642\u0627\u0628\u0644", aiLanguage: "\u0644\u063A\u0629 \u0627\u0644\u0634\u0631\u062D", thinkingMode: "\u0627\u0644\u062A\u0641\u0643\u064A\u0631", en: "\u0627\u0644\u0625\u0646\u062C\u0644\u064A\u0632\u064A\u0629", ar: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", default: "\u0627\u0641\u062A\u0631\u0627\u0636\u064A \u0627\u0644\u0646\u0645\u0648\u0630\u062C", none: "\u0628\u0644\u0627 \u062A\u0641\u0643\u064A\u0631 \u0625\u0636\u0627\u0641\u064A", minimal: "\u0623\u062F\u0646\u0649", xhigh: "\u0645\u0631\u062A\u0641\u0639 \u062C\u062F\u064B\u0627", max: "\u0623\u0642\u0635\u0649", failure: "\u0627\u0644\u0634\u0631\u062D \u063A\u064A\u0631 \u0645\u062A\u0627\u062D.", stillLocal: "\u064A\u0628\u0642\u0649 \u0627\u0644\u062A\u062D\u0644\u064A\u0644 \u0627\u0644\u0645\u062D\u0644\u064A \u0645\u062A\u0627\u062D\u064B\u0627.", genericError: "\u0631\u0627\u062C\u0639 \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u062B\u0645 \u062D\u0627\u0648\u0644 \u0639\u0646\u062F\u0645\u0627 \u062A\u0643\u0648\u0646 \u0645\u0633\u062A\u0639\u062F\u064B\u0627.", signIn: "\u0627\u0631\u0628\u0637 \u062D\u0633\u0627\u0628 ChatGPT \u0645\u0646 \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A.", selectModel: "\u0627\u062E\u062A\u0631 \u0646\u0645\u0648\u0630\u062C\u064B\u0627 \u0645\u062A\u0627\u062D\u064B\u0627 \u0648\u0627\u062D\u0641\u0638\u0647 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A.", unsupportedEffort: "\u0647\u0630\u0627 \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0644\u0627 \u064A\u062F\u0639\u0645 \u0648\u0636\u0639 \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u0645\u062D\u062F\u062F. \u0627\u062E\u062A\u0631 \u0627\u0641\u062A\u0631\u0627\u0636\u064A \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0641\u064A \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A.", sharing: "\u0627\u0633\u0645\u062D \u0628\u0645\u0634\u0627\u0631\u0643\u0629 \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0623\u0648\u0644\u064B\u0627.", limit: "\u0628\u0644\u063A\u062A \u062E\u0637\u062A\u0643 \u062D\u062F \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645. \u0631\u0627\u062C\u0639 \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0641\u064A \u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A.", malformed: "\u0623\u0639\u0627\u062F \u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0625\u062C\u0627\u0628\u0629 \u0644\u0645 \u062A\u062C\u062A\u0632 \u0627\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0635\u062D\u0629 \u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0634\u0637\u0631\u0646\u062C.", connection: "\u062A\u0623\u0643\u062F \u0645\u0646 \u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0627\u0644\u0645\u062D\u0644\u064A \u062B\u0645 \u062D\u0627\u0648\u0644 \u0645\u062C\u062F\u062F\u064B\u0627.", stream: "\u0627\u0646\u0642\u0637\u0639 \u0627\u0644\u0631\u062F \u0623\u0648 \u0648\u0635\u0644 \u0628\u0635\u064A\u063A\u0629 \u063A\u064A\u0631 \u0645\u062F\u0639\u0648\u0645\u0629. \u062D\u0627\u0648\u0644 \u0644\u0627\u062D\u0642\u064B\u0627." }
+    en: { title: "Make this position a lesson", intro: "Take a moment to choose your move before asking for help.", rating: "Your playing level", budget: "Your thinking budget", seconds15: "15 seconds", seconds30: "30 seconds", minute1: "1 minute", minutes3: "3 minutes", minutes10: "10 minutes", weights: "Show simulated choice weights", estimateNote: "Complexity, thinking time and choice weights are estimates, not measured human behavior. Weights compare only these moves.", highlight: "Highlight a candidate", practice: "This is local analysis or a built-in bot", practiceHelp: "Page detection cannot reliably identify bots. Never use explanations against people. Check the FEN if the turn or castling rights are uncertain.", explain: "Explain position", explaining: "Explaining\u2026", account: "AI settings", privacy: "Optional explanations use your ChatGPT plan after consent. Only validated chess data and your training settings are shared.", local: "Local Stockfish works without signing in.", waiting: "Waiting for a valid local engine line.", changed: "Position or preferences changed. Explain when you\u2019re ready.", requesting: "Using your ChatGPT plan to explain these engine moves\u2026", complete: "Explanation of this snapshot. AI estimates may be wrong; compare them with the local engine.", low: "low", medium: "medium", high: "high", complexity: "Local complexity estimate", thinking: "Estimated thinking time", seconds: "seconds", simulated: "simulated", aiComplexity: "AI complexity estimate", threats: "Potential replies to watch", tradeoff: "Tradeoff", aiLanguage: "AI language", thinkingMode: "Thinking", en: "English", ar: "Arabic", default: "Model default", none: "None", minimal: "Minimal", xhigh: "Extra high", max: "Maximum", failure: "Explanation unavailable.", stillLocal: "Local analysis remains available." },
+    ar: { title: "\u062D\u0648\u0651\u0644 \u0647\u0630\u0647 \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0625\u0644\u0649 \u062F\u0631\u0633", intro: "\u062E\u0630 \u0644\u062D\u0638\u0629 \u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u0646\u0642\u0644\u062A\u0643 \u0642\u0628\u0644 \u0637\u0644\u0628 \u0627\u0644\u0645\u0633\u0627\u0639\u062F\u0629.", rating: "\u0645\u0633\u062A\u0648\u0627\u0643 \u0641\u064A \u0627\u0644\u0644\u0639\u0628", budget: "\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u0645\u062A\u0627\u062D", seconds15: "15 \u062B\u0627\u0646\u064A\u0629", seconds30: "30 \u062B\u0627\u0646\u064A\u0629", minute1: "\u062F\u0642\u064A\u0642\u0629 \u0648\u0627\u062D\u062F\u0629", minutes3: "3 \u062F\u0642\u0627\u0626\u0642", minutes10: "10 \u062F\u0642\u0627\u0626\u0642", weights: "\u0627\u0639\u0631\u0636 \u0623\u0648\u0632\u0627\u0646 \u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u062D\u0627\u0643\u0627\u0629", estimateNote: "\u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0648\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0648\u0623\u0648\u0632\u0627\u0646 \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u062A\u0642\u062F\u064A\u0631\u0627\u062A\u060C \u0648\u0644\u064A\u0633\u062A \u0642\u064A\u0627\u0633\u0627\u062A \u0644\u0633\u0644\u0648\u0643 \u0627\u0644\u0628\u0634\u0631. \u062A\u0642\u0627\u0631\u0646 \u0627\u0644\u0623\u0648\u0632\u0627\u0646 \u0647\u0630\u0647 \u0627\u0644\u0646\u0642\u0644\u0627\u062A \u0641\u0642\u0637.", highlight: "\u0645\u064A\u0651\u0632 \u0646\u0642\u0644\u0629 \u0645\u0631\u0634\u062D\u0629", practice: "\u0647\u0630\u0627 \u062A\u062D\u0644\u064A\u0644 \u0645\u062D\u0644\u064A \u0623\u0648 \u062A\u062F\u0631\u064A\u0628 \u0645\u0639 \u0631\u0648\u0628\u0648\u062A \u0645\u062F\u0645\u062C", practiceHelp: "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0627\u0643\u062A\u0634\u0627\u0641 \u0627\u0644\u0635\u0641\u062D\u0629 \u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0631\u0648\u0628\u0648\u062A\u0627\u062A \u0628\u0634\u0643\u0644 \u0645\u0648\u062B\u0648\u0642. \u0644\u0627 \u062A\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0634\u0631\u062D \u0636\u062F \u0623\u0634\u062E\u0627\u0635. \u062A\u062D\u0642\u0651\u0642 \u0645\u0646 FEN \u0625\u0630\u0627 \u0643\u0627\u0646 \u0627\u0644\u062F\u0648\u0631 \u0623\u0648 \u062D\u0642 \u0627\u0644\u062A\u0628\u064A\u064A\u062A \u063A\u064A\u0631 \u0645\u0624\u0643\u062F.", explain: "\u0627\u0634\u0631\u062D \u0627\u0644\u0648\u0636\u0639\u064A\u0629", explaining: "\u062C\u0627\u0631\u064D \u0627\u0644\u0634\u0631\u062D\u2026", account: "\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A", privacy: "\u064A\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0634\u0631\u062D \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631\u064A \u062E\u0637\u0629 ChatGPT \u0628\u0639\u062F \u0645\u0648\u0627\u0641\u0642\u062A\u0643. \u062A\u064F\u0634\u0627\u0631\u0643 \u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0634\u0637\u0631\u0646\u062C \u0627\u0644\u0645\u062A\u062D\u0642\u0642 \u0645\u0646\u0647\u0627 \u0648\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0641\u0642\u0637.", local: "\u064A\u0639\u0645\u0644 Stockfish \u0645\u062D\u0644\u064A\u064B\u0627 \u062F\u0648\u0646 \u062A\u0633\u062C\u064A\u0644 \u062F\u062E\u0648\u0644.", waiting: "\u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u062E\u0637 \u0644\u0639\u0628 \u0635\u0627\u0644\u062D \u0645\u0646 \u0627\u0644\u0645\u062D\u0631\u0643 \u0627\u0644\u0645\u062D\u0644\u064A.", changed: "\u062A\u063A\u064A\u0651\u0631\u062A \u0627\u0644\u0648\u0636\u0639\u064A\u0629 \u0623\u0648 \u0627\u0644\u062A\u0641\u0636\u064A\u0644\u0627\u062A. \u0627\u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u062D \u0639\u0646\u062F\u0645\u0627 \u062A\u0643\u0648\u0646 \u0645\u0633\u062A\u0639\u062F\u064B\u0627.", requesting: "\u062A\u064F\u0633\u062A\u062E\u062F\u0645 \u062E\u0637\u0629 ChatGPT \u0644\u0634\u0631\u062D \u0646\u0642\u0644\u0627\u062A \u0627\u0644\u0645\u062D\u0631\u0643 \u0647\u0630\u0647\u2026", complete: "\u0634\u0631\u062D \u0644\u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629 \u0645\u0646 \u0627\u0644\u0648\u0636\u0639\u064A\u0629. \u0642\u062F \u062A\u062E\u0637\u0626 \u062A\u0642\u062F\u064A\u0631\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A\u061B \u0642\u0627\u0631\u0646\u0647\u0627 \u0628\u0627\u0644\u0645\u062D\u0631\u0643 \u0627\u0644\u0645\u062D\u0644\u064A.", low: "\u0645\u0646\u062E\u0641\u0636", medium: "\u0645\u062A\u0648\u0633\u0637", high: "\u0645\u0631\u062A\u0641\u0639", complexity: "\u062A\u0642\u062F\u064A\u0631 \u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0627\u0644\u0645\u062D\u0644\u064A", thinking: "\u0648\u0642\u062A \u0627\u0644\u062A\u0641\u0643\u064A\u0631 \u0627\u0644\u062A\u0642\u062F\u064A\u0631\u064A", seconds: "\u062B\u0627\u0646\u064A\u0629", simulated: "\u0645\u062D\u0627\u0643\u0627\u0629", aiComplexity: "\u062A\u0642\u062F\u064A\u0631 \u0627\u0644\u062A\u0639\u0642\u064A\u062F \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A", threats: "\u0631\u062F\u0648\u062F \u0645\u062D\u062A\u0645\u0644\u0629 \u062A\u0633\u062A\u062D\u0642 \u0627\u0644\u0627\u0646\u062A\u0628\u0627\u0647", tradeoff: "\u0627\u0644\u0645\u0642\u0627\u0628\u0644", aiLanguage: "\u0644\u063A\u0629 \u0627\u0644\u0634\u0631\u062D", thinkingMode: "\u0627\u0644\u062A\u0641\u0643\u064A\u0631", en: "\u0627\u0644\u0625\u0646\u062C\u0644\u064A\u0632\u064A\u0629", ar: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", default: "\u0627\u0641\u062A\u0631\u0627\u0636\u064A \u0627\u0644\u0646\u0645\u0648\u0630\u062C", none: "\u0628\u0644\u0627 \u062A\u0641\u0643\u064A\u0631 \u0625\u0636\u0627\u0641\u064A", minimal: "\u0623\u062F\u0646\u0649", xhigh: "\u0645\u0631\u062A\u0641\u0639 \u062C\u062F\u064B\u0627", max: "\u0623\u0642\u0635\u0649", failure: "\u0627\u0644\u0634\u0631\u062D \u063A\u064A\u0631 \u0645\u062A\u0627\u062D.", stillLocal: "\u064A\u0628\u0642\u0649 \u0627\u0644\u062A\u062D\u0644\u064A\u0644 \u0627\u0644\u0645\u062D\u0644\u064A \u0645\u062A\u0627\u062D\u064B\u0627." }
   };
   var STYLE = `
 .training{container:training / inline-size;margin-block-start:12px;border-block-start:1px solid #d3d9d0;padding:22px 24px 24px;background:#fffefb;color:#192b29;font:14px/1.6 "Segoe UI",Tahoma,Arial,sans-serif;user-select:text;border-radius:0 0 11px 11px;text-align:start}
 .training *{box-sizing:border-box}.training h3{font-size:20px;font-weight:650;line-height:1.3;margin:0 0 7px;text-wrap:balance}.training p{margin:7px 0;text-wrap:pretty}.training .muted{color:#556460;font-size:13px}.training .fields{display:grid;grid-template-columns:1fr;gap:12px;margin-block:18px 10px}.training .field{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:650}.training select{inline-size:100%;max-inline-size:none;margin:0;min-block-size:48px;padding:8px 10px;border:1px solid #788781;border-radius:7px;color:#192b29;background:#fffefb;font:16px "Segoe UI",Tahoma,Arial,sans-serif}.training .check{display:flex;align-items:center;gap:9px;min-block-size:48px;line-height:1.5;cursor:pointer;margin:0;font-size:14px}.training input[type=checkbox]{accent-color:#17534a;inline-size:18px;block-size:18px;flex:none;margin:0}.training .estimate-note{font-size:12px;color:#556460;margin-block:4px 14px}.training .estimate{display:grid;gap:2px;background:#edf2e9;border:1px solid #b6c6b4;border-radius:8px;padding:11px 12px;color:#244d40;font-size:12px}.training .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-block:10px 17px;direction:ltr}.training button{font:13px/1.4 "Segoe UI",Tahoma,Arial,sans-serif;cursor:pointer;min-block-size:48px;min-inline-size:0;border:1px solid #788781;border-radius:7px;background:#fffefb;color:#192b29;padding:10px 12px}.training button:hover{background:#edf2e9}.training button:focus-visible,.training input:focus-visible,.training select:focus-visible{outline:3px solid #073a8c;outline-offset:3px}.training button:disabled{opacity:.6;cursor:not-allowed}.training .choices button{padding:9px 5px;font-size:17px;font-weight:650;display:flex;flex-direction:column;align-items:center;gap:3px}.training .choices small{font-size:11px;font-weight:400;line-height:1.4}.training .choices button[aria-pressed=true]{border:2px solid #17534a;background:#e3ece0;color:#17534a;padding:8px 4px}.training .practice-note{font-size:12px;color:#556460;margin:0 0 14px}.training .actions{display:flex;gap:8px;flex-wrap:wrap}.training .primary{font-size:16px;background:#17534a;color:#fffefb;border-color:#17534a;font-weight:650;flex:1;min-inline-size:160px}.training .primary:hover{background:#103f37}.training .account{font-size:14px;flex:1}.training .ai-preferences{font-size:12px;color:#556460;margin-block:10px}.training .message{font-size:13px;color:#465a51;margin-block-start:12px}.training .message[data-error]{border-inline-start:3px solid #9b392d;padding-inline-start:10px;color:#822b20}.training .privacy{font-size:12px;color:#556460;margin-block:12px 0}.training .output{font-size:13px;overflow-wrap:anywhere}.training .output:not(:empty){border-block-start:1px solid #d3d9d0;margin-block-start:18px;padding-block-start:6px}.training .output h4{font-size:15px;margin:14px 0 5px;font-weight:650}.training .output p{margin:4px 0}.training .output .candidate-heading{direction:ltr;unicode-bidi:isolate;text-align:start;color:#17534a;font-size:18px}.training .output .tradeoff{color:#556460}.training [hidden]{display:none}
 @container training (inline-size >= 300px){.training .fields{grid-template-columns:1fr 1fr}}
+.training .error-code{display:block;margin-block-start:6px;font-size:12px}.training .error-code bdi{font-family:Consolas,monospace;overflow-wrap:anywhere}
 @media(max-width:760px){.training{padding:20px 18px}}`;
   var TEMPLATE2 = `<section class="training">
   <h3 data-copy="title"></h3><p class="muted" data-copy="intro"></p>
@@ -5145,13 +5352,31 @@
       this.$(".message").textContent = this.text(key);
       this.$(".message").toggleAttribute("data-error", error);
     }
+    showError(value) {
+      const error = explanationError(value, this.language), message = this.$(".message");
+      this.messageKey = "failure";
+      message.setAttribute("data-error", "");
+      const text = document.createElement("span");
+      text.textContent = `${error.message} ${this.text("stillLocal")}`;
+      const detail = document.createElement("span");
+      detail.className = "error-code";
+      const code = document.createElement("bdi");
+      code.dir = "ltr";
+      code.lang = "en";
+      code.textContent = error.code;
+      detail.append(this.language === "ar" ? "\u0631\u0645\u0632 \u0627\u0644\u062A\u0634\u062E\u064A\u0635: " : "Diagnostic code: ", code);
+      message.replaceChildren(text, detail);
+    }
     invalidate() {
       this.generation.invalidate();
       this.busy = false;
       this.$(".output").replaceChildren();
       this.message("changed");
-      this.send({ type: "training", action: "cancel-explanation" }).catch(() => {
-      });
+      try {
+        this.send({ type: "training", action: "cancel-explanation" }).catch(() => {
+        });
+      } catch {
+      }
     }
     update(position2, sorted, allowed) {
       const key = position2?.fen ?? "";
@@ -5221,6 +5446,7 @@
       if (this.$(".explain").disabled) return;
       const snapshot = structuredClone(this.data), generation = this.generation.id;
       this.busy = true;
+      this.$(".output").replaceChildren();
       this.refresh();
       this.message("requesting");
       try {
@@ -5231,8 +5457,14 @@
           return;
         }
         if (!this.generation.current(generation)) return;
-        if (!response?.ok) throw new Error(response?.error || "Explanation unavailable");
-        const out = validateExplanation(response.explanation, snapshot), node2 = this.$(".output");
+        if (!response?.ok) throw response ?? new Error("invalid_response");
+        let out;
+        try {
+          out = validateExplanation(response.explanation, snapshot);
+        } catch {
+          throw new Error("malformed_explanation");
+        }
+        const node2 = this.$(".output");
         node2.replaceChildren();
         node2.lang = snapshot.settings.language;
         node2.dir = snapshot.settings.language === "ar" ? "rtl" : "ltr";
@@ -5266,9 +5498,7 @@
         this.message("complete");
       } catch (error) {
         if (this.generation.current(generation)) {
-          const keys = { sign_in_required: "signIn", select_model_in_settings: "selectModel", model_unavailable: "selectModel", reasoning_effort_unavailable: "unsupportedEffort", subscription_sharing_usage_limit_exceeded: "limit", malformed_explanation: "malformed", invalid_stream_type: "stream", interrupted_stream: "stream", "Enable position sharing in extension settings first": "sharing", "Companion unavailable or request timed out. Check the companion and try again.": "connection" };
-          this.message("failure", true);
-          this.$(".message").textContent += ` ${this.text(keys[error.message] ?? "genericError")} ${this.text("stillLocal")}`;
+          this.showError(error);
         }
       } finally {
         if (this.generation.current(generation)) {

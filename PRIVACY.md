@@ -32,7 +32,7 @@ The bundled ui-sdk bridge on extension settings can describe named controls and 
 
 To stop sharing, clear the position-sharing checkbox. To end account access, use **Sign out of active account**; the companion attempts remote refresh-session revocation and clears local tokens. If revocation cannot be confirmed, use ChatGPT Settings to disconnect the app. Uninstalling the extension alone does not revoke provider authorization. Stop the companion before deleting its app-owned data folder. Registration/host mappings are retained after normal sign-out so future sign-in does not register a new client unnecessarily.
 
-The original author's donation image remains bundled locally. Only clicking its link opens the external donation service, subject to that service's policies.
+The donation button, external donation link and bundled donation images have been removed.
 
 ## Polski — najważniejsze informacje
 

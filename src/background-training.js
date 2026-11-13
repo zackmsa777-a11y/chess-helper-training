@@ -34,7 +34,8 @@ export function installTrainingBridge() {
         try {
           const result = await call('/explain',data,abort.signal);
           if (abort.signal.aborted) throw new Error('Position changed');
-          return {ok:true,explanation:validateExplanation(result.explanation,data)};
+          try { return {ok:true,explanation:validateExplanation(result.explanation,data)}; }
+          catch { throw new Error('malformed_explanation'); }
         } finally { if (pending.get(key) === abort) pending.delete(key); }
       }
       if (!options || !Object.hasOwn(routes,message.action)) throw new Error('Open account settings to manage sign-in');
@@ -46,17 +47,24 @@ export function installTrainingBridge() {
 }
 async function call(path,body,signal) {
   let res;
+  const timeout=AbortSignal.timeout(signal ? 80000 : 35000);
   try {
-    res = await fetch(COMPANION+path,{method:'POST',credentials:'omit',redirect:'error',signal:signal ? AbortSignal.any([signal,AbortSignal.timeout(80000)]) : AbortSignal.timeout(35000),
+    res = await fetch(COMPANION+path,{method:'POST',credentials:'omit',redirect:'error',signal:signal ? AbortSignal.any([signal,timeout]) : timeout,
       headers:{'Content-Type':'application/json','X-Chess-Client':chrome.runtime.id},body:JSON.stringify(body)});
   } catch (e) {
-    if (signal?.aborted) throw new Error('Position changed; request discarded.');
-    throw new Error('Companion unavailable or request timed out. Check the companion and try again.');
+    throw connectionError(e,signal,timeout);
   }
-  const text = await res.text();
-  if (text.length > 65536) throw new Error('Invalid companion response');
+  let text;
+  try { text = await res.text(); } catch (e) { throw connectionError(e,signal,timeout); }
+  if (text.length > 65536) throw new Error('invalid_companion_response');
   let data;
-  try { data = JSON.parse(text); } catch { throw new Error('Invalid companion response'); }
+  try { data = JSON.parse(text); } catch { throw new Error('invalid_companion_response'); }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('invalid_companion_response');
   if (!res.ok) throw new Error(typeof data.error === 'string' && /^[a-z_0-9]{1,100}$/.test(data.error) ? data.error : 'Companion request failed');
   return data;
+}
+function connectionError(error,signal,timeout) {
+  if (signal?.aborted) return new Error('Position changed; request discarded.');
+  const timedOut=error?.name === 'TimeoutError' || (error?.name === 'AbortError' && timeout?.aborted && timeout.reason?.name === 'TimeoutError');
+  return new Error(timedOut ? 'companion_timeout' : 'companion_unavailable');
 }

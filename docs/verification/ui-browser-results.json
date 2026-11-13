@@ -1,7 +1,7 @@
 {
   "browser": "145.0.7632.6",
-  "durationMs": 14470,
-  "passed": 21,
+  "durationMs": 33416,
+  "passed": 25,
   "checks": [
     "Isolated extension copy and synthetic companion use an ephemeral port, never 43187",
     "Settings load without account or AI requests and model saving starts disabled",
@@ -22,7 +22,11 @@
     "Study agent labels and flip work; explicit explanation forwards saved Arabic/high settings once",
     "Study layout fits 390 pixels and its arrow overlay remains aligned on resize",
     "Changing saved AI preferences discards a delayed explanation",
-    "Malformed mock AI HTML is rejected and local analysis stays usable",
+    "Malformed mock AI HTML is rejected with its exact safe error code and local analysis stays usable",
+    "A fast invalid-request reply shows its code and Arabic recovery while the connected account remains unchanged",
+    "A busy reply shows Arabic wait guidance without automatic retry or account access",
+    "Unavailable plan usage has distinct Arabic feedback and preserves the connected account",
+    "An upstream timeout shows its exact code and Arabic guidance with cleared output and usable local candidates",
     "No page errors or external HTTP traffic; OAuth and inference remain entirely mocked"
   ],
   "errors": [],
@@ -62,10 +66,10 @@
   ],
   "resizeAlignment": {
     "immediate": {
-      "left": 96,
-      "top": 91.171875,
-      "width": 230.359375,
-      "height": 230.359375
+      "left": 0,
+      "top": 0,
+      "width": 0,
+      "height": 0
     },
     "settled": {
       "left": 0,
@@ -73,12 +77,54 @@
       "width": 0,
       "height": 0
     },
-    "settleMs": 11
+    "settleMs": 9
   },
+  "errorCases": [
+    {
+      "code": "invalid_request",
+      "status": 400,
+      "feedbackMs": 96,
+      "automaticRetries": 0,
+      "connected": true,
+      "previousOutputCleared": true
+    },
+    {
+      "code": "request_in_progress",
+      "status": 409,
+      "feedbackMs": 87,
+      "automaticRetries": 0,
+      "connected": true,
+      "previousOutputCleared": true
+    },
+    {
+      "code": "subscription_sharing_usage_unavailable",
+      "status": 503,
+      "feedbackMs": 89,
+      "automaticRetries": 0,
+      "connected": true,
+      "previousOutputCleared": true
+    },
+    {
+      "code": "upstream_timeout",
+      "status": 504,
+      "feedbackMs": 116,
+      "automaticRetries": 0,
+      "connected": true,
+      "previousOutputCleared": true
+    }
+  ],
+  "transportFailures": [
+    {
+      "origin": "http://127.0.0.1:59816",
+      "path": "/explain",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
   "mocked": [
     "OAuth",
     "account model catalog",
-    "AI inference"
+    "AI inference",
+    "companion error replies and rate-window clock"
   ],
   "real": [
     "ui-sdk web components",
@@ -91,6 +137,6 @@
     "live Chess.com",
     "screen reader software"
   ],
-  "inferenceCount": 3,
+  "inferenceCount": 7,
   "ephemeralPort": true
 }

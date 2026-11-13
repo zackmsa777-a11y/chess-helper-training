@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { consumeSSE, requestBody, modelCatalog, explain, apiError, MODEL_CATALOG_MAX_BYTES, MODEL_PICKER_MAX_ENTRIES, MODEL_PICKER_MAX_CHARACTERS } from '../companion/inference.js';
 import {fixture,explanation} from './fixtures.js';
+import { AppError } from '../companion/oauth.js';
 function stream(events,chunkSize=7){
   const bytes=new TextEncoder().encode(events.map(e=>'data: '+JSON.stringify(e)+'\r\n\r\n').join(''));
   return new Response(new ReadableStream({start(c){for(let i=0;i<bytes.length;i+=chunkSize)c.enqueue(bytes.slice(i,i+chunkSize));c.close();}}),{headers:{'content-type':'text/event-stream'}});
@@ -44,6 +45,21 @@ test('Completed inference validates output and discards switched-account respons
 test('HTTP admission detail shapes are handled without leaking arbitrary text',async()=>{
   const auth=fakeAuth(async()=>Response.json({detail:'untrusted secret-like text'},{status:503,headers:{'x-request-id':'req_mock'}}));
   await assert.rejects(modelCatalog(auth),e=>e.code==='openai_http_503'&&e.diagnostic.shape==='detail'&&e.diagnostic.requestId==='req_mock'&&!e.message.includes('untrusted'));
+});
+test('Official provider codes containing digits survive HTTP and SSE without exposing bodies',async()=>{
+  for(const code of ['chatpass_v2_scope_not_authorized','chatpass_v2_invalid_authorization_context']) {
+    const error={code,message:'private provider body',param:'authorization'};
+    const http=await apiError(Response.json({error},{status:403,headers:{'x-request-id':'req_mock'}}));
+    assert.equal(http.code,code);assert.equal(http.status,403);assert.equal(http.message,code);
+    assert.equal(http.diagnostic.param,'authorization');assert.ok(!JSON.stringify(http).includes('private provider body'));
+    await assert.rejects(consumeSSE(stream([{type:'response.failed',response:{error}}])),actual=>{
+      assert.equal(actual.code,code);assert.equal(actual.message,code);assert.ok(!JSON.stringify(actual).includes('private provider body'));return true;
+    });
+  }
+  for(const code of ['chatpass_v2_<script>','private provider body','x'.repeat(101)]) {
+    const http=await apiError(Response.json({error:{code}},{status:403}));assert.equal(http.code,'openai_http_403');
+    await assert.rejects(consumeSSE(stream([{type:'error',code}])),/inference_failed/);
+  }
 });
 test('Large model metadata above the old 256 KiB cap loads; only picker fields leave the companion',async()=>{
   const body={models:[{slug:'account-model',display_name:'Account model',visibility:'list',instructions:'Synthetic capability metadata. '.repeat(24000)},{slug:'hidden',visibility:'hide',instructions:'private metadata'}]};
@@ -163,4 +179,92 @@ test('Malformed language and reasoning settings fail before any provider request
     await assert.rejects(explain(auth,input,new AbortController().signal));
   }
   assert.equal(calls,0);
+});
+
+function brokenBody(error,type='text/event-stream',status=200) {
+  return new Response(new ReadableStream({pull(controller){controller.error(error);}}),{status,headers:{'content-type':type}});
+}
+function safeTransport(code,status) {
+  return error=>{
+    assert.ok(error instanceof AppError);assert.equal(error.code,code);assert.equal(error.status,status);
+    assert.equal(error.message,code);assert.equal(Object.hasOwn(error,'cause'),false);
+    assert.ok(!JSON.stringify(error).includes('private transport detail'));return true;
+  };
+}
+test('Catalog fetch and body transport failures retain safe distinct codes without retries',async()=>{
+  for(const [error,code,status] of [[new DOMException('private transport detail','TimeoutError'),'upstream_timeout',504],[new TypeError('private transport detail'),'upstream_unavailable',502]]) {
+    for(const bodyFailure of [false,true]) {
+      let calls=0;
+      const auth=fakeAuth(async()=>{calls++;if(bodyFailure)return brokenBody(error,'application/json');throw error;});
+      await assert.rejects(modelCatalog(auth),safeTransport(code,status));
+      assert.equal(calls,1);assert.equal(auth.catalog,null);assert.equal(auth.epoch,0);
+    }
+  }
+});
+test('Inference fetch and SSE body failures distinguish upstream timeout from network failure',async()=>{
+  for(const [error,code,status] of [[new DOMException('private transport detail','TimeoutError'),'upstream_timeout',504],[new TypeError('private transport detail'),'upstream_unavailable',502]]) {
+    for(const bodyFailure of [false,true]) {
+      let calls=0;
+      const auth=fakeAuth(async url=>{
+        calls++;
+        if(url.endsWith('/models'))return Response.json({models:[{slug:'account-model',display_name:'Account model',visibility:'list'}]});
+        if(bodyFailure)return brokenBody(error);throw error;
+      });
+      await assert.rejects(explain(auth,fixture(),new AbortController().signal),safeTransport(code,status));
+      assert.equal(calls,2);assert.equal(auth.epoch,0);assert.equal(await auth.access(),'mock-token');
+    }
+  }
+});
+test('Admission error-body reads do not swallow timeouts or network failures',async()=>{
+  for(const [error,code,status] of [[new DOMException('private transport detail','TimeoutError'),'upstream_timeout',504],[new TypeError('private transport detail'),'upstream_unavailable',502]]) {
+    await assert.rejects(apiError(brokenBody(error,'application/json',503)),safeTransport(code,status));
+    await assert.rejects(consumeSSE(brokenBody(error,'application/json')),safeTransport(code,status));
+  }
+  const malformed=await apiError(new Response('{broken',{status:503,headers:{'content-type':'application/json'}}));
+  assert.equal(malformed.code,'openai_http_503');assert.equal(malformed.diagnostic.status,503);
+});
+test('AbortError is stale only when the caller cancelled; existing AppError is preserved',async()=>{
+  const cancelled=new AbortController();cancelled.abort();
+  const aborted=()=>new DOMException('private transport detail','AbortError');
+  await assert.rejects(consumeSSE(brokenBody(aborted()),cancelled.signal),safeTransport('stale_response',409));
+  await assert.rejects(consumeSSE(brokenBody(aborted()),new AbortController().signal),safeTransport('upstream_unavailable',502));
+  const timedOut=AbortSignal.abort(new DOMException('private transport detail','TimeoutError'));
+  await assert.rejects(consumeSSE(brokenBody(aborted()),new AbortController().signal,timedOut),safeTransport('upstream_timeout',504));
+  await assert.rejects(consumeSSE(brokenBody(aborted()),cancelled.signal,timedOut),safeTransport('stale_response',409));
+  await assert.rejects(apiError(brokenBody(aborted(),'application/json',503),cancelled.signal),safeTransport('stale_response',409));
+  const auth=fakeAuth(async(_url,options)=>{assert.equal(options.signal.aborted,true);throw aborted();});
+  await assert.rejects(explain(auth,fixture(),cancelled.signal),safeTransport('stale_response',409));
+  const preserved=new AppError('subscription_sharing_usage_unavailable',503);
+  const failed=fakeAuth(async()=>{throw preserved;});
+  await assert.rejects(modelCatalog(failed),error=>error===preserved);
+  await assert.rejects(consumeSSE(brokenBody(preserved)),error=>error===preserved);
+});
+test('Arabic explanation survives split UTF-8 SSE and the same strict chess validation',async()=>{
+  const input=fixture();input.settings.language='ar';
+  const output=explanation();output.complexity.reason='توجد خطط متقاربة تستحق المقارنة.';
+  output.threats[0].description='يمكن للخصم المنافسة على المركز.';
+  for(const candidate of output.candidates){candidate.idea='طوّر القطع وسيطر على المركز.';candidate.tradeoff='انتبه إلى حماية البيادق.';}
+  const auth=fakeAuth(async(url,options)=>{
+    if(url.endsWith('/models'))return Response.json({models:[{slug:'account-model',display_name:'Account model',visibility:'list'}]});
+    const body=JSON.parse(options.body);assert.match(body.instructions,/Modern Standard Arabic/);assert.equal(Object.hasOwn(body,'reasoning'),false);
+    return stream([{type:'response.output_text.delta',delta:JSON.stringify(output)},complete],1);
+  });
+  assert.deepEqual(await explain(auth,input,new AbortController().signal),output);
+});
+test('Both token-access boundaries classify transport failures without clearing credentials or changing terminal errors',async()=>{
+  const failures=[
+    [new DOMException('private transport detail','TimeoutError'),'upstream_timeout',504],
+    [new TypeError('private transport detail'),'upstream_unavailable',502],
+    [new AppError('invalid_grant',401),'invalid_grant',401],
+  ];
+  for(const [error,code,status] of failures)for(const failureAt of [1,2]) {
+    let accessCalls=0,fetchCalls=0,persistCalls=0;
+    const account={model:'account-model',accessToken:'mock-token',refreshToken:'mock-refresh'};
+    const auth=fakeAuth(async()=>{fetchCalls++;return Response.json({models:[{slug:'account-model',display_name:'Account model',visibility:'list'}]});});
+    auth.active=()=>account;auth.persist=async()=>{persistCalls++;};
+    auth.access=async()=>{accessCalls++;if(accessCalls===failureAt)throw error;return account.accessToken;};
+    await assert.rejects(explain(auth,fixture(),new AbortController().signal),error instanceof AppError ? actual=>actual===error : safeTransport(code,status));
+    assert.equal(fetchCalls,failureAt-1);assert.equal(accessCalls,failureAt);assert.equal(persistCalls,0);assert.equal(auth.epoch,0);
+    assert.deepEqual(account,{model:'account-model',accessToken:'mock-token',refreshToken:'mock-refresh'});
+  }
 });

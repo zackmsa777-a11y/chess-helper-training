@@ -10,10 +10,27 @@ export const MODEL_PICKER_MAX_CHARACTERS = 60 * 1024;
 function mediaType(response) {
   return (response.headers.get('content-type') ?? '').split(';',1)[0].trim().toLowerCase();
 }
+function transportError(error, signal, timeout) {
+  if (error instanceof AppError) return error;
+  if (error?.name === 'AbortError' && signal?.aborted) return new AppError('stale_response',409);
+  const timedOut = error?.name === 'TimeoutError' || (error?.name === 'AbortError' && timeout?.aborted && timeout.reason?.name === 'TimeoutError');
+  return new AppError(timedOut ? 'upstream_timeout' : 'upstream_unavailable',timedOut ? 504 : 502);
+}
+async function upstream(operation, signal, timeout) {
+  try { return await operation(); }
+  catch (error) { throw transportError(error,signal,timeout); }
+}
+async function errorBody(response, signal, timeout) {
+  try { return await upstream(() => boundedJson(response),signal,timeout); }
+  catch (error) {
+    if (['invalid_json','empty_response','response_too_large'].includes(error.code)) return {};
+    throw error;
+  }
+}
 function responseError(response, body, fallback) {
   const object = body !== null && typeof body === 'object' && !Array.isArray(body) ? body : {};
   const rawCode = object.error?.code;
-  const code = typeof rawCode === 'string' && /^[a-z_]{1,100}$/.test(rawCode) ? rawCode : fallback;
+  const code = typeof rawCode === 'string' && /^[a-z_0-9]{1,100}$/.test(rawCode) ? rawCode : fallback;
   const err = new AppError(code,response.ok ? 502 : response.status);
   const type = mediaType(response);
   err.diagnostic = {status:response.status,shape:object.error ? 'error' : Object.hasOwn(object,'detail') ? 'detail' : 'other',
@@ -22,17 +39,17 @@ function responseError(response, body, fallback) {
     param:typeof object.error?.param === 'string' ? object.error.param.replace(/[^a-zA-Z0-9_.]/g,'').slice(0,80) : null};
   return err;
 }
-export async function apiError(response) {
-  let body = {};
-  try { body = await boundedJson(response); } catch {}
+export async function apiError(response, signal, timeout) {
+  const body = await errorBody(response,signal,timeout);
   return responseError(response,body,`openai_http_${response.status}`);
 }
-export async function modelCatalog(auth) {
-  const token = await auth.access();
+export async function modelCatalog(auth, signal) {
+  const token = await upstream(() => auth.access(),signal);
   const epoch = auth.epoch;
-  const response = await auth.fetch(`${RESOURCE}/models`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{Authorization:`Bearer ${token}`}});
-  if (!response.ok) throw await apiError(response);
-  const body = await boundedJson(response,MODEL_CATALOG_MAX_BYTES,'model_catalog_too_large');
+  const timeout = AbortSignal.timeout(15000);
+  const response = await upstream(() => auth.fetch(`${RESOURCE}/models`,{redirect:'error',signal:signal ? AbortSignal.any([signal,timeout]) : timeout,headers:{Authorization:`Bearer ${token}`}}),signal,timeout);
+  if (!response.ok) throw await apiError(response,signal,timeout);
+  const body = await upstream(() => boundedJson(response,MODEL_CATALOG_MAX_BYTES,'model_catalog_too_large'),signal,timeout);
   if (auth.epoch !== epoch) throw new AppError('account_changed',409);
   if (!Array.isArray(body?.models)) throw new AppError('invalid_model_catalog',502);
   const listed = body.models.filter(m => m && typeof m === 'object' && m.visibility === 'list');
@@ -76,7 +93,7 @@ export function requestBody(input, model, supportedEfforts = []) {
   };
 }
 
-export async function consumeSSE(response) {
+export async function consumeSSE(response, signal, timeout) {
   const type = mediaType(response);
   // The direct ChatGPT-plan route can omit Content-Type (observed HTTP 200).
   // With no MIME declaration, validate the bounded SSE body and terminal event
@@ -86,7 +103,7 @@ export async function consumeSSE(response) {
     // safe error metadata; never accept non-streamed success or return raw bodies.
     let body = {};
     if (type === 'application/json' || type === 'application/problem+json') {
-      try { body = await boundedJson(response); } catch {}
+      body = await errorBody(response,signal,timeout);
     } else {
       try { await response.body?.cancel(); } catch {}
     }
@@ -102,7 +119,7 @@ export async function consumeSSE(response) {
     try { event = JSON.parse(lines.join('\n')); } catch { throw new AppError('malformed_stream',502); }
     if (event.type === 'response.failed' || event.type === 'error') {
       const raw = event.response?.error?.code ?? event.code ?? event.error?.code;
-      throw new AppError(typeof raw === 'string' && /^[a-z_]{1,100}$/.test(raw) ? raw : 'inference_failed',502);
+      throw new AppError(typeof raw === 'string' && /^[a-z_0-9]{1,100}$/.test(raw) ? raw : 'inference_failed',502);
     }
     if (event.type === 'response.incomplete' || event.type === 'response.refusal.delta' || event.type === 'response.refusal.done') throw new AppError('inference_incomplete',502);
     if (event.type === 'response.output_text.delta') {
@@ -115,15 +132,17 @@ export async function consumeSSE(response) {
       completed = true;
     }
   };
-  for await (const chunk of response.body) {
-    bytes += chunk.length;
-    if (bytes > 1048576) throw new AppError('stream_too_large',502);
-    buffer += decoder.decode(chunk,{stream:true});
-    // Normalize only complete CRLF pairs, including pairs split across chunks.
-    buffer = buffer.replace(/\r\n/g,'\n');
-    let end;
-    while ((end = buffer.indexOf('\n\n')) >= 0) { processEvent(buffer.slice(0,end)); buffer = buffer.slice(end+2); }
-  }
+  await upstream(async () => {
+    for await (const chunk of response.body) {
+      bytes += chunk.length;
+      if (bytes > 1048576) throw new AppError('stream_too_large',502);
+      buffer += decoder.decode(chunk,{stream:true});
+      // Normalize only complete CRLF pairs, including pairs split across chunks.
+      buffer = buffer.replace(/\r\n/g,'\n');
+      let end;
+      while ((end = buffer.indexOf('\n\n')) >= 0) { processEvent(buffer.slice(0,end)); buffer = buffer.slice(end+2); }
+    }
+  },signal,timeout);
   buffer += decoder.decode();
   if (buffer.trim()) processEvent(buffer);
   if (!completed) throw new AppError('interrupted_stream',502);
@@ -136,17 +155,18 @@ export async function explain(auth, input, signal) {
   const selected = auth.active()?.model;
   if (!selected) throw new AppError('select_model_in_settings',400);
   // Recheck the actual account catalog for each explicit request; never assume a model exists.
-  const models = await modelCatalog(auth);
+  const models = await modelCatalog(auth,signal);
   const model = models.find(m => m.slug === selected);
   if (!model) throw new AppError('model_unavailable',403);
   const body = requestBody(data,selected,model.reasoningEfforts);
-  const token = await auth.access();
+  const token = await upstream(() => auth.access(),signal);
   if (epoch !== auth.epoch) throw new AppError('account_changed',409);
-  const response = await auth.fetch(`${RESOURCE}/responses`,{method:'POST',redirect:'error',
-    signal:AbortSignal.any([signal,AbortSignal.timeout(60000)]),
-    headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json',Accept:'text/event-stream'},body:JSON.stringify(body)});
-  if (!response.ok) throw await apiError(response);
-  const result = await consumeSSE(response);
+  const timeout = AbortSignal.timeout(60000);
+  const response = await upstream(() => auth.fetch(`${RESOURCE}/responses`,{method:'POST',redirect:'error',
+    signal:AbortSignal.any([signal,timeout]),
+    headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json',Accept:'text/event-stream'},body:JSON.stringify(body)}),signal,timeout);
+  if (!response.ok) throw await apiError(response,signal,timeout);
+  const result = await consumeSSE(response,signal,timeout);
   if (epoch !== auth.epoch || signal.aborted || auth.signingOut) throw new AppError('stale_response',409);
   try { return validateExplanation(result,data); } catch { throw new AppError('malformed_explanation',502); }
 }

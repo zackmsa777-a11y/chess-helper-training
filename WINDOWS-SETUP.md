@@ -102,6 +102,10 @@ Use **Sign out of active account** to clear local tokens and attempt remote refr
 
 ## Troubleshooting
 
+A connected companion and signed-in account do not guarantee that an explanation request will succeed. The board now shows a specific recovery message and an allowlisted **Diagnostic code / رمز التشخيص**. Share that code when reporting a failure; do not share tokens or account-store files. Unknown errors show `unknown_error` instead of arbitrary error text. Requests are never retried automatically.
+
+After an extension update, refresh an already-open chess tab as well as reloading the extension. A stale content script can lose its connection to Chrome even while the newly opened settings page works. `extension_reloaded` specifically identifies that condition. Restart the companion after updating its source so its new diagnostics take effect.
+
 | What you see | What to do |
 | --- | --- |
 | Chrome cannot load the extension | Extract the ZIP and select the `extension` subfolder containing `manifest.json`. |
@@ -111,6 +115,10 @@ Use **Sign out of active account** to clear local tokens and attempt remote refr
 | Explanation language or thinking choice did not stick | Click **Save preferences**. After choosing a different model, choose a supported thinking mode again if needed. |
 | `response_too_large` on an old build | Update/restart the companion. The catalog has a separate bounded reader; repeated sign-in does not enlarge it. |
 | `invalid_stream_type` on an old companion | Update/restart it. The reader accepts a missing Content-Type only with validated streamed events and completion. |
+| `request_in_progress` or `local_rate_limit` | Wait for the current operation or request window; clicking repeatedly does not help. |
+| `upstream_timeout` or `upstream_unavailable` | The companion could not finish a provider request. Keep the existing sign-in and try later. These are separate from losing the local companion connection. |
+| `subscription_sharing_usage_unavailable` | The provider could not check usage availability. Keep credentials and try later; this does not mean the plan is exhausted. |
+| `invalid_request` or `unknown_error` | Refresh the chess tab and test a valid position in local study. Report the displayed code if it persists; the message alone does not establish the cause. |
 | Incomplete/malformed explanation or a changed position | No answer is displayed. Check the current board and request again explicitly when appropriate. There is no automatic retry. |
 | Protected-storage PowerShell error | Follow the approved PowerShell signing/execution process. Do not disable security policy or store tokens in plaintext. |
 | Wrong turn/castling rights on a website | Correct the FEN in local study. A visible board does not contain complete game history. |

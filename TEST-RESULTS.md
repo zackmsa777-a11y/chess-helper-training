@@ -1,4 +1,41 @@
-# Release 1.1.1 verification — 2026-11-13
+# Release 1.1.2 verification — 2026-11-13
+
+The reported immediate Arabic explanation failure could not be reproduced through the existing companion. Its generic message concealed the cause. This patch fixes that diagnostic gap: the training panel now gives fixed English/Arabic recovery guidance and a safe allowlisted diagnostic code, distinguishes an extension reload from account/provider failures, and clears a previous answer when a new request starts. Unknown error text is never rendered. Provider transport/deadline failures no longer collapse into `invalid_request`.
+
+Starting checkout: **`39e1389111e4e7901bd439a217ba27f886e7291b`**, clean before this patch. Original upstream baseline remains **`01b990b9424ac0eef905376b40d14faf8dd076c0`**. Dependency versions and Stockfish assets are unchanged.
+
+## Authorized live observation
+
+The earlier record used two of the user's three authorized explanation requests. This turn used the **third and final authorized request**, once, through the already-running companion and its selected account/model. It succeeded: **HTTP 200, 16,064 ms, three validated legal candidates and Arabic explanation prose**, with model thinking set to default. Input was the starting FEN, the user's previously supplied depth-12 candidates/scores, one-ply legal variations, rating 1200 and a 60-second practice budget. No real credential files, tokens, raw account records or provider response bodies were inspected or logged. No new sign-in, model selection, billing fallback or companion restart was performed.
+
+This observation establishes that Arabic/default explanations worked through that companion at that time. It does **not** identify the user's earlier immediate failure or verify the live Chess.com tab. All **three of three** authorized inference attempts have now been used. Additional live inference requires applicable new authorization.
+
+## Local verification
+
+| Command | Final result |
+| --- | --- |
+| `scripts/setup.ps1` | Exit **0**; complete tests/build/check workflow |
+| `npm test` | **110 passed**: 19 original + 91 added, **0 failed, 0 skipped**; added-suite duration **2365.3497 ms** |
+| `npm run build` | Exit **0**; all five extension bundles generated |
+| `npm run check` | Exit **0**; **42 JavaScript syntax checks**, manifest and all five credential-boundary checks passed |
+| `npm run test:browser` | Exit **0**; **15 checks passed** |
+| `npm run test:ui` | Exit **0**; **25 checks passed** in **33416 ms**; seven synthetic inference attempts, zero page errors/external traffic |
+| `npm run test:panel` | Exit **0**; **19 checks passed** in **24517 ms**; zero companion requests/page errors/external traffic |
+| `git diff --check` | Exit **0** |
+
+Windows, Node **26.4.0**, npm **12.0.2**, Chrome for Testing **145.0.7632.6**, Playwright **1.58.2**. Evidence: [UI results](docs/verification/ui-browser-results.json), [panel results](docs/verification/panel-browser-results.json), [extension results](docs/verification/browser-results.json), [minimal live result](docs/verification/live-arabic-default.json).
+
+During verification, the old substring credential check incorrectly matched the safe diagnostic name `refresh_token_expired`. It now forbids exact credential field names (`access_token`, `refresh_token`, `id_token`) and still forbids the OAuth exchange endpoint. The complete setup rerun passed. Two delegated browser runs were denied loopback access (`net::ERR_NETWORK_ACCESS_DENIED`) before any mocked inference; the primary environment allowed the test. Its first run then caught a stale expected Arabic sentence in the new test; the expectation was updated to the reviewed recovery copy. The final complete run above passed without application workarounds for those test-environment/assertion failures.
+
+The browser tests use isolated synthetic account/provider services and local chess pages. New cases exercise immediate rejection, a request already running, usage availability failure and an upstream timeout through the real extension bridge. They assert Arabic recovery guidance, LTR diagnostic codes, retained connected-account status and local candidates, no automatic retries, no old answer left beneath a new failure, and no horizontal overflow at 390 pixels. Unit tests cover untrusted/HTML/secret-like errors, fixed error codes, token-access/network/body timeouts, cancellation and split UTF-8 Arabic SSE. The production companion and personal browser profile are untouched by these tests.
+
+No request time limits were increased, no validation was relaxed, and no new inference retries or account operations were introduced. To load the new UI, reload the extension **and refresh already-open chess tabs**. To load the new companion diagnostics, restart its terminal using the same extension ID; the existing encrypted sign-in is retained.
+
+Official documentation checked: [Models and inference](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference) and [Errors and recovery](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery). In particular, usage availability errors are distinct from usage-limit errors and do not justify clearing credentials.
+
+I applied modern-web-guidance `accessibility`: “Announce dynamic errors via live regions”. The existing polite status region announces the fixed recovery text and isolated diagnostic code without moving keyboard focus. No screen-reader software was run.
+
+# Previous release 1.1.1 verification — historical record
 
 The floating website panel now matches the study interface, has complete Arabic labels and explicit language direction, and keeps chess notation/scores left-to-right. English/Arabic preferences synchronize with settings without changing the AI explanation language. The donation button, its images and their web-accessible manifest entries are removed. Original attribution, license, engine assets and other panel controls remain.
 

@@ -4,6 +4,7 @@ import { createServer as createNetServer } from 'node:net';
 import { cp, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { createCompanion } from '../companion/server.js';
+import { AppError } from '../companion/oauth.js';
 import { validateTraining } from '../src/shared/training.js';
 
 const startedAt=Date.now();
@@ -27,10 +28,10 @@ for(const file of ['manifest.json','background.js']){
 }
 assert.ok((await readFile(join(extension,'options.js'),'utf8')).includes('chessSettingsAgent'),'Run npm run build before this test');
 
-const checks=[];const errors=[];const requests=[];const externalRequests=[];const inferences=[];const contrast=[];
+const checks=[];const errors=[];const requests=[];const externalRequests=[];const inferences=[];const contrast=[];const errorCases=[];const transportFailures=[];
 let resizeAlignment;
 let context,server,settings,study;
-let catalogFailure=false,malformed=false,paused=null,startCount=0,cancelCount=0,signedIn=true;
+let catalogFailure=false,malformed=false,paused=null,startCount=0,cancelCount=0,signedIn=true,inferenceError=null,companionNow=Date.now();
 const account={id:'synthetic-training-account',label:'Training account',accessToken:'synthetic-test-token',model:'training-balanced',welcomeSeen:true};
 const auth={
   epoch:0,catalog:null,
@@ -94,6 +95,10 @@ try{
     headless:true,viewport:{width:1360,height:1050},ignoreDefaultArgs:['--disable-extensions'],
     args:[`--disable-extensions-except=${extension}`,`--load-extension=${extension}`,'--disable-background-networking'],
   });
+  context.on('requestfailed',request=>{
+    const url=new URL(request.url());
+    transportFailures.push({origin:url.origin,path:url.pathname,error:request.failure()?.errorText});
+  });
   await context.route(/^https?:\/\//,route=>{
     if(route.request().url().startsWith(`http://127.0.0.1:${port}/`))return route.continue();
     externalRequests.push(new URL(route.request().url()).origin);return route.abort();
@@ -101,8 +106,9 @@ try{
   let worker=context.serviceWorkers()[0];if(!worker)worker=await context.waitForEvent('serviceworker',{timeout:30000});
   const id=new URL(worker.url()).hostname;
   assert.match(id,/^[a-p]{32}$/);
-  server=createCompanion({auth,extensionId:id,inference:async(_auth,input,signal)=>{
+  server=createCompanion({auth,extensionId:id,now:()=>companionNow,inference:async(_auth,input,signal)=>{
     const data=validateTraining(input);inferences.push(data);
+    if(inferenceError)throw new AppError(inferenceError.code,inferenceError.status);
     if(paused){paused.started();await new Promise(done=>{paused.release=done;signal.addEventListener('abort',done,{once:true});});}
     return explanation(data);
   }});
@@ -315,16 +321,60 @@ try{
   await study.waitForTimeout(3100);malformed=true;await study.locator('.explain').click();
   await study.locator('.message[data-error]').waitFor();
   assert.equal(await study.locator('.output').textContent(),'');assert.equal(await study.locator('.training img').count(),0);
+  assert.equal(await study.locator('.message .error-code bdi').textContent(),'malformed_explanation');
   assert.match(await study.locator('.message').textContent(),/Local analysis remains available/);
-  pass('Malformed mock AI HTML is rejected and local analysis stays usable');
+  pass('Malformed mock AI HTML is rejected with its exact safe error code and local analysis stays usable');
+
+  malformed=false;
+  await select(settings,'#ui-language','ar');
+  await study.waitForFunction(()=>document.documentElement.lang==='ar'&&document.querySelector('.training').dir==='rtl');
+  await study.waitForTimeout(3100);
+  async function assertArabicError(code,status,recovery){
+    // Separate synthetic rate windows; the real extension's three-second throttle is still respected.
+    companionNow+=61000;inferenceError={code,status};
+    const before={inferences:inferences.length,requests:requests.length,starts:startCount,cancels:cancelCount};
+    await study.locator('.output').evaluate(node=>{node.textContent='Earlier explanation (synthetic test)';});
+    const requestedAt=Date.now();
+    await study.locator('.explain').click();
+    await study.waitForFunction(expected=>document.querySelector('.message[data-error] .error-code bdi')?.textContent===expected,code);
+    const feedback=await study.locator('.message').textContent();
+    assert.ok(feedback.includes(recovery),`Missing Arabic recovery for ${code}: ${feedback}`);
+    assert.ok(feedback.includes('يبقى التحليل المحلي متاحًا.'));
+    const codeElement=study.locator('.message .error-code bdi');
+    assert.equal(await codeElement.evaluate(node=>node.tagName),'BDI');
+    assert.equal(await codeElement.getAttribute('dir'),'ltr');
+    assert.ok(await study.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Arabic recovery and diagnostic codes must fit the narrow study layout');
+    assert.equal(await study.locator('.output').textContent(),'','A failed new request must clear the previous explanation');
+    assert.equal(await study.locator('.choices button').count(),3);
+    assert.equal(await study.locator('.explain').isDisabled(),false);
+    assert.equal(await settings.locator('#connection-state').textContent(),'متصل');
+    assert.equal(signedIn,true);assert.equal(account.model,'training-balanced');
+    const feedbackMs=Date.now()-requestedAt;
+    await study.waitForTimeout(3100);
+    assert.equal(inferences.length,before.inferences+1,'An error must not retry inference automatically');
+    assert.deepEqual(requests.slice(before.requests).map(request=>request.path),['/explain'],'An error must not refresh the account or models automatically');
+    assert.equal(startCount,before.starts);assert.equal(cancelCount,before.cancels);
+    errorCases.push({code,status,feedbackMs,automaticRetries:0,connected:true,previousOutputCleared:true});
+  }
+  // Expected Arabic recovery strings are intentionally literal browser assertions, independent of the helper implementation.
+  await assertArabicError('invalid_request',400,'رُفض طلب الشرح. حدّث علامة تبويب الشطرنج هذه؛ وإذا تكرر الخطأ، فأرسل الرمز أدناه للتحقق من الطلب الذي يرسله التطبيق.');
+  pass('A fast invalid-request reply shows its code and Arabic recovery while the connected account remains unchanged');
+  await assertArabicError('request_in_progress',409,'ما زال طلب شرح أو إجراء متعلق بالحساب قيد التنفيذ. انتظر انتهاءه قبل طلب الشرح.');
+  pass('A busy reply shows Arabic wait guidance without automatic retry or account access');
+  await assertArabicError('subscription_sharing_usage_unavailable',503,'تعذّر على ChatGPT التحقق من توفر الاستخدام. احتفظ بتسجيل الدخول الحالي وحاول لاحقًا.');
+  pass('Unavailable plan usage has distinct Arabic feedback and preserves the connected account');
+  await assertArabicError('upstream_timeout',504,'لم تُكمل خدمة الذكاء الاصطناعي الطلب في الوقت المحدد.');
+  pass('An upstream timeout shows its exact code and Arabic guidance with cleared output and usable local candidates');
+  inferenceError=null;
 
   assert.deepEqual(externalRequests,[]);assert.deepEqual(errors,[]);
   pass('No page errors or external HTTP traffic; OAuth and inference remain entirely mocked');
-  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({browser:context.browser()?.version(),durationMs:Date.now()-startedAt,passed:checks.length,checks,errors,contrast,resizeAlignment,mocked:['OAuth','account model catalog','AI inference'],real:['ui-sdk web components','extension runtime','Stockfish WASM','loopback origin validation'],notTested:['real ChatGPT account','live Chess.com','screen reader software'],inferenceCount:inferences.length,ephemeralPort:true},null,2));
+  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({browser:context.browser()?.version(),durationMs:Date.now()-startedAt,passed:checks.length,checks,errors,contrast,resizeAlignment,errorCases,transportFailures,mocked:['OAuth','account model catalog','AI inference','companion error replies and rate-window clock'],real:['ui-sdk web components','extension runtime','Stockfish WASM','loopback origin validation'],notTested:['real ChatGPT account','live Chess.com','screen reader software'],inferenceCount:inferences.length,ephemeralPort:true},null,2));
   console.log(`${checks.length} UI browser checks passed.`);
 }catch(error){
   await settings?.screenshot({path:join(output,'settings-ui-failure.png'),fullPage:true}).catch(()=>{});
-  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({passed:checks.length,checks,errors,failure:error.message,contrast,resizeAlignment,requests,modelStatus:await settings?.locator('#model-status').textContent().catch(()=>null)},null,2));
+  await study?.screenshot({path:join(output,'study-ui-failure.png'),fullPage:true}).catch(()=>{});
+  await writeFile(join(output,'ui-browser-results.json'),JSON.stringify({passed:checks.length,checks,errors,failure:error.message,contrast,resizeAlignment,errorCases,transportFailures,inferenceCount:inferences.length,requests,modelStatus:await settings?.locator('#model-status').textContent().catch(()=>null),studyMessage:await study?.locator('.message').textContent().catch(()=>null)},null,2));
   throw error;
 }finally{
   paused?.release?.();
